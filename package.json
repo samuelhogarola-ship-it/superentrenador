@@ -1,0 +1,16 @@
+{
+  "name": "superentrenador",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:coach-studio": "npm run dev --workspace @superentrenador/coach-studio",
+    "dev:marketplace": "npm run dev --workspace @superentrenador/marketplace",
+    "build:coach-studio": "npm run build --workspace @superentrenador/coach-studio",
+    "build:marketplace": "npm run build --workspace @superentrenador/marketplace",
+    "build": "npm run build:coach-studio && npm run build:marketplace"
+  }
+}
