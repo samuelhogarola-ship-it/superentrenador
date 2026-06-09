@@ -11,6 +11,15 @@
     "dev:marketplace": "npm run dev --workspace @superentrenador/marketplace",
     "build:coach-studio": "npm run build --workspace @superentrenador/coach-studio",
     "build:marketplace": "npm run build --workspace @superentrenador/marketplace",
-    "build": "npm run build:coach-studio && npm run build:marketplace"
+    "build": "npm run build:coach-studio && npm run build:marketplace",
+    "test:e2e:marketplace": "npm run test:e2e --workspace @superentrenador/marketplace",
+    "ci:marketplace": "npm run build:marketplace && npm run test:e2e:marketplace",
+    "prepare": "node ./scripts/setup-git-hooks.mjs"
+  },
+  "pre-commit": [
+    "build:marketplace"
+  ],
+  "devDependencies": {
+    "pre-commit": "^2.0.0"
   }
 }
