@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Super Entrenador favicon</title>
+  <desc id="desc">Escudo deportivo con rayo y barra de progreso.</desc>
+  <defs>
+    <linearGradient id="bg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#153c2e" />
+      <stop offset="1" stop-color="#5dd39e" />
+    </linearGradient>
+    <linearGradient id="bolt" x1="24" y1="18" x2="42" y2="44" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff3bf" />
+      <stop offset="1" stop-color="#f59f00" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#081c15" />
+  <path
+    d="M32 8 50 14v15c0 11.4-7.2 21.9-18 27C21.2 50.9 14 40.4 14 29V14L32 8Z"
+    fill="url(#bg)"
+  />
+  <path
+    d="m35.4 18.5-11 13.3h7.1l-2.8 13.7 11-14h-7.1l2.8-13Z"
+    fill="url(#bolt)"
+  />
+  <rect x="18" y="46" width="28" height="4" rx="2" fill="#d8f3dc" opacity=".35" />
+  <rect x="18" y="46" width="19" height="4" rx="2" fill="#d8f3dc" />
+</svg>
