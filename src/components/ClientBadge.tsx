@@ -1,5 +1,5 @@
 import { formatClientType } from "../utils/format";
-import { PTClient } from "../types";
+import { PTClient } from "../types/coach";
 
 export function ClientBadge({
   type,
