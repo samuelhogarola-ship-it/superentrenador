@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #071018;
+  --panel: rgba(15, 24, 36, 0.92);
+  --panel-strong: rgba(10, 18, 28, 0.98);
+  --text: #edf4f7;
+  --muted: #97a7b3;
+  --accent: #f0bd56;
+  --ink: #11151b;
+  --line: rgba(255, 255, 255, 0.09);
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --font-sans: "Trebuchet MS", "Segoe UI", sans-serif;
+  --font-heading: Impact, "Arial Narrow Bold", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(240, 189, 86, 0.18), transparent 24%),
+    linear-gradient(180deg, #071018 0%, #0b1320 100%);
+  color: var(--text);
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(240, 189, 86, 0.35);
+  color: var(--text);
+}

@@ -1,10 +1,30 @@
-export interface Lead {
-  id: string;
-  trainerId: string;
-  source: string;
-  city: string;
+export interface MarketplaceCity {
+  slug: string;
   name: string;
-  email: string;
-  message: string;
-  status: "new" | "contacted";
+  region: string;
+  country: string;
+  heroTitle: string;
+  intro: string;
+  seoDescription: string;
+}
+
+export interface PublicTrainerProfile {
+  id: string;
+  slug: string;
+  displayName: string;
+  citySlug: string;
+  city: string;
+  region: string;
+  headline: string;
+  shortBio: string;
+  longBio: string;
+  specialties: string[];
+  verified: boolean;
+  yearsExperience: number;
+  rating: number;
+  reviewsCount: number;
+  priceFrom: number;
+  modalities: string[];
+  languages: string[];
+  hiddenContactHint: string;
 }

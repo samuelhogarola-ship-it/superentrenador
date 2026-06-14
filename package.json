@@ -1,36 +1,30 @@
 {
-  "name": "super-entrenador",
+  "name": "superentrenador-marketplace",
+  "version": "0.1.0",
   "private": true,
-  "version": "0.0.1",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview",
-    "test:e2e": "playwright test",
-    "test:e2e:headed": "playwright test --headed",
-    "test:e2e:ui": "playwright test --ui",
-    "ci": "npm run build && npm run test:e2e",
-    "prepare": "node ./scripts/setup-git-hooks.mjs"
+    "dev": "next dev",
+    "build": "next build --webpack",
+    "start": "next start",
+    "lint": "eslint .",
+    "check": "npm run lint && npm run build",
+    "ci": "npm run check"
   },
-  "pre-commit": [
-    "build"
-  ],
   "dependencies": {
-    "jspdf": "^2.5.2",
-    "lucide-react": "^0.511.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.30.1"
+    "@supabase/supabase-js": "^2.57.4",
+    "lucide-react": "^0.552.0",
+    "next": "16.2.9",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
   },
   "devDependencies": {
-    "@playwright/test": "^1.60.0",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "playwright": "^1.60.0",
-    "pre-commit": "^2.0.0",
-    "typescript": "^5.5.4",
-    "vite": "^5.3.4"
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.9",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
