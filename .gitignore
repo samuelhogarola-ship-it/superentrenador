@@ -45,3 +45,6 @@ next-env.d.ts
 
 # legacy artifacts
 /legacy-vite/test-results
+
+# local supabase cli artifacts
+/supabase/.temp
