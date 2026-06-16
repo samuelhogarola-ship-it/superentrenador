@@ -2,9 +2,9 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-white/10 bg-[rgba(7,12,18,0.92)]">
-      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 text-sm text-[var(--muted)] lg:flex-row lg:items-center lg:justify-between lg:px-10">
-        <p>Super Entrenador · Marketplace SEO para entrenadores personales.</p>
+    <footer className="px-4 pb-24 pt-6 md:px-6 md:pb-8 lg:px-8">
+      <div className="app-surface mx-auto flex max-w-7xl flex-col gap-4 rounded-[32px] px-6 py-8 text-sm text-[var(--muted)] lg:flex-row lg:items-center lg:justify-between lg:px-8">
+        <p>Super Entrenador · Discovery premium para entrenadores personales.</p>
         <div className="flex flex-wrap items-center gap-4">
           <Link href="/entrenadores" className="transition-colors hover:text-[var(--text)]">
             Entrenadores

@@ -7,11 +7,11 @@ interface SectionHeadingProps {
 export function SectionHeading({ eyebrow, title, body }: SectionHeadingProps) {
   return (
     <div className="max-w-3xl">
-      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--accent)]">{eyebrow}</p>
-      <h2 className="mt-3 font-heading text-5xl uppercase tracking-[0.06em] text-[var(--text)] sm:text-6xl">
+      <p className="app-kicker">{eyebrow}</p>
+      <h2 className="app-title mt-3 text-4xl text-[var(--text)] sm:text-5xl">
         {title}
       </h2>
-      <p className="mt-4 text-lg leading-8 text-[var(--muted)]">{body}</p>
+      <p className="app-copy mt-4 text-base sm:text-lg">{body}</p>
     </div>
   );
 }

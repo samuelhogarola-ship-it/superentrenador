@@ -43,12 +43,14 @@ export default async function CityPage({ params }: CityPageProps) {
   const trainers = await listTrainerProfilesByCity(currentCity.slug);
 
   return (
-    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-12 px-6 py-14 lg:px-10">
-      <SectionHeading
-        eyebrow={`${currentCity.name} · ${currentCity.region}`}
-        title={currentCity.heroTitle}
-        body={currentCity.intro}
-      />
+    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8 lg:px-8">
+      <section className="app-surface rounded-[36px] px-6 py-8 sm:px-8 sm:py-10">
+        <SectionHeading
+          eyebrow={`${currentCity.name} · ${currentCity.region}`}
+          title={currentCity.heroTitle}
+          body={currentCity.intro}
+        />
+      </section>
 
       <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
         {trainers.map((trainer) => (

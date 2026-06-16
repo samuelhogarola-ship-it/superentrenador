@@ -7,8 +7,20 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "check": "npm run lint && npm run build",
-    "ci": "npm run check"
+    "ci": "npm run check",
+    "prepare": "husky",
+    "security:setup": "node scripts/install-gitleaks.mjs",
+    "secrets:scan": ".tools/gitleaks/current/gitleaks git --redact --no-banner .",
+    "secrets:scan:staged": ".tools/gitleaks/current/gitleaks git --staged --redact --no-banner .",
+    "audit:deps": "audit-ci --config ./audit-ci.jsonc",
+    "commitlint": "commitlint --from HEAD~1 --to HEAD"
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts,tsx}": [
+      "eslint --fix"
+    ]
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",
@@ -18,12 +30,17 @@
     "react-dom": "19.2.4"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "audit-ci": "^7.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.7",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

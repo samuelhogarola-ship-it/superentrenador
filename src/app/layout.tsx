@@ -1,8 +1,19 @@
 import type { Metadata } from "next";
+import { Plus_Jakarta_Sans, Sora } from "next/font/google";
 import "./globals.css";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { siteConfig } from "@/lib/site";
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-plus-jakarta",
+});
+
+const sora = Sora({
+  subsets: ["latin"],
+  variable: "--font-sora",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -30,9 +41,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className="h-full antialiased">
+    <html
+      lang="es"
+      className={`${plusJakartaSans.variable} ${sora.variable} h-full antialiased`}
+    >
       <body className="min-h-full bg-[var(--bg)] text-[var(--text)]">
-        <div className="flex min-h-screen flex-col">
+        <div className="app-shell flex min-h-screen flex-col">
           <SiteHeader />
           {children}
           <SiteFooter />

@@ -48,23 +48,23 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-10 px-6 py-14 lg:px-10">
-      <section className="grid gap-6 rounded-[32px] border border-white/10 bg-[var(--panel)] p-8 shadow-[0_20px_70px_rgba(0,0,0,0.28)] lg:grid-cols-[1.4fr_0.8fr]">
+    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8 lg:px-8">
+      <section className="app-surface grid gap-6 rounded-[36px] p-6 sm:p-8 lg:grid-cols-[1.4fr_0.8fr]">
         <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-[var(--accent)]">
+          <p className="app-kicker">
             {trainer.city} · {trainer.region}
           </p>
-          <h1 className="mt-3 font-heading text-6xl uppercase tracking-[0.05em] text-[var(--text)]">
+          <h1 className="app-title mt-3 text-4xl text-[var(--text)] sm:text-5xl lg:text-6xl">
             {trainer.displayName}
           </h1>
-          <p className="mt-4 text-xl text-[var(--text)]">{trainer.headline}</p>
-          <p className="mt-5 max-w-3xl text-base leading-8 text-[var(--muted)]">{trainer.longBio}</p>
+          <p className="mt-4 text-xl font-semibold text-[var(--text)]">{trainer.headline}</p>
+          <p className="app-copy mt-5 max-w-3xl text-base">{trainer.longBio}</p>
 
           <div className="mt-8 flex flex-wrap gap-3">
             {trainer.specialties.map((specialty) => (
               <span
                 key={specialty}
-                className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-[var(--text)]"
+                className="rounded-full border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-2 text-sm text-[var(--text)]"
               >
                 {specialty}
               </span>
@@ -72,7 +72,7 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
           </div>
         </div>
 
-        <aside className="rounded-[28px] border border-white/10 bg-[rgba(255,255,255,0.03)] p-6">
+        <aside className="rounded-[30px] border border-[var(--line)] bg-[var(--bg-soft)] p-6">
           <div className="grid gap-4 text-sm text-[var(--muted)]">
             <span className="inline-flex items-center gap-3">
               <Star size={16} className="text-[var(--accent)]" />
@@ -88,8 +88,8 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
             </span>
           </div>
 
-          <div className="mt-8 rounded-[24px] border border-[var(--accent)]/20 bg-[var(--accent)]/10 p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--accent)]">
+          <div className="mt-8 rounded-[26px] border border-[var(--line)] bg-white p-5">
+            <p className="app-kicker">
               Acceso premium
             </p>
             <p className="mt-3 text-sm leading-7 text-[var(--text)]">
@@ -98,14 +98,14 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
             <div className="mt-5 grid gap-3">
               <Link
                 href="/login"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[var(--ink)]"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--text)] px-4 py-3 text-sm font-semibold text-white"
               >
                 <MessageSquare size={16} />
                 Iniciar sesión para desbloquear
               </Link>
               <Link
                 href="/login"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 px-4 py-3 text-sm font-semibold text-[var(--text)]"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--line)] px-4 py-3 text-sm font-semibold text-[var(--text)]"
               >
                 <LockKeyhole size={16} />
                 Ver opciones premium
@@ -116,20 +116,20 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
       </section>
 
       <section className="grid gap-6 lg:grid-cols-3">
-        <article className="rounded-[28px] border border-white/10 bg-[var(--panel)] p-6">
-          <h2 className="font-heading text-4xl uppercase tracking-[0.05em] text-[var(--text)]">
+        <article className="app-surface rounded-[30px] p-6">
+          <h2 className="app-title text-3xl text-[var(--text)]">
             Idiomas
           </h2>
           <p className="mt-4 text-[var(--muted)]">{trainer.languages.join(" · ")}</p>
         </article>
-        <article className="rounded-[28px] border border-white/10 bg-[var(--panel)] p-6">
-          <h2 className="font-heading text-4xl uppercase tracking-[0.05em] text-[var(--text)]">
+        <article className="app-surface rounded-[30px] p-6">
+          <h2 className="app-title text-3xl text-[var(--text)]">
             Modalidades
           </h2>
           <p className="mt-4 text-[var(--muted)]">{trainer.modalities.join(" · ")}</p>
         </article>
-        <article className="rounded-[28px] border border-white/10 bg-[var(--panel)] p-6">
-          <h2 className="font-heading text-4xl uppercase tracking-[0.05em] text-[var(--text)]">
+        <article className="app-surface rounded-[30px] p-6">
+          <h2 className="app-title text-3xl text-[var(--text)]">
             Desde
           </h2>
           <p className="mt-4 text-[var(--muted)]">{trainer.priceFrom} € por sesión o plan equivalente</p>
