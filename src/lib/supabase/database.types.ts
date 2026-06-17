@@ -93,6 +93,8 @@ export type Database = {
           short_bio: string
           slug: string
           specialties: string[]
+          stripe_customer_id: string | null
+          subscription_status: string
           user_id: string | null
           verified: boolean
           years_experience: number
@@ -117,6 +119,8 @@ export type Database = {
           short_bio: string
           slug: string
           specialties?: string[]
+          stripe_customer_id?: string | null
+          subscription_status?: string
           user_id?: string | null
           verified?: boolean
           years_experience?: number
@@ -141,6 +145,8 @@ export type Database = {
           short_bio?: string
           slug?: string
           specialties?: string[]
+          stripe_customer_id?: string | null
+          subscription_status?: string
           user_id?: string | null
           verified?: boolean
           years_experience?: number

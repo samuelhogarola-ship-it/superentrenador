@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ArrowRight, LayoutDashboard, MapPinned, UserRound } from "lucide-react";
+import { ArrowRight, LayoutDashboard, MapPinned, Sparkles, UserRound } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { BrandMark } from "@/components/brand-mark";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
@@ -73,6 +73,13 @@ export function SiteHeader() {
           <div className="hidden items-center gap-3 md:flex">
             {loggedIn ? (
               <>
+                <Link
+                  href="/coach-studio"
+                  className="inline-flex items-center gap-2 rounded-full border border-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--accent)] transition-colors hover:bg-[var(--accent-soft)]"
+                >
+                  <Sparkles size={15} />
+                  Coach Studio
+                </Link>
                 <Link
                   href="/mi-perfil"
                   className="inline-flex items-center gap-2 rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--line-strong)]"
