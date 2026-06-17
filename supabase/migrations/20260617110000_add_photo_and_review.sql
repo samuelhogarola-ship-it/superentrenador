@@ -10,12 +10,14 @@ UPDATE public.trainer_profiles
   WHERE is_published = true AND review_status = 'pending';
 
 -- Admin can read all trainer profiles (including unpublished / pending)
-CREATE POLICY IF NOT EXISTS "Admin can read all trainer profiles"
+DROP POLICY IF EXISTS "Admin can read all trainer profiles" ON public.trainer_profiles;
+CREATE POLICY "Admin can read all trainer profiles"
   ON public.trainer_profiles FOR SELECT
   USING ((auth.jwt() ->> 'email') = 'samuel.hogarola@gmail.com');
 
 -- Admin can update all trainer profiles (approve / reject / edit)
-CREATE POLICY IF NOT EXISTS "Admin can update trainer profiles"
+DROP POLICY IF EXISTS "Admin can update trainer profiles" ON public.trainer_profiles;
+CREATE POLICY "Admin can update trainer profiles"
   ON public.trainer_profiles FOR UPDATE
   USING ((auth.jwt() ->> 'email') = 'samuel.hogarola@gmail.com')
   WITH CHECK ((auth.jwt() ->> 'email') = 'samuel.hogarola@gmail.com');
