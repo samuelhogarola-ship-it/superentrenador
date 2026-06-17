@@ -2,6 +2,16 @@
 
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
+export async function signInWithGoogle() {
+  const supabase = getSupabaseBrowserClient();
+  return supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${window.location.origin}/auth/callback`,
+    },
+  });
+}
+
 export async function signUp(email: string, password: string) {
   const supabase = getSupabaseBrowserClient();
   return supabase.auth.signUp({ email, password });
