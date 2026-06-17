@@ -67,7 +67,7 @@ export default async function Home() {
           </Link>
           <span className="text-[var(--line-strong)]">·</span>
           <Link href="/registro" className="font-semibold text-[var(--muted)] hover:text-[var(--text)]">
-            Soy entrenador y quiero unirme
+            Publica tu anuncio gratis
           </Link>
         </div>
 
@@ -223,7 +223,7 @@ export default async function Home() {
               href="/registro"
               className="mt-2 inline-flex w-fit items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-[var(--text)] transition-transform hover:-translate-y-0.5"
             >
-              Quiero unirme como entrenador
+              Publica tu anuncio gratis
               <ArrowRight size={16} />
             </Link>
           </div>

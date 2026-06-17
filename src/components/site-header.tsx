@@ -91,13 +91,13 @@ export function SiteHeader() {
               <>
                 <Link
                   href="/registro"
-                  className="rounded-full px-4 py-2 text-sm font-semibold text-[var(--muted)] transition-colors hover:text-[var(--text)]"
+                  className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
                 >
-                  Hazte entrenador
+                  Publica tu anuncio
                 </Link>
                 <Link
                   href="/login"
-                  className="rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--line-strong)]"
+                  className="rounded-full px-4 py-2 text-sm font-semibold text-[var(--muted)] transition-colors hover:text-[var(--text)]"
                 >
                   Iniciar sesión
                 </Link>
