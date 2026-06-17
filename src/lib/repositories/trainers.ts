@@ -37,6 +37,7 @@ interface TrainerRow {
   modalities: string[];
   languages: string[];
   hidden_contact_hint: string;
+  contact_info: string;
   cities: { name: string; region: string } | null;
 }
 
@@ -72,6 +73,7 @@ function mapTrainer(row: TrainerRow): PublicTrainerProfile {
     modalities: row.modalities ?? [],
     languages: row.languages ?? [],
     hiddenContactHint: row.hidden_contact_hint,
+    contactInfo: row.contact_info ?? "",
   };
 }
 

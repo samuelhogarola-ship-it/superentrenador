@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Award, BadgeCheck, ChevronRight, Globe2, LockKeyhole, MapPin, MessageSquare, Quote } from "lucide-react";
+import { BadgeCheck, ChevronRight, MapPin, Quote } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Avatar } from "@/components/avatar";
+import { ContactPanel } from "@/components/contact-panel";
 import { RatingStars } from "@/components/rating-stars";
 import { Reveal } from "@/components/reveal";
 import { getPublicTrainerProfileBySlug, listPublicTrainerProfiles } from "@/lib/repositories/trainers";
 import { siteConfig } from "@/lib/site";
+
+export const dynamicParams = true;
+export const revalidate = 3600;
 
 interface TrainerProfilePageProps {
   params: Promise<{ slug: string }>;
@@ -104,48 +108,15 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
         </div>
 
         <aside className="lg:sticky lg:top-28 lg:self-start">
-          <div className="rounded-[30px] border border-[var(--line)] bg-[var(--bg-soft)] p-6">
-            <p className="text-xs text-[var(--muted)]">Desde</p>
-            <p className="font-heading text-4xl text-[var(--text)]">
-              {trainer.priceFrom}€<span className="text-base font-medium text-[var(--muted)]"> /sesión</span>
-            </p>
-
-            <div className="mt-6 grid gap-4 text-sm text-[var(--muted)]">
-              <span className="inline-flex items-center gap-3">
-                <Award size={16} className="text-[var(--accent)]" />
-                {trainer.yearsExperience} años de experiencia
-              </span>
-              <span className="inline-flex items-center gap-3">
-                <MapPin size={16} className="text-[var(--accent)]" />
-                {trainer.modalities.join(" · ")}
-              </span>
-              <span className="inline-flex items-center gap-3">
-                <Globe2 size={16} className="text-[var(--accent)]" />
-                {trainer.languages.join(" · ")}
-              </span>
-            </div>
-
-            <div className="mt-6 rounded-[24px] border border-[var(--line)] bg-white p-5">
-              <p className="app-kicker">Acceso premium</p>
-              <p className="mt-3 text-sm leading-7 text-[var(--text)]">{trainer.hiddenContactHint}</p>
-              <div className="mt-5 grid gap-3">
-                <Link
-                  href="/login"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--text)] px-4 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
-                >
-                  <MessageSquare size={16} />
-                  Iniciar sesión para desbloquear
-                </Link>
-                <Link
-                  href="/login"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--line)] px-4 py-3 text-sm font-semibold text-[var(--text)]"
-                >
-                  <LockKeyhole size={16} />
-                  Ver opciones premium
-                </Link>
-              </div>
-            </div>
-          </div>
+          <ContactPanel
+            priceFrom={trainer.priceFrom}
+            yearsExperience={trainer.yearsExperience}
+            modalities={trainer.modalities}
+            languages={trainer.languages}
+            contactInfo={trainer.contactInfo}
+            hiddenContactHint={trainer.hiddenContactHint}
+            trainerName={trainer.displayName}
+          />
         </aside>
       </section>
 

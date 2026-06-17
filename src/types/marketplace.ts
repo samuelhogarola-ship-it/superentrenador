@@ -27,4 +27,5 @@ export interface PublicTrainerProfile {
   modalities: string[];
   languages: string[];
   hiddenContactHint: string;
+  contactInfo: string;
 }

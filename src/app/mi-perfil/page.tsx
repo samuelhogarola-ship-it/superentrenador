@@ -59,6 +59,7 @@ export default function MiPerfilPage() {
     languages: ["Español"],
     yearsExperience: "",
     priceFrom: "",
+    contactInfo: "",
   });
 
   useEffect(() => {
@@ -93,6 +94,7 @@ export default function MiPerfilPage() {
           languages: existing.languages as string[] ?? ["Español"],
           yearsExperience: String(existing.years_experience ?? ""),
           priceFrom: String(existing.price_from ?? ""),
+          contactInfo: existing.contact_info as string ?? "",
         });
       }
 
@@ -134,6 +136,7 @@ export default function MiPerfilPage() {
       languages: form.languages,
       years_experience: Number(form.yearsExperience) || 0,
       price_from: Number(form.priceFrom) || 0,
+      contact_info: form.contactInfo,
       hidden_contact_hint:
         "El contacto directo se desbloquea para usuarios registrados en el marketplace.",
       is_published: true,
@@ -266,6 +269,19 @@ export default function MiPerfilPage() {
               />
             </label>
           </div>
+
+          <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--text)]">
+            Contacto directo (visible solo para usuarios registrados)
+            <input
+              value={form.contactInfo}
+              onChange={(e) => setForm((p) => ({ ...p, contactInfo: e.target.value }))}
+              placeholder="Ej. +34 612 345 678 · Instagram: @sorvali.fit"
+              className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
+            />
+            <span className="text-xs font-normal text-[var(--muted)]">
+              Los usuarios sin cuenta solo verán el bloqueo. Los registrados verán este dato.
+            </span>
+          </label>
         </fieldset>
 
         <fieldset className="flex flex-col gap-4">

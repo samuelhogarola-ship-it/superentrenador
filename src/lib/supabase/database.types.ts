@@ -75,6 +75,7 @@ export type Database = {
       trainer_profiles: {
         Row: {
           city_slug: string
+          contact_info: string
           created_at: string
           display_name: string
           headline: string
@@ -96,6 +97,7 @@ export type Database = {
         }
         Insert: {
           city_slug: string
+          contact_info?: string
           created_at?: string
           display_name: string
           headline: string
@@ -117,6 +119,7 @@ export type Database = {
         }
         Update: {
           city_slug?: string
+          contact_info?: string
           created_at?: string
           display_name?: string
           headline?: string

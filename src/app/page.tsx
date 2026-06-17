@@ -66,7 +66,7 @@ export default async function Home() {
             Ver todos los entrenadores
           </Link>
           <span className="text-[var(--line-strong)]">·</span>
-          <Link href="/login" className="font-semibold text-[var(--muted)] hover:text-[var(--text)]">
+          <Link href="/registro" className="font-semibold text-[var(--muted)] hover:text-[var(--text)]">
             Soy entrenador y quiero unirme
           </Link>
         </div>
@@ -220,7 +220,7 @@ export default async function Home() {
               Únete al marketplace, aparece en tu ciudad y especialidad, y deja que la demanda local te encuentre.
             </p>
             <Link
-              href="/login"
+              href="/registro"
               className="mt-2 inline-flex w-fit items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-[var(--text)] transition-transform hover:-translate-y-0.5"
             >
               Quiero unirme como entrenador
