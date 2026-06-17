@@ -67,7 +67,10 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-10 flex flex-col gap-4 border-t border-[var(--line)] pt-6 text-sm text-[var(--muted)] sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Super Entrenador · Todos los derechos reservados.</p>
+          <div className="flex flex-wrap items-center gap-4">
+            <p>© {new Date().getFullYear()} Super Entrenador · Todos los derechos reservados.</p>
+            <Link href="/politica-privacidad" className="hover:text-[var(--accent)]">Política de privacidad</Link>
+          </div>
           <div className="flex items-center gap-3">
             <a
               href="https://instagram.com"
