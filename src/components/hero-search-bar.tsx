@@ -55,7 +55,7 @@ export function HeroSearchBar({ specialties, cities }: HeroSearchBarProps) {
 
       <button
         type="submit"
-        className="inline-flex items-center justify-center gap-2 rounded-[20px] bg-[var(--text)] px-6 py-3.5 text-sm font-bold text-white transition-transform hover:-translate-y-0.5 sm:rounded-full"
+        className="inline-flex items-center justify-center gap-2 rounded-[20px] bg-[var(--accent)] px-6 py-3.5 text-sm font-bold text-[var(--ink)] transition-transform hover:-translate-y-0.5 sm:rounded-full"
       >
         <Search size={17} />
         Buscar entrenador

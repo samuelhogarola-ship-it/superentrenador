@@ -63,7 +63,7 @@ export function ContactPanel({
         </span>
       </div>
 
-      <div className="mt-6 rounded-[24px] border border-[var(--line)] bg-white p-5">
+      <div className="mt-6 rounded-[24px] border border-[var(--line)] bg-[var(--surface)] p-5">
         {!checked ? null : loggedIn && contactInfo ? (
           <>
             <p className="app-kicker">Contacto directo</p>
@@ -89,7 +89,7 @@ export function ContactPanel({
             <div className="mt-5 grid gap-3">
               <Link
                 href="/login"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--text)] px-4 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
               >
                 <MessageSquare size={16} />
                 Iniciar sesión para desbloquear

@@ -49,8 +49,9 @@ export default async function Home() {
           aria-hidden="true"
         />
         <p className="app-kicker">El Superprof del entrenamiento personal</p>
-        <h1 className="app-title mt-4 max-w-3xl text-3xl leading-[1.05] text-[var(--text)] sm:text-5xl lg:text-6xl">
-          Encuentra a tu entrenador personal ideal, cerca de ti.
+        <h1 className="app-title mt-4 max-w-3xl text-3xl leading-[1.05] sm:text-5xl lg:text-6xl">
+          <span className="gradient-text">Encuentra a tu entrenador</span>
+          <span className="text-[var(--text)]"> personal ideal, cerca de ti.</span>
         </h1>
         <p className="app-copy mt-5 max-w-xl text-base sm:text-lg">
           Compara cientos de entrenadores verificados por ciudad, especialidad y precio. Perfiles reales,
@@ -123,7 +124,7 @@ export default async function Home() {
             />
             <Link
               href="/entrenadores"
-              className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[var(--line)] bg-white px-5 py-2.5 text-sm font-semibold text-[var(--text)] hover:border-[var(--line-strong)]"
+              className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[var(--line)] bg-[var(--surface)] px-5 py-2.5 text-sm font-semibold text-[var(--text)] hover:border-[var(--line-strong)]"
             >
               Ver todos
               <ArrowRight size={15} />
@@ -211,17 +212,17 @@ export default async function Home() {
             </div>
           </div>
 
-          <div className="app-surface flex flex-col justify-center gap-4 rounded-[36px] bg-[var(--text)] px-6 py-10 text-white sm:px-10">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/60">¿Eres entrenador personal?</p>
-            <h2 className="font-heading text-3xl leading-tight sm:text-4xl">
+          <div className="flex flex-col justify-center gap-4 rounded-[36px] bg-[var(--accent)] px-6 py-10 sm:px-10">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--ink)]/60">¿Eres entrenador personal?</p>
+            <h2 className="font-heading text-3xl font-extrabold leading-tight text-[var(--ink)] sm:text-4xl">
               Crea tu perfil público y consigue nuevos clientes cada semana.
             </h2>
-            <p className="text-sm text-white/70">
+            <p className="text-sm text-[var(--ink)]/70">
               Únete al marketplace, aparece en tu ciudad y especialidad, y deja que la demanda local te encuentre.
             </p>
             <Link
               href="/registro"
-              className="mt-2 inline-flex w-fit items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-[var(--text)] transition-transform hover:-translate-y-0.5"
+              className="mt-2 inline-flex w-fit items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-bold text-[var(--accent)] transition-transform hover:-translate-y-0.5"
             >
               Publica tu anuncio gratis
               <ArrowRight size={16} />

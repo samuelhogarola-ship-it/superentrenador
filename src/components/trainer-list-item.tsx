@@ -56,7 +56,7 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
         </div>
         <Link
           href={`/entrenadores/${trainer.slug}`}
-          className="inline-flex items-center justify-center rounded-full bg-[var(--text)] px-5 py-2.5 text-sm font-semibold text-white transition-transform group-hover:-translate-y-0.5"
+          className="inline-flex items-center justify-center rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] transition-transform group-hover:-translate-y-0.5"
         >
           Ver perfil
         </Link>

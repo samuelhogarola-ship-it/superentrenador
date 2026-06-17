@@ -16,7 +16,7 @@ export default function NotFound() {
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-full bg-[var(--text)] px-5 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+            className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
           >
             Volver al inicio
             <ArrowRight size={15} />

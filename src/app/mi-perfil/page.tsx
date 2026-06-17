@@ -323,8 +323,8 @@ export default function MiPerfilPage() {
                 onClick={() => toggleArray("specialties", s)}
                 className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                   form.specialties.includes(s)
-                    ? "border-[var(--text)] bg-[var(--text)] text-white"
-                    : "border-[var(--line)] bg-white text-[var(--text)] hover:border-[var(--line-strong)]"
+                    ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--ink)]"
+                    : "border-[var(--line)] bg-[var(--surface)] text-[var(--text)] hover:border-[var(--line-strong)]"
                 }`}
               >
                 {s}
@@ -344,8 +344,8 @@ export default function MiPerfilPage() {
                   onClick={() => toggleArray("modalities", m)}
                   className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                     form.modalities.includes(m)
-                      ? "border-[var(--text)] bg-[var(--text)] text-white"
-                      : "border-[var(--line)] bg-white text-[var(--text)] hover:border-[var(--line-strong)]"
+                      ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--ink)]"
+                      : "border-[var(--line)] bg-[var(--surface)] text-[var(--text)] hover:border-[var(--line-strong)]"
                   }`}
                 >
                   {m}
@@ -364,8 +364,8 @@ export default function MiPerfilPage() {
                   onClick={() => toggleArray("languages", l)}
                   className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                     form.languages.includes(l)
-                      ? "border-[var(--text)] bg-[var(--text)] text-white"
-                      : "border-[var(--line)] bg-white text-[var(--text)] hover:border-[var(--line-strong)]"
+                      ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--ink)]"
+                      : "border-[var(--line)] bg-[var(--surface)] text-[var(--text)] hover:border-[var(--line-strong)]"
                   }`}
                 >
                   {l}
@@ -383,7 +383,7 @@ export default function MiPerfilPage() {
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-full bg-[var(--text)] px-6 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5 disabled:opacity-50"
           >
             {saving ? "Guardando…" : "Guardar perfil"}
             {!saving && <ArrowRight size={15} />}

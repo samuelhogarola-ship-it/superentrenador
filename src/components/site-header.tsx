@@ -105,7 +105,7 @@ export function SiteHeader() {
             )}
             <Link
               href="/entrenadores"
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--text)] px-4 py-2 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
             >
               Buscar PT
               <ArrowRight size={15} />
@@ -116,7 +116,7 @@ export function SiteHeader() {
             {loggedIn ? (
               <Link
                 href="/mi-perfil"
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--text)] px-4 py-2 text-sm font-semibold text-white"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--ink)]"
               >
                 <LayoutDashboard size={15} />
                 Mi perfil
@@ -124,7 +124,7 @@ export function SiteHeader() {
             ) : (
               <Link
                 href="/entrenadores"
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--text)] px-4 py-2 text-sm font-semibold text-white"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--ink)]"
               >
                 Ver PT
                 <ArrowRight size={15} />
