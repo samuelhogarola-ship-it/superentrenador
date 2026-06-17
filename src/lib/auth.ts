@@ -47,6 +47,8 @@ export interface TrainerProfileRow {
   price_from: number;
   hidden_contact_hint: string;
   contact_info: string;
+  photo_url: string | null;
+  review_status: string;
 }
 
 export async function getTrainerProfile(): Promise<TrainerProfileRow | null> {
@@ -59,7 +61,7 @@ export async function getTrainerProfile(): Promise<TrainerProfileRow | null> {
 
   const { data } = await supabase
     .from("trainer_profiles")
-    .select("slug, display_name, city_slug, headline, short_bio, long_bio, specialties, modalities, languages, years_experience, price_from, hidden_contact_hint, contact_info")
+    .select("slug, display_name, city_slug, headline, short_bio, long_bio, specialties, modalities, languages, years_experience, price_from, hidden_contact_hint, contact_info, photo_url, review_status")
     .eq("user_id", user.id)
     .maybeSingle();
 

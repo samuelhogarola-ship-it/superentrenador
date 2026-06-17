@@ -48,6 +48,8 @@ export default function MiPerfilPage() {
   const [error, setError] = useState<string | null>(null);
   const [profileSlug, setProfileSlug] = useState<string | null>(null);
 
+  const [reviewStatus, setReviewStatus] = useState<string | null>(null);
+
   const [form, setForm] = useState({
     displayName: "",
     citySlug: "",
@@ -60,6 +62,7 @@ export default function MiPerfilPage() {
     yearsExperience: "",
     priceFrom: "",
     contactInfo: "",
+    photoUrl: "",
   });
 
   useEffect(() => {
@@ -83,6 +86,7 @@ export default function MiPerfilPage() {
 
       if (existing) {
         setProfileSlug(existing.slug as string);
+        setReviewStatus(existing.review_status ?? "pending");
         setForm({
           displayName: existing.display_name as string ?? "",
           citySlug: existing.city_slug as string ?? "",
@@ -95,6 +99,7 @@ export default function MiPerfilPage() {
           yearsExperience: String(existing.years_experience ?? ""),
           priceFrom: String(existing.price_from ?? ""),
           contactInfo: existing.contact_info as string ?? "",
+          photoUrl: existing.photo_url as string ?? "",
         });
       }
 
@@ -137,9 +142,9 @@ export default function MiPerfilPage() {
       years_experience: Number(form.yearsExperience) || 0,
       price_from: Number(form.priceFrom) || 0,
       contact_info: form.contactInfo,
+      photo_url: form.photoUrl || null,
       hidden_contact_hint:
         "El contacto directo se desbloquea para usuarios registrados en el marketplace.",
-      is_published: true,
     };
 
     const supabase = getSupabaseBrowserClient();
@@ -152,6 +157,7 @@ export default function MiPerfilPage() {
     }
 
     setProfileSlug(slug);
+    if (!reviewStatus) setReviewStatus("pending");
     setSaved(true);
     setSaving(false);
     setTimeout(() => setSaved(false), 4000);
@@ -179,7 +185,7 @@ export default function MiPerfilPage() {
           <h1 className="app-title mt-1 text-3xl text-[var(--text)]">Mi perfil público</h1>
         </div>
         <div className="flex items-center gap-3">
-          {profileSlug ? (
+          {profileSlug && reviewStatus === "approved" ? (
             <Link
               href={`/entrenadores/${profileSlug}`}
               target="_blank"
@@ -197,6 +203,18 @@ export default function MiPerfilPage() {
           </button>
         </div>
       </div>
+
+      {reviewStatus === "pending" && profileSlug ? (
+        <div className="rounded-[20px] border border-amber-500/30 bg-amber-500/10 px-5 py-4 text-sm text-amber-700">
+          <p className="font-semibold">Perfil pendiente de revisión</p>
+          <p className="mt-1 font-normal opacity-80">Tu perfil está en cola de aprobación. Lo revisaremos y aparecerá en el marketplace en breve.</p>
+        </div>
+      ) : reviewStatus === "rejected" ? (
+        <div className="rounded-[20px] border border-red-500/30 bg-red-500/10 px-5 py-4 text-sm text-red-700">
+          <p className="font-semibold">Perfil rechazado</p>
+          <p className="mt-1 font-normal opacity-80">Tu perfil no cumple los requisitos. Asegúrate de usar tu nombre real (no nombre comercial) y vuelve a guardar.</p>
+        </div>
+      ) : null}
 
       <form onSubmit={handleSubmit} className="app-surface flex flex-col gap-8 rounded-[32px] p-6 sm:p-8">
         <fieldset className="flex flex-col gap-4">
@@ -269,6 +287,20 @@ export default function MiPerfilPage() {
               />
             </label>
           </div>
+
+          <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--text)]">
+            Foto de perfil (URL pública)
+            <input
+              type="url"
+              value={form.photoUrl}
+              onChange={(e) => setForm((p) => ({ ...p, photoUrl: e.target.value }))}
+              placeholder="https://…/tu-foto.jpg"
+              className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
+            />
+            <span className="text-xs font-normal text-[var(--muted)]">
+              Usa una URL de imagen directa (Google Drive no funciona). Prueba con LinkedIn, Instagram o sube la foto a Imgur/Cloudinary.
+            </span>
+          </label>
 
           <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--text)]">
             Contacto directo (visible solo para usuarios registrados)
@@ -392,11 +424,11 @@ export default function MiPerfilPage() {
           {saved ? (
             <span className="inline-flex items-center gap-2 text-sm font-medium text-emerald-600">
               <CheckCircle size={16} />
-              Perfil publicado correctamente
+              {reviewStatus === "approved" ? "Cambios guardados" : "Perfil enviado, pendiente de revisión"}
             </span>
           ) : null}
 
-          {profileSlug ? (
+          {profileSlug && reviewStatus === "approved" ? (
             <Link
               href={`/entrenadores/${profileSlug}`}
               target="_blank"

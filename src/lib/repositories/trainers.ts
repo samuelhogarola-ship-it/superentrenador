@@ -38,6 +38,8 @@ interface TrainerRow {
   languages: string[];
   hidden_contact_hint: string;
   contact_info: string;
+  photo_url: string | null;
+  review_status: string;
   cities: { name: string; region: string } | null;
 }
 
@@ -74,6 +76,8 @@ function mapTrainer(row: TrainerRow): PublicTrainerProfile {
     languages: row.languages ?? [],
     hiddenContactHint: row.hidden_contact_hint,
     contactInfo: row.contact_info ?? "",
+    photoUrl: row.photo_url ?? null,
+    reviewStatus: row.review_status ?? "pending",
   };
 }
 

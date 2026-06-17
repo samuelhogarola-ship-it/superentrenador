@@ -85,8 +85,10 @@ export type Database = {
           languages: string[]
           long_bio: string
           modalities: string[]
+          photo_url: string | null
           price_from: number
           rating: number
+          review_status: string
           reviews_count: number
           short_bio: string
           slug: string
@@ -107,8 +109,10 @@ export type Database = {
           languages?: string[]
           long_bio: string
           modalities?: string[]
+          photo_url?: string | null
           price_from?: number
           rating?: number
+          review_status?: string
           reviews_count?: number
           short_bio: string
           slug: string
@@ -129,8 +133,10 @@ export type Database = {
           languages?: string[]
           long_bio?: string
           modalities?: string[]
+          photo_url?: string | null
           price_from?: number
           rating?: number
+          review_status?: string
           reviews_count?: number
           short_bio?: string
           slug?: string

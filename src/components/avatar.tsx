@@ -16,6 +16,7 @@ const SIZES = {
 
 interface AvatarProps {
   name: string;
+  photoUrl?: string | null;
   size?: keyof typeof SIZES;
   className?: string;
 }
@@ -34,12 +35,24 @@ function getInitials(name: string) {
   return initials.join("");
 }
 
-export function Avatar({ name, size = "md", className = "" }: AvatarProps) {
-  const gradient = GRADIENTS[hashName(name)];
+export function Avatar({ name, photoUrl, size = "md", className = "" }: AvatarProps) {
+  const baseClass = `shrink-0 rounded-full ring-4 ring-white shadow-[var(--shadow-soft)] ${SIZES[size]} ${className}`;
 
+  if (photoUrl) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={photoUrl}
+        alt={name}
+        className={`${baseClass} object-cover`}
+      />
+    );
+  }
+
+  const gradient = GRADIENTS[hashName(name)];
   return (
     <span
-      className={`flex shrink-0 items-center justify-center rounded-full font-heading font-bold tracking-[-0.04em] text-white shadow-[var(--shadow-soft)] ring-4 ring-white ${SIZES[size]} ${className}`}
+      className={`flex items-center justify-center font-heading font-bold tracking-[-0.04em] text-white ${baseClass}`}
       style={{ background: gradient }}
       aria-hidden="true"
     >

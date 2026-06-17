@@ -59,6 +59,8 @@ export const publicTrainerProfiles: PublicTrainerProfile[] = [
     languages: ["Español", "Inglés"],
     hiddenContactHint: "El contacto directo y la contratación se desbloquean tras registro o pago.",
     contactInfo: "",
+    photoUrl: null,
+    reviewStatus: "approved",
   },
   {
     id: "trainer-laura-moreno",
@@ -82,6 +84,8 @@ export const publicTrainerProfiles: PublicTrainerProfile[] = [
     languages: ["Español"],
     hiddenContactHint: "El perfil público muestra el valor; el contacto se reserva para usuarios registrados.",
     contactInfo: "",
+    photoUrl: null,
+    reviewStatus: "approved",
   },
   {
     id: "trainer-sergio-navarro",
@@ -105,5 +109,7 @@ export const publicTrainerProfiles: PublicTrainerProfile[] = [
     languages: ["Español", "Inglés"],
     hiddenContactHint: "El acceso completo al entrenador se activará en la zona privada premium.",
     contactInfo: "",
+    photoUrl: null,
+    reviewStatus: "approved",
   },
 ];
