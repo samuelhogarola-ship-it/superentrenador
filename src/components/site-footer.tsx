@@ -1,20 +1,93 @@
 import Link from "next/link";
+import { Instagram, Linkedin, ShieldCheck } from "lucide-react";
+import { BrandMark } from "@/components/brand-mark";
+
+const COLUMNS = [
+  {
+    title: "Marketplace",
+    links: [
+      { href: "/entrenadores", label: "Todos los entrenadores" },
+      { href: "/entrenadores?specialty=Hipertrofia", label: "Hipertrofia" },
+      { href: "/entrenadores?specialty=Pérdida de grasa", label: "Pérdida de grasa" },
+    ],
+  },
+  {
+    title: "Ciudades",
+    links: [
+      { href: "/ciudades/fuengirola", label: "Fuengirola" },
+      { href: "/ciudades/malaga", label: "Málaga" },
+      { href: "/ciudades/madrid", label: "Madrid" },
+    ],
+  },
+  {
+    title: "Entrenadores",
+    links: [
+      { href: "/login", label: "Crear perfil público" },
+      { href: "/login", label: "Iniciar sesión" },
+      { href: "/dashboard", label: "Zona privada futura" },
+    ],
+  },
+];
 
 export function SiteFooter() {
   return (
-    <footer className="px-4 pb-24 pt-6 md:px-6 md:pb-8 lg:px-8">
-      <div className="app-surface mx-auto flex max-w-7xl flex-col gap-4 rounded-[32px] px-6 py-8 text-sm text-[var(--muted)] lg:flex-row lg:items-center lg:justify-between lg:px-8">
-        <p>Super Entrenador · Discovery premium para entrenadores personales.</p>
-        <div className="flex flex-wrap items-center gap-4">
-          <Link href="/entrenadores" className="transition-colors hover:text-[var(--text)]">
-            Entrenadores
-          </Link>
-          <Link href="/ciudades/fuengirola" className="transition-colors hover:text-[var(--text)]">
-            Ciudades
-          </Link>
-          <Link href="/login" className="transition-colors hover:text-[var(--text)]">
-            Zona privada futura
-          </Link>
+    <footer className="px-4 pb-24 pt-10 md:px-6 md:pb-10 lg:px-8">
+      <div className="app-surface mx-auto max-w-7xl rounded-[32px] px-6 py-10 sm:px-10">
+        <div className="grid gap-10 lg:grid-cols-[1.1fr_2fr]">
+          <div>
+            <BrandMark />
+            <p className="app-copy mt-5 max-w-xs text-sm">
+              Marketplace premium de entrenadores personales: discovery serio, perfiles públicos y contacto
+              protegido hasta desbloquear premium.
+            </p>
+            <span className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--text)]">
+              <ShieldCheck size={13} className="text-[var(--accent)]" />
+              Perfiles verificados
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+            {COLUMNS.map((column) => (
+              <div key={column.title}>
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--muted)]">{column.title}</p>
+                <div className="mt-4 flex flex-col gap-2.5 text-sm">
+                  {column.links.map((link) => (
+                    <Link
+                      key={link.label}
+                      href={link.href}
+                      className="text-[var(--text)] transition-colors hover:text-[var(--accent)]"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-10 flex flex-col gap-4 border-t border-[var(--line)] pt-6 text-sm text-[var(--muted)] sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} Super Entrenador · Todos los derechos reservados.</p>
+          <div className="flex items-center gap-3">
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Instagram"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--line)] transition-colors hover:border-[var(--line-strong)] hover:text-[var(--accent)]"
+            >
+              <Instagram size={15} />
+            </a>
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="LinkedIn"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--line)] transition-colors hover:border-[var(--line-strong)] hover:text-[var(--accent)]"
+            >
+              <Linkedin size={15} />
+            </a>
+          </div>
         </div>
       </div>
     </footer>

@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
-import { SectionHeading } from "@/components/section-heading";
-import { TrainerCard } from "@/components/trainer-card";
-import { listPublicTrainerProfiles } from "@/lib/repositories/trainers";
+import { Suspense } from "react";
+import { FiltersBar } from "@/components/filters-bar";
+import { Reveal } from "@/components/reveal";
+import { TrainerListItem } from "@/components/trainer-list-item";
+import {
+  listAllModalities,
+  listAllSpecialties,
+  listMarketplaceCities,
+  listPublicTrainerProfiles,
+} from "@/lib/repositories/trainers";
 
 export const metadata: Metadata = {
   title: "Entrenadores personales | Super Entrenador",
@@ -9,23 +16,51 @@ export const metadata: Metadata = {
     "Explora perfiles públicos de entrenadores personales por ciudad, especialidad y formato antes de desbloquear contacto y contratación.",
 };
 
-export default async function TrainersPage() {
-  const trainers = await listPublicTrainerProfiles();
+interface TrainersPageProps {
+  searchParams: Promise<{ specialty?: string; city?: string; modality?: string; sort?: string }>;
+}
+
+export default async function TrainersPage({ searchParams }: TrainersPageProps) {
+  const params = await searchParams;
+  const [trainers, specialties, modalities, cities] = await Promise.all([
+    listPublicTrainerProfiles({
+      specialty: params.specialty,
+      citySlug: params.city,
+      modality: params.modality,
+      sort: params.sort as "rating" | "price-asc" | "price-desc" | undefined,
+    }),
+    listAllSpecialties(),
+    listAllModalities(),
+    listMarketplaceCities(),
+  ]);
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8 lg:px-8">
-      <section className="app-surface rounded-[36px] px-6 py-8 sm:px-8 sm:py-10">
-        <SectionHeading
-          eyebrow="Marketplace"
-          title="Perfiles publicos listos para descubrir y comparar"
-          body="El sistema sigue el patron de Saulo: superficie limpia, lectura rapida y navegacion persistente. Aqui el usuario entra, compara y decide sin ruido."
-        />
+      <section className="app-surface rounded-[32px] px-6 py-7 sm:px-8">
+        <p className="app-kicker">Marketplace</p>
+        <h1 className="app-title mt-2 text-3xl text-[var(--text)] sm:text-4xl">
+          {trainers.length} entrenador{trainers.length === 1 ? "" : "es"} disponible{trainers.length === 1 ? "" : "s"}
+        </h1>
+        <p className="app-copy mt-2 max-w-2xl text-sm">
+          Filtra por especialidad, ciudad o modalidad y compara perfiles reales antes de desbloquear el contacto.
+        </p>
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-        {trainers.map((trainer) => (
-          <TrainerCard key={trainer.id} trainer={trainer} />
+      <Suspense fallback={null}>
+        <FiltersBar specialties={specialties} modalities={modalities} cities={cities} basePath="/entrenadores" />
+      </Suspense>
+
+      <div className="grid gap-4">
+        {trainers.map((trainer, index) => (
+          <Reveal key={trainer.id} delay={Math.min(index, 6) * 60}>
+            <TrainerListItem trainer={trainer} />
+          </Reveal>
         ))}
+        {trainers.length === 0 ? (
+          <div className="app-surface rounded-[26px] p-8 text-center text-sm text-[var(--muted)]">
+            No hay entrenadores que coincidan con esos filtros todavía. Prueba a quitar alguno.
+          </div>
+        ) : null}
       </div>
     </main>
   );

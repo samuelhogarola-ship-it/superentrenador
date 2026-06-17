@@ -46,6 +46,12 @@ export function SiteHeader() {
           <div className="hidden items-center gap-3 md:flex">
             <Link
               href="/login"
+              className="rounded-full px-4 py-2 text-sm font-semibold text-[var(--muted)] transition-colors hover:text-[var(--text)]"
+            >
+              Hazte entrenador
+            </Link>
+            <Link
+              href="/login"
               className="rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--line-strong)]"
             >
               Iniciar sesión

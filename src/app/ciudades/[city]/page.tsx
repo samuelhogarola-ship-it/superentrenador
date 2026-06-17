@@ -1,11 +1,21 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import { FiltersBar } from "@/components/filters-bar";
+import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
-import { TrainerCard } from "@/components/trainer-card";
-import { getMarketplaceCity, listMarketplaceCities, listTrainerProfilesByCity } from "@/lib/repositories/trainers";
+import { TrainerListItem } from "@/components/trainer-list-item";
+import {
+  getMarketplaceCity,
+  listAllModalities,
+  listAllSpecialties,
+  listMarketplaceCities,
+  listTrainerProfilesByCity,
+} from "@/lib/repositories/trainers";
 
 interface CityPageProps {
   params: Promise<{ city: string }>;
+  searchParams: Promise<{ specialty?: string; modality?: string; sort?: string }>;
 }
 
 export async function generateStaticParams() {
@@ -32,15 +42,25 @@ export async function generateMetadata({ params }: CityPageProps): Promise<Metad
   };
 }
 
-export default async function CityPage({ params }: CityPageProps) {
+export default async function CityPage({ params, searchParams }: CityPageProps) {
   const { city } = await params;
+  const search = await searchParams;
   const currentCity = await getMarketplaceCity(city);
 
   if (!currentCity) {
     notFound();
   }
 
-  const trainers = await listTrainerProfilesByCity(currentCity.slug);
+  const [trainers, specialties, modalities, cities] = await Promise.all([
+    listTrainerProfilesByCity(currentCity.slug, {
+      specialty: search.specialty,
+      modality: search.modality,
+      sort: search.sort as "rating" | "price-asc" | "price-desc" | undefined,
+    }),
+    listAllSpecialties(),
+    listAllModalities(),
+    listMarketplaceCities(),
+  ]);
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8 lg:px-8">
@@ -52,10 +72,27 @@ export default async function CityPage({ params }: CityPageProps) {
         />
       </section>
 
-      <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-        {trainers.map((trainer) => (
-          <TrainerCard key={trainer.id} trainer={trainer} />
+      <Suspense fallback={null}>
+        <FiltersBar
+          specialties={specialties}
+          modalities={modalities}
+          cities={cities}
+          basePath={`/ciudades/${currentCity.slug}`}
+          lockCity
+        />
+      </Suspense>
+
+      <div className="grid gap-4">
+        {trainers.map((trainer, index) => (
+          <Reveal key={trainer.id} delay={Math.min(index, 6) * 60}>
+            <TrainerListItem trainer={trainer} />
+          </Reveal>
         ))}
+        {trainers.length === 0 ? (
+          <div className="app-surface rounded-[26px] p-8 text-center text-sm text-[var(--muted)]">
+            Todavía no hay entrenadores con esos filtros en {currentCity.name}.
+          </div>
+        ) : null}
       </div>
     </main>
   );
