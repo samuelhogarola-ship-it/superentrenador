@@ -1,10 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, MapPinned, UserRound } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ArrowRight, LayoutDashboard, MapPinned, UserRound } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { BrandMark } from "@/components/brand-mark";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { signOut } from "@/lib/auth";
 
 const navItems = [
   { href: "/entrenadores", label: "Entrenadores", icon: UserRound },
@@ -14,6 +17,30 @@ const navItems = [
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+
+    supabase.auth.getSession().then(({ data }) => {
+      setLoggedIn(!!data.session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setLoggedIn(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  async function handleSignOut() {
+    await signOut();
+    router.push("/");
+    router.refresh();
+  }
 
   return (
     <>
@@ -44,18 +71,38 @@ export function SiteHeader() {
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
-            <Link
-              href="/login"
-              className="rounded-full px-4 py-2 text-sm font-semibold text-[var(--muted)] transition-colors hover:text-[var(--text)]"
-            >
-              Hazte entrenador
-            </Link>
-            <Link
-              href="/login"
-              className="rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--line-strong)]"
-            >
-              Iniciar sesión
-            </Link>
+            {loggedIn ? (
+              <>
+                <Link
+                  href="/mi-perfil"
+                  className="inline-flex items-center gap-2 rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--line-strong)]"
+                >
+                  <LayoutDashboard size={15} />
+                  Mi perfil
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="rounded-full px-4 py-2 text-sm font-semibold text-[var(--muted)] transition-colors hover:text-[var(--text)]"
+                >
+                  Cerrar sesión
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/registro"
+                  className="rounded-full px-4 py-2 text-sm font-semibold text-[var(--muted)] transition-colors hover:text-[var(--text)]"
+                >
+                  Hazte entrenador
+                </Link>
+                <Link
+                  href="/login"
+                  className="rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--line-strong)]"
+                >
+                  Iniciar sesión
+                </Link>
+              </>
+            )}
             <Link
               href="/entrenadores"
               className="inline-flex items-center gap-2 rounded-full bg-[var(--text)] px-4 py-2 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
@@ -66,13 +113,23 @@ export function SiteHeader() {
           </div>
 
           <div className="md:hidden">
-            <Link
-              href="/entrenadores"
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--text)] px-4 py-2 text-sm font-semibold text-white"
-            >
-              Ver PT
-              <ArrowRight size={15} />
-            </Link>
+            {loggedIn ? (
+              <Link
+                href="/mi-perfil"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--text)] px-4 py-2 text-sm font-semibold text-white"
+              >
+                <LayoutDashboard size={15} />
+                Mi perfil
+              </Link>
+            ) : (
+              <Link
+                href="/entrenadores"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--text)] px-4 py-2 text-sm font-semibold text-white"
+              >
+                Ver PT
+                <ArrowRight size={15} />
+              </Link>
+            )}
           </div>
         </div>
       </header>

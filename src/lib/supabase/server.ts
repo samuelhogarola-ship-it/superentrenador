@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import type { Database } from "@/lib/supabase/database.types";
 
 export function getSupabaseServerClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -8,7 +9,7 @@ export function getSupabaseServerClient() {
     throw new Error("Faltan variables públicas de Supabase para el cliente de servidor.");
   }
 
-  return createClient(url, anonKey, {
+  return createClient<Database>(url, anonKey, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
