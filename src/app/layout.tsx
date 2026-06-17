@@ -25,10 +25,11 @@ export const metadata: Metadata = {
   applicationName: siteConfig.name,
   icons: {
     icon: [
-      { url: "/favicon.ico" },
-      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-64.png", sizes: "64x64", type: "image/png" },
+      { url: "/logo.png", sizes: "512x512", type: "image/png" },
     ],
-    apple: "/favicon.svg",
+    apple: "/logo.png",
   },
   alternates: {
     canonical: "/",

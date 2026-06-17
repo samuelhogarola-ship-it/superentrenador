@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 interface BrandMarkProps {
@@ -6,11 +7,18 @@ interface BrandMarkProps {
 }
 
 export function BrandMark({ href = "/", compact = false }: BrandMarkProps) {
-  const content = (
-    <span className={`flex items-center gap-3 ${compact ? "gap-2" : ""}`}>
-      <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--text)] text-sm font-black tracking-[0.2em] text-white shadow-[var(--shadow-soft)]">
-        SE
-      </span>
+  const size = compact ? 36 : 44;
+
+  return (
+    <Link href={href} className="flex items-center gap-2.5 transition-opacity hover:opacity-90">
+      <Image
+        src="/logo.png"
+        alt="Super Entrenador"
+        width={size}
+        height={size}
+        className="rounded-xl"
+        priority
+      />
       <span className="flex flex-col leading-none">
         <strong className="font-heading text-[1.35rem] tracking-[-0.08em] text-[var(--text)]">
           Super
@@ -19,12 +27,6 @@ export function BrandMark({ href = "/", compact = false }: BrandMarkProps) {
           Entrenador
         </strong>
       </span>
-    </span>
-  );
-
-  return (
-    <Link href={href} className="transition-opacity hover:opacity-90">
-      {content}
     </Link>
   );
 }
