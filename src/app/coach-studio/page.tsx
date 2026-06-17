@@ -1,8 +1,8 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { CheckCircle, Dumbbell, Salad, Users, ExternalLink, Loader2, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { CheckCircle, Dumbbell, ExternalLink, Loader2, Salad, Sparkles, Users } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 const FEATURES = [
@@ -41,20 +41,14 @@ export default function CoachStudioPage() {
 
 function CoachStudioContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [status, setStatus] = useState<Status>("loading");
-  const [paying, setPaying] = useState(false);
-
-  const isSuccess = searchParams.get("success") === "1";
 
   useEffect(() => {
-    if (isSuccess) {
-      return;
-    }
-
     async function load() {
       const supabase = getSupabaseBrowserClient();
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       if (!user) {
         setStatus("unauthenticated");
@@ -76,53 +70,7 @@ function CoachStudioContent() {
     }
 
     load();
-  }, [isSuccess]);
-
-  async function handleSubscribe() {
-    setPaying(true);
-    const supabase = getSupabaseBrowserClient();
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
-      router.push("/login");
-      return;
-    }
-
-    const res = await fetch("/api/stripe/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ accessToken: session.access_token }),
-    });
-
-    const { url, error } = await res.json();
-    if (error || !url) {
-      setPaying(false);
-      alert("Error al iniciar el pago. Inténtalo de nuevo.");
-      return;
-    }
-
-    window.location.href = url;
-  }
-
-  if (isSuccess) {
-    return (
-      <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center justify-center gap-5 px-4 py-20 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10">
-          <CheckCircle size={32} className="text-emerald-500" />
-        </div>
-        <h1 className="font-heading text-2xl text-[var(--text)]">¡Pago completado!</h1>
-        <p className="app-copy max-w-md">
-          Estamos activando tu acceso a Coach Studio. En unos segundos ya podrás entrar.
-        </p>
-        <button
-          onClick={() => router.push("/coach-studio")}
-          className="rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-semibold text-[var(--ink)]"
-        >
-          Comprobar acceso
-        </button>
-      </main>
-    );
-  }
+  }, []);
 
   if (status === "loading") {
     return (
@@ -175,7 +123,7 @@ function CoachStudioContent() {
           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[var(--accent)] shadow-[var(--shadow-soft)]">
             <Sparkles size={26} className="text-[var(--ink)]" />
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <h2 className="font-heading text-lg text-[var(--text)]">Acceder a Coach Studio</h2>
             <p className="mt-0.5 text-sm text-[var(--muted)]">
               Rutinas, dietas y gestión de clientes en un solo lugar.
@@ -214,7 +162,8 @@ function CoachStudioContent() {
         <p className="app-kicker">Para entrenadores</p>
         <h1 className="app-title mt-2 text-3xl text-[var(--text)]">Coach Studio</h1>
         <p className="app-copy mx-auto mt-3 max-w-lg text-base">
-          Tu área de trabajo profesional. Crea rutinas, planes de nutrición y gestiona a todos tus clientes desde un único panel.
+          Tu área de trabajo profesional. Rutinas, planes de nutrición y gestión de clientes desde
+          un único panel.
         </p>
       </div>
 
@@ -236,7 +185,7 @@ function CoachStudioContent() {
         </div>
 
         <div>
-          <p className="text-4xl font-heading text-[var(--text)]">
+          <p className="font-heading text-4xl text-[var(--text)]">
             49<span className="text-xl">€</span>
             <span className="text-lg font-normal text-[var(--muted)]">/mes</span>
           </p>
@@ -244,7 +193,12 @@ function CoachStudioContent() {
         </div>
 
         <ul className="flex w-full flex-col gap-2 text-left">
-          {["Rutinas personalizadas ilimitadas", "Planes de nutrición", "Gestión de clientes", "Soporte prioritario"].map((item) => (
+          {[
+            "Rutinas personalizadas ilimitadas",
+            "Planes de nutrición",
+            "Gestión de clientes",
+            "Soporte prioritario",
+          ].map((item) => (
             <li key={item} className="flex items-center gap-2.5 text-sm text-[var(--text)]">
               <CheckCircle size={15} className="shrink-0 text-emerald-500" />
               {item}
@@ -252,17 +206,15 @@ function CoachStudioContent() {
           ))}
         </ul>
 
-        <button
-          onClick={handleSubscribe}
-          disabled={paying}
-          className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3.5 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
+        <a
+          href="mailto:samuel.hogarola@gmail.com?subject=Quiero%20activar%20Coach%20Studio"
+          className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3.5 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
         >
-          {paying ? <Loader2 size={16} className="animate-spin" /> : null}
-          {paying ? "Redirigiendo…" : "Suscribirse ahora"}
-        </button>
+          Contactar para activar
+        </a>
 
         <p className="text-xs text-[var(--muted)]">
-          Pago seguro con Stripe. Recibirás un email de confirmación.
+          Te activamos el acceso en menos de 24 h.
         </p>
       </div>
     </main>
