@@ -20,31 +20,6 @@ export function TrainerListItemSkeleton() {
   );
 }
 
-export function TrainerCardSkeleton() {
-  return (
-    <div className="app-surface flex flex-col rounded-[30px] p-6">
-      <div className="flex items-center gap-4">
-        <div className="skeleton h-14 w-14 shrink-0 rounded-full" />
-        <div className="space-y-2">
-          <div className="skeleton h-4 w-32" />
-          <div className="skeleton h-3 w-24" />
-        </div>
-      </div>
-      <div className="mt-5 space-y-2">
-        <div className="skeleton h-4 w-full" />
-        <div className="skeleton h-4 w-3/4" />
-      </div>
-      <div className="mt-4 flex gap-2">
-        <div className="skeleton h-6 w-20 rounded-full" />
-        <div className="skeleton h-6 w-20 rounded-full" />
-      </div>
-      <div className="mt-6 flex items-center justify-between border-t border-[var(--line)] pt-5">
-        <div className="skeleton h-7 w-16" />
-        <div className="skeleton h-9 w-24 rounded-full" />
-      </div>
-    </div>
-  );
-}
 
 export function FiltersBarSkeleton() {
   return (

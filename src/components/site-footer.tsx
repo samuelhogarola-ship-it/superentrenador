@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Instagram, Linkedin, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 
 const COLUMNS = [
@@ -24,7 +24,7 @@ const COLUMNS = [
     links: [
       { href: "/login", label: "Crear perfil público" },
       { href: "/login", label: "Iniciar sesión" },
-      { href: "/dashboard", label: "Zona privada futura" },
+      { href: "/coach-studio", label: "Coach Studio" },
     ],
   },
 ];
@@ -70,26 +70,6 @@ export function SiteFooter() {
           <div className="flex flex-wrap items-center gap-4">
             <p>© {new Date().getFullYear()} Super Entrenador · Todos los derechos reservados.</p>
             <Link href="/politica-privacidad" className="hover:text-[var(--accent)]">Política de privacidad</Link>
-          </div>
-          <div className="flex items-center gap-3">
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Instagram"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--line)] transition-colors hover:border-[var(--line-strong)] hover:text-[var(--accent)]"
-            >
-              <Instagram size={15} />
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="LinkedIn"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--line)] transition-colors hover:border-[var(--line-strong)] hover:text-[var(--accent)]"
-            >
-              <Linkedin size={15} />
-            </a>
           </div>
         </div>
       </div>

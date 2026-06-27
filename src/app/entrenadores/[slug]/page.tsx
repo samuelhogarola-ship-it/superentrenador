@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BadgeCheck, ChevronRight, MapPin, Quote } from "lucide-react";
+import { BadgeCheck, ChevronRight, MapPin } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Avatar } from "@/components/avatar";
 import { ContactPanel } from "@/components/contact-panel";
@@ -137,28 +137,19 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
         </section>
       </Reveal>
 
-      <Reveal>
-        <section className="app-surface rounded-[30px] p-6 sm:p-8">
-          <p className="app-kicker">Opiniones</p>
-          <h2 className="app-title mt-2 text-3xl text-[var(--text)]">
-            {trainer.rating} de 5 · {trainer.reviewsCount} opiniones verificadas
-          </h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-[24px] border border-[var(--line)] bg-[var(--bg-soft)] p-5">
-              <Quote size={18} className="text-[var(--accent)]" />
-              <p className="mt-3 text-sm text-[var(--text)]">
-                &ldquo;Las opiniones completas se desbloquean junto al contacto directo en la zona premium.&rdquo;
-              </p>
-            </div>
-            <div className="rounded-[24px] border border-[var(--line)] bg-[var(--bg-soft)] p-5">
-              <Quote size={18} className="text-[var(--accent)]" />
-              <p className="mt-3 text-sm text-[var(--text)]">
-                &ldquo;Inicia sesión para ver el detalle de cada reseña y contactar con {trainer.displayName}.&rdquo;
-              </p>
-            </div>
-          </div>
-        </section>
-      </Reveal>
+      {trainer.reviewsCount > 0 ? (
+        <Reveal>
+          <section className="app-surface rounded-[30px] p-6 sm:p-8">
+            <p className="app-kicker">Opiniones</p>
+            <h2 className="app-title mt-2 text-3xl text-[var(--text)]">
+              {trainer.rating} de 5 · {trainer.reviewsCount} opiniones verificadas
+            </h2>
+            <p className="app-copy mt-4 text-sm">
+              Inicia sesión para ver el detalle de cada reseña y contactar con {trainer.displayName}.
+            </p>
+          </section>
+        </Reveal>
+      ) : null}
     </main>
   );
 }
