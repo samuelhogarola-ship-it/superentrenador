@@ -7,21 +7,19 @@ import { ArrowRight, CheckCircle, ExternalLink, Loader } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getTrainerProfile, signOut } from "@/lib/auth";
 
-const ALL_SPECIALTIES = [
-  "Hipertrofia",
-  "Pérdida de grasa",
-  "Seguimiento online",
-  "Planes híbridos",
-  "Fuerza femenina",
-  "Posparto",
-  "Entrenamiento funcional",
-  "Rendimiento",
-  "Preparación física",
-  "Fuerza aplicada",
+const FALLBACK_SPECIALTIES = [
+  "Hipertrofia", "Pérdida de grasa", "Seguimiento online", "Planes híbridos",
+  "Fuerza femenina", "Posparto", "Entrenamiento funcional", "Rendimiento",
+  "Preparación física", "Fuerza aplicada",
 ];
+const FALLBACK_MODALITIES = ["Presencial", "Online", "Híbrido"];
+const FALLBACK_LANGUAGES = ["Alemán", "Español", "Francés", "Inglés", "Italiano", "Portugués"];
 
-const ALL_MODALITIES = ["Presencial", "Online", "Híbrido"];
-const ALL_LANGUAGES = ["Español", "Inglés", "Alemán", "Francés", "Italiano", "Portugués"];
+function uniqueSorted(rows: Record<string, unknown>[], key: string): string[] {
+  const set = new Set<string>();
+  rows.forEach((r) => ((r[key] as string[]) ?? []).forEach((v) => set.add(v)));
+  return Array.from(set).sort();
+}
 
 interface City {
   slug: string;
@@ -43,6 +41,9 @@ export default function MiPerfilPage() {
   const [authLoading, setAuthLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [cities, setCities] = useState<City[]>([]);
+  const [allSpecialties, setAllSpecialties] = useState<string[]>(FALLBACK_SPECIALTIES);
+  const [allModalities, setAllModalities] = useState<string[]>(FALLBACK_MODALITIES);
+  const [allLanguages, setAllLanguages] = useState<string[]>(FALLBACK_LANGUAGES);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,12 +78,24 @@ export default function MiPerfilPage() {
 
       setUserId(user.id);
 
-      const [citiesRes, existing] = await Promise.all([
+      const [citiesRes, specialtiesRes, modalitiesRes, languagesRes, existing] = await Promise.all([
         supabase.from("cities").select("slug, name, region").order("name"),
+        supabase.from("trainer_profiles").select("specialties").eq("is_published", true),
+        supabase.from("trainer_profiles").select("modalities").eq("is_published", true),
+        supabase.from("trainer_profiles").select("languages").eq("is_published", true),
         getTrainerProfile(),
       ]);
 
       if (citiesRes.data) setCities(citiesRes.data as City[]);
+
+      const specs = uniqueSorted(specialtiesRes.data ?? [], "specialties");
+      if (specs.length > 0) setAllSpecialties(specs);
+
+      const mods = uniqueSorted(modalitiesRes.data ?? [], "modalities");
+      if (mods.length > 0) setAllModalities(mods);
+
+      const langs = uniqueSorted(languagesRes.data ?? [], "languages");
+      if (langs.length > 0) setAllLanguages(langs);
 
       if (existing) {
         setProfileSlug(existing.slug as string);
@@ -348,7 +361,7 @@ export default function MiPerfilPage() {
         <fieldset className="flex flex-col gap-3">
           <legend className="text-base font-semibold text-[var(--text)]">Especialidades</legend>
           <div className="flex flex-wrap gap-2">
-            {ALL_SPECIALTIES.map((s) => (
+            {allSpecialties.map((s) => (
               <button
                 key={s}
                 type="button"
@@ -369,7 +382,7 @@ export default function MiPerfilPage() {
           <fieldset className="flex flex-col gap-3">
             <legend className="text-base font-semibold text-[var(--text)]">Modalidades</legend>
             <div className="flex flex-wrap gap-2">
-              {ALL_MODALITIES.map((m) => (
+              {allModalities.map((m) => (
                 <button
                   key={m}
                   type="button"
@@ -389,7 +402,7 @@ export default function MiPerfilPage() {
           <fieldset className="flex flex-col gap-3">
             <legend className="text-base font-semibold text-[var(--text)]">Idiomas</legend>
             <div className="flex flex-wrap gap-2">
-              {ALL_LANGUAGES.map((l) => (
+              {allLanguages.map((l) => (
                 <button
                   key={l}
                   type="button"

@@ -207,7 +207,7 @@ function CoachStudioContent() {
         </ul>
 
         <a
-          href="mailto:samuel.hogarola@gmail.com?subject=Quiero%20activar%20Coach%20Studio"
+          href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "soporte@superentrenador.com"}?subject=Quiero%20activar%20Coach%20Studio`}
           className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3.5 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
         >
           Contactar para activar
