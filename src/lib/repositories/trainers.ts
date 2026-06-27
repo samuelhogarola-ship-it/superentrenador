@@ -20,13 +20,15 @@ interface CityRow {
   seo_description: string;
 }
 
-// contact_info is intentionally excluded — it must never be served to anon users.
-// The column is fetched client-side only after the user authenticates (ContactPanel).
+// Rows returned by the trainer_profiles_public view (flat shape — cities joined).
+// contact_info, stripe_customer_id, user_id are excluded at the view level.
 interface TrainerRow {
   id: string;
   slug: string;
   display_name: string;
   city_slug: string;
+  city_name: string | null;
+  city_region: string | null;
   headline: string;
   short_bio: string;
   long_bio: string;
@@ -41,15 +43,14 @@ interface TrainerRow {
   hidden_contact_hint: string;
   photo_url: string | null;
   review_status: string;
-  cities: { name: string; region: string } | null;
 }
 
-// Explicit column list — contact_info is omitted on purpose.
-const PUBLIC_TRAINER_COLUMNS =
-  "id, slug, display_name, city_slug, headline, short_bio, long_bio, " +
-  "specialties, verified, years_experience, rating, reviews_count, price_from, " +
-  "modalities, languages, hidden_contact_hint, photo_url, review_status, " +
-  "cities(name, region)";
+// Columns to fetch from trainer_profiles_public view (no nested selects needed).
+const PUBLIC_VIEW_COLUMNS =
+  "id, slug, display_name, city_slug, city_name, city_region, " +
+  "headline, short_bio, long_bio, specialties, verified, years_experience, " +
+  "rating, reviews_count, price_from, modalities, languages, " +
+  "hidden_contact_hint, photo_url, review_status";
 
 function mapCity(row: CityRow): MarketplaceCity {
   return {
@@ -69,8 +70,8 @@ function mapTrainer(row: TrainerRow): PublicTrainerProfile {
     slug: row.slug,
     displayName: row.display_name,
     citySlug: row.city_slug,
-    city: row.cities?.name ?? row.city_slug,
-    region: row.cities?.region ?? "",
+    city: row.city_name ?? row.city_slug,
+    region: row.city_region ?? "",
     headline: row.headline,
     shortBio: row.short_bio,
     longBio: row.long_bio,
@@ -153,9 +154,8 @@ export async function listPublicTrainerProfiles(filters: TrainerFilters = {}): P
 
   const supabase = getSupabaseServerClient();
   let query = supabase
-    .from("trainer_profiles")
-    .select(PUBLIC_TRAINER_COLUMNS)
-    .eq("is_published", true);
+    .from("trainer_profiles_public")
+    .select(PUBLIC_VIEW_COLUMNS);
 
   if (filters.specialty) {
     query = query.contains("specialties", [filters.specialty]);
@@ -201,10 +201,9 @@ export async function getPublicTrainerProfileBySlug(slug: string): Promise<Publi
 
   const supabase = getSupabaseServerClient();
   const { data, error } = await supabase
-    .from("trainer_profiles")
-    .select(PUBLIC_TRAINER_COLUMNS)
+    .from("trainer_profiles_public")
+    .select(PUBLIC_VIEW_COLUMNS)
     .eq("slug", slug)
-    .eq("is_published", true)
     .maybeSingle();
 
   if (error || !data) {
@@ -225,9 +224,8 @@ export async function listAllSpecialties(): Promise<string[]> {
 
   const supabase = getSupabaseServerClient();
   const { data } = await supabase
-    .from("trainer_profiles")
-    .select("specialties")
-    .eq("is_published", true);
+    .from("trainer_profiles_public")
+    .select("specialties");
 
   if (!data) return [];
 
@@ -246,9 +244,8 @@ export async function listAllModalities(): Promise<string[]> {
 
   const supabase = getSupabaseServerClient();
   const { data } = await supabase
-    .from("trainer_profiles")
-    .select("modalities")
-    .eq("is_published", true);
+    .from("trainer_profiles_public")
+    .select("modalities");
 
   if (!data) return [];
 
@@ -273,13 +270,11 @@ export async function getMarketplaceStats() {
 
   const [countRes, aggregateRes, citiesCountRes] = await Promise.all([
     supabase
-      .from("trainer_profiles")
-      .select("*", { count: "exact", head: true })
-      .eq("is_published", true),
+      .from("trainer_profiles_public")
+      .select("*", { count: "exact", head: true }),
     supabase
-      .from("trainer_profiles")
-      .select("reviews_count, rating")
-      .eq("is_published", true),
+      .from("trainer_profiles_public")
+      .select("reviews_count, rating"),
     supabase
       .from("cities")
       .select("*", { count: "exact", head: true }),
