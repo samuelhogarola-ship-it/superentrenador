@@ -178,7 +178,41 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      trainer_profiles_public: {
+        Row: {
+          city_name: string | null
+          city_region: string | null
+          city_slug: string | null
+          created_at: string | null
+          display_name: string | null
+          headline: string | null
+          hidden_contact_hint: string | null
+          id: string | null
+          is_published: boolean | null
+          languages: string[] | null
+          long_bio: string | null
+          modalities: string[] | null
+          photo_url: string | null
+          price_from: number | null
+          rating: number | null
+          review_status: string | null
+          reviews_count: number | null
+          short_bio: string | null
+          slug: string | null
+          specialties: string[] | null
+          verified: boolean | null
+          years_experience: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trainer_profiles_city_slug_fkey"
+            columns: ["city_slug"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["slug"]
+          },
+        ]
+      }
     }
     Functions: {
       [_ in never]: never
