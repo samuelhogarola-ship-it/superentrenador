@@ -10,9 +10,9 @@ interface ContactPanelProps {
   yearsExperience: number;
   modalities: string[];
   languages: string[];
-  contactInfo: string;
   hiddenContactHint: string;
   trainerName: string;
+  trainerSlug: string;
 }
 
 export function ContactPanel({
@@ -20,26 +20,53 @@ export function ContactPanel({
   yearsExperience,
   modalities,
   languages,
-  contactInfo,
   hiddenContactHint,
   trainerName,
+  trainerSlug,
 }: ContactPanelProps) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [contactInfo, setContactInfo] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
-    supabase.auth.getUser().then(({ data }) => {
-      setLoggedIn(Boolean(data.user));
+
+    async function checkAndFetch() {
+      const { data: { user } } = await supabase.auth.getUser();
+      setLoggedIn(Boolean(user));
       setChecked(true);
-    });
+
+      if (user) {
+        const { data } = await supabase
+          .from("trainer_profiles")
+          .select("contact_info")
+          .eq("slug", trainerSlug)
+          .maybeSingle();
+        setContactInfo((data as { contact_info: string } | null)?.contact_info ?? "");
+      }
+    }
+
+    checkAndFetch();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
-      setLoggedIn(Boolean(session));
+      const isLoggedIn = Boolean(session);
+      setLoggedIn(isLoggedIn);
+      if (!isLoggedIn) {
+        setContactInfo(null);
+      } else {
+        supabase
+          .from("trainer_profiles")
+          .select("contact_info")
+          .eq("slug", trainerSlug)
+          .maybeSingle()
+          .then(({ data }) => {
+            setContactInfo((data as { contact_info: string } | null)?.contact_info ?? "");
+          });
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [trainerSlug]);
 
   return (
     <div className="rounded-[30px] border border-[var(--line)] bg-[var(--bg-soft)] p-6">
@@ -75,7 +102,7 @@ export function ContactPanel({
               <span className="text-sm font-semibold text-[var(--text)]">{contactInfo}</span>
             </div>
           </>
-        ) : loggedIn && !contactInfo ? (
+        ) : loggedIn && contactInfo === "" ? (
           <>
             <p className="app-kicker">Contacto</p>
             <p className="mt-3 text-sm text-[var(--muted)]">

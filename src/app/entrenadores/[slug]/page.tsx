@@ -113,9 +113,9 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
             yearsExperience={trainer.yearsExperience}
             modalities={trainer.modalities}
             languages={trainer.languages}
-            contactInfo={trainer.contactInfo}
             hiddenContactHint={trainer.hiddenContactHint}
             trainerName={trainer.displayName}
+            trainerSlug={trainer.slug}
           />
         </aside>
       </section>
