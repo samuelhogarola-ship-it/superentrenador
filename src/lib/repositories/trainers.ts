@@ -20,6 +20,8 @@ interface CityRow {
   seo_description: string;
 }
 
+// contact_info is intentionally excluded — it must never be served to anon users.
+// The column is fetched client-side only after the user authenticates (ContactPanel).
 interface TrainerRow {
   id: string;
   slug: string;
@@ -37,11 +39,17 @@ interface TrainerRow {
   modalities: string[];
   languages: string[];
   hidden_contact_hint: string;
-  contact_info: string;
   photo_url: string | null;
   review_status: string;
   cities: { name: string; region: string } | null;
 }
+
+// Explicit column list — contact_info is omitted on purpose.
+const PUBLIC_TRAINER_COLUMNS =
+  "id, slug, display_name, city_slug, headline, short_bio, long_bio, " +
+  "specialties, verified, years_experience, rating, reviews_count, price_from, " +
+  "modalities, languages, hidden_contact_hint, photo_url, review_status, " +
+  "cities(name, region)";
 
 function mapCity(row: CityRow): MarketplaceCity {
   return {
@@ -75,7 +83,6 @@ function mapTrainer(row: TrainerRow): PublicTrainerProfile {
     modalities: row.modalities ?? [],
     languages: row.languages ?? [],
     hiddenContactHint: row.hidden_contact_hint,
-    contactInfo: row.contact_info ?? "",
     photoUrl: row.photo_url ?? null,
     reviewStatus: row.review_status ?? "pending",
   };
@@ -116,8 +123,8 @@ export async function listMarketplaceCities(): Promise<MarketplaceCity[]> {
   const { data, error } = await supabase.from("cities").select("*").order("name");
 
   if (error || !data) {
-    console.error("[supabase] listMarketplaceCities failed, falling back to static data", error);
-    return marketplaceCities;
+    console.error("[supabase] listMarketplaceCities failed", error);
+    return [];
   }
 
   return (data as CityRow[]).map(mapCity);
@@ -132,7 +139,8 @@ export async function getMarketplaceCity(slug: string): Promise<MarketplaceCity 
   const { data, error } = await supabase.from("cities").select("*").eq("slug", slug).maybeSingle();
 
   if (error || !data) {
-    return marketplaceCities.find((city) => city.slug === slug) ?? null;
+    console.error("[supabase] getMarketplaceCity failed", error);
+    return null;
   }
 
   return mapCity(data as CityRow);
@@ -146,7 +154,7 @@ export async function listPublicTrainerProfiles(filters: TrainerFilters = {}): P
   const supabase = getSupabaseServerClient();
   let query = supabase
     .from("trainer_profiles")
-    .select("*, cities(name, region)")
+    .select(PUBLIC_TRAINER_COLUMNS)
     .eq("is_published", true);
 
   if (filters.specialty) {
@@ -170,8 +178,8 @@ export async function listPublicTrainerProfiles(filters: TrainerFilters = {}): P
   const { data, error } = await query;
 
   if (error || !data) {
-    console.error("[supabase] listPublicTrainerProfiles failed, falling back to static data", error);
-    return filterStaticTrainers(filters);
+    console.error("[supabase] listPublicTrainerProfiles failed", error);
+    return [];
   }
 
   return (data as unknown as TrainerRow[]).map(mapTrainer);
@@ -194,43 +202,99 @@ export async function getPublicTrainerProfileBySlug(slug: string): Promise<Publi
   const supabase = getSupabaseServerClient();
   const { data, error } = await supabase
     .from("trainer_profiles")
-    .select("*, cities(name, region)")
+    .select(PUBLIC_TRAINER_COLUMNS)
     .eq("slug", slug)
     .eq("is_published", true)
     .maybeSingle();
 
   if (error || !data) {
-    return publicTrainerProfiles.find((trainer) => trainer.slug === slug) ?? null;
+    console.error("[supabase] getPublicTrainerProfileBySlug failed", error);
+    return null;
   }
 
   return mapTrainer(data as unknown as TrainerRow);
 }
 
+/** Only fetches the `specialties` column — avoids loading full profiles. */
 export async function listAllSpecialties(): Promise<string[]> {
-  const trainers = await listPublicTrainerProfiles();
-  const specialties = new Set<string>();
-  trainers.forEach((trainer) => trainer.specialties.forEach((specialty) => specialties.add(specialty)));
-  return Array.from(specialties).sort();
+  if (!hasSupabaseEnv()) {
+    const set = new Set<string>();
+    publicTrainerProfiles.forEach((t) => t.specialties.forEach((s) => set.add(s)));
+    return Array.from(set).sort();
+  }
+
+  const supabase = getSupabaseServerClient();
+  const { data } = await supabase
+    .from("trainer_profiles")
+    .select("specialties")
+    .eq("is_published", true);
+
+  if (!data) return [];
+
+  const set = new Set<string>();
+  data.forEach((row) => (row.specialties as string[] ?? []).forEach((s) => set.add(s)));
+  return Array.from(set).sort();
 }
 
+/** Only fetches the `modalities` column — avoids loading full profiles. */
 export async function listAllModalities(): Promise<string[]> {
-  const trainers = await listPublicTrainerProfiles();
-  const modalities = new Set<string>();
-  trainers.forEach((trainer) => trainer.modalities.forEach((modality) => modalities.add(modality)));
-  return Array.from(modalities).sort();
+  if (!hasSupabaseEnv()) {
+    const set = new Set<string>();
+    publicTrainerProfiles.forEach((t) => t.modalities.forEach((m) => set.add(m)));
+    return Array.from(set).sort();
+  }
+
+  const supabase = getSupabaseServerClient();
+  const { data } = await supabase
+    .from("trainer_profiles")
+    .select("modalities")
+    .eq("is_published", true);
+
+  if (!data) return [];
+
+  const set = new Set<string>();
+  data.forEach((row) => (row.modalities as string[] ?? []).forEach((m) => set.add(m)));
+  return Array.from(set).sort();
 }
 
+/** Uses lightweight COUNT + aggregation queries — does not call listPublicTrainerProfiles. */
 export async function getMarketplaceStats() {
-  const [trainers, cities] = await Promise.all([listPublicTrainerProfiles(), listMarketplaceCities()]);
+  if (!hasSupabaseEnv()) {
+    const trainers = publicTrainerProfiles;
+    const totalTrainers = trainers.length;
+    const totalReviews = trainers.reduce((s, t) => s + t.reviewsCount, 0);
+    const avgRating = Number(
+      (trainers.reduce((s, t) => s + t.rating, 0) / Math.max(totalTrainers, 1)).toFixed(1)
+    );
+    return { totalTrainers, totalReviews, avgRating, totalCities: marketplaceCities.length };
+  }
 
-  const totalTrainers = trainers.length;
-  const totalReviews = trainers.reduce((sum, trainer) => sum + trainer.reviewsCount, 0);
-  const avgRating = trainers.reduce((sum, trainer) => sum + trainer.rating, 0) / Math.max(totalTrainers, 1);
+  const supabase = getSupabaseServerClient();
 
-  return {
-    totalTrainers,
-    totalReviews,
-    avgRating: Number(avgRating.toFixed(1)),
-    totalCities: cities.length,
-  };
+  const [countRes, aggregateRes, citiesCountRes] = await Promise.all([
+    supabase
+      .from("trainer_profiles")
+      .select("*", { count: "exact", head: true })
+      .eq("is_published", true),
+    supabase
+      .from("trainer_profiles")
+      .select("reviews_count, rating")
+      .eq("is_published", true),
+    supabase
+      .from("cities")
+      .select("*", { count: "exact", head: true }),
+  ]);
+
+  const totalTrainers = countRes.count ?? 0;
+  const rows = aggregateRes.data ?? [];
+  const totalReviews = rows.reduce((s, r) => s + ((r.reviews_count as number) ?? 0), 0);
+  const avgRating =
+    rows.length > 0
+      ? Number(
+          (rows.reduce((s, r) => s + Number(r.rating), 0) / rows.length).toFixed(1)
+        )
+      : 0;
+  const totalCities = citiesCountRes.count ?? 0;
+
+  return { totalTrainers, totalReviews, avgRating, totalCities };
 }

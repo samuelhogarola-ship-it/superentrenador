@@ -71,7 +71,7 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
       <section className="app-surface grid gap-8 rounded-[36px] p-6 sm:p-8 lg:grid-cols-[1.4fr_0.8fr]">
         <div>
           <div className="flex flex-wrap items-center gap-4">
-            <Avatar name={trainer.displayName} size="xl" />
+            <Avatar name={trainer.displayName} photoUrl={trainer.photoUrl ?? undefined} size="xl" />
             <div>
               <p className="app-kicker inline-flex items-center gap-1.5">
                 <MapPin size={12} />
@@ -113,9 +113,9 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
             yearsExperience={trainer.yearsExperience}
             modalities={trainer.modalities}
             languages={trainer.languages}
-            contactInfo={trainer.contactInfo}
             hiddenContactHint={trainer.hiddenContactHint}
             trainerName={trainer.displayName}
+            trainerSlug={trainer.slug}
           />
         </aside>
       </section>
