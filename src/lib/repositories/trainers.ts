@@ -123,8 +123,8 @@ export async function listMarketplaceCities(): Promise<MarketplaceCity[]> {
   const { data, error } = await supabase.from("cities").select("*").order("name");
 
   if (error || !data) {
-    console.error("[supabase] listMarketplaceCities failed, falling back to static data", error);
-    return marketplaceCities;
+    console.error("[supabase] listMarketplaceCities failed", error);
+    return [];
   }
 
   return (data as CityRow[]).map(mapCity);
@@ -139,7 +139,8 @@ export async function getMarketplaceCity(slug: string): Promise<MarketplaceCity 
   const { data, error } = await supabase.from("cities").select("*").eq("slug", slug).maybeSingle();
 
   if (error || !data) {
-    return marketplaceCities.find((city) => city.slug === slug) ?? null;
+    console.error("[supabase] getMarketplaceCity failed", error);
+    return null;
   }
 
   return mapCity(data as CityRow);
@@ -177,8 +178,8 @@ export async function listPublicTrainerProfiles(filters: TrainerFilters = {}): P
   const { data, error } = await query;
 
   if (error || !data) {
-    console.error("[supabase] listPublicTrainerProfiles failed, falling back to static data", error);
-    return filterStaticTrainers(filters);
+    console.error("[supabase] listPublicTrainerProfiles failed", error);
+    return [];
   }
 
   return (data as unknown as TrainerRow[]).map(mapTrainer);
@@ -207,7 +208,8 @@ export async function getPublicTrainerProfileBySlug(slug: string): Promise<Publi
     .maybeSingle();
 
   if (error || !data) {
-    return publicTrainerProfiles.find((trainer) => trainer.slug === slug) ?? null;
+    console.error("[supabase] getPublicTrainerProfileBySlug failed", error);
+    return null;
   }
 
   return mapTrainer(data as unknown as TrainerRow);

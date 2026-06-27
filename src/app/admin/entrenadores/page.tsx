@@ -6,8 +6,6 @@ import { BadgeCheck, CheckCircle, Clock, MapPin, XCircle } from "lucide-react";
 import { Avatar } from "@/components/avatar";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
-const ADMIN_EMAIL = "samuel.hogarola@gmail.com";
-
 interface PendingTrainer {
   id: string;
   slug: string;
@@ -33,8 +31,18 @@ export default function AdminEntrenadoresPage() {
     async function load() {
       const supabase = getSupabaseBrowserClient();
       const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.replace("/");
+        return;
+      }
 
-      if (!user || user.email !== ADMIN_EMAIL) {
+      const { data: adminRecord } = await supabase
+        .from("admin_users")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (!adminRecord) {
         router.replace("/");
         return;
       }
