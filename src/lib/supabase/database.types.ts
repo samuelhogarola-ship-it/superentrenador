@@ -87,6 +87,51 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          read_at: string | null
+          sender_id: string
+          sender_name: string
+          trainer_profile_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          sender_id: string
+          sender_name: string
+          trainer_profile_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          sender_id?: string
+          sender_name?: string
+          trainer_profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_trainer_profile_id_fkey"
+            columns: ["trainer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "trainer_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_trainer_profile_id_fkey"
+            columns: ["trainer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "trainer_profiles_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trainer_profiles: {
         Row: {
           city_slug: string
