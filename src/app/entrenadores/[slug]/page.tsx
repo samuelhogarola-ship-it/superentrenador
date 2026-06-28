@@ -116,6 +116,7 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
             hiddenContactHint={trainer.hiddenContactHint}
             trainerName={trainer.displayName}
             trainerSlug={trainer.slug}
+            trainerProfileId={trainer.id}
           />
         </aside>
       </section>

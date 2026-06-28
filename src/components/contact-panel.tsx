@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Award, Globe2, LockKeyhole, MapPin, MessageSquare, Phone } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { MessageForm } from "@/components/message-form";
 
 interface ContactPanelProps {
   priceFrom: number;
@@ -13,6 +14,7 @@ interface ContactPanelProps {
   hiddenContactHint: string;
   trainerName: string;
   trainerSlug: string;
+  trainerProfileId: string;
 }
 
 export function ContactPanel({
@@ -23,10 +25,13 @@ export function ContactPanel({
   hiddenContactHint,
   trainerName,
   trainerSlug,
+  trainerProfileId,
 }: ContactPanelProps) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [checked, setChecked] = useState(false);
   const [contactInfo, setContactInfo] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<{ id: string; name: string } | null>(null);
+  const [showMessageForm, setShowMessageForm] = useState(false);
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
@@ -37,6 +42,10 @@ export function ContactPanel({
       setChecked(true);
 
       if (user) {
+        setCurrentUser({
+          id: user.id,
+          name: user.user_metadata?.full_name ?? user.email ?? "Usuario",
+        });
         const { data } = await supabase
           .from("trainer_profiles")
           .select("contact_info")
@@ -53,7 +62,12 @@ export function ContactPanel({
       setLoggedIn(isLoggedIn);
       if (!isLoggedIn) {
         setContactInfo(null);
-      } else {
+        setCurrentUser(null);
+      } else if (session?.user) {
+        setCurrentUser({
+          id: session.user.id,
+          name: session.user.user_metadata?.full_name ?? session.user.email ?? "Usuario",
+        });
         supabase
           .from("trainer_profiles")
           .select("contact_info")
@@ -91,23 +105,46 @@ export function ContactPanel({
       </div>
 
       <div className="mt-6 rounded-[24px] border border-[var(--line)] bg-[var(--surface)] p-5">
-        {!checked ? null : loggedIn && contactInfo ? (
+        {!checked ? null : loggedIn && currentUser ? (
           <>
-            <p className="app-kicker">Contacto directo</p>
-            <p className="mt-2 text-sm text-[var(--muted)]">
-              Puedes contactar directamente con {trainerName}:
-            </p>
-            <div className="mt-4 flex items-center gap-3 rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3">
-              <Phone size={16} className="shrink-0 text-[var(--accent)]" />
-              <span className="text-sm font-semibold text-[var(--text)]">{contactInfo}</span>
+            {contactInfo ? (
+              <>
+                <p className="app-kicker">Contacto directo</p>
+                <p className="mt-2 text-sm text-[var(--muted)]">
+                  Puedes contactar directamente con {trainerName}:
+                </p>
+                <div className="mt-4 flex items-center gap-3 rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3">
+                  <Phone size={16} className="shrink-0 text-[var(--accent)]" />
+                  <span className="text-sm font-semibold text-[var(--text)]">{contactInfo}</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="app-kicker">Contacto</p>
+                <p className="mt-2 text-sm text-[var(--muted)]">
+                  Envía un mensaje directo a {trainerName}.
+                </p>
+              </>
+            )}
+            <div className="mt-4">
+              {showMessageForm ? (
+                <MessageForm
+                  trainerProfileId={trainerProfileId}
+                  trainerName={trainerName}
+                  senderName={currentUser.name}
+                  senderId={currentUser.id}
+                  onSent={() => setShowMessageForm(false)}
+                />
+              ) : (
+                <button
+                  onClick={() => setShowMessageForm(true)}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[var(--line)] px-4 py-2.5 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                >
+                  <MessageSquare size={15} />
+                  Enviar mensaje
+                </button>
+              )}
             </div>
-          </>
-        ) : loggedIn && contactInfo === "" ? (
-          <>
-            <p className="app-kicker">Contacto</p>
-            <p className="mt-3 text-sm text-[var(--muted)]">
-              Este entrenador aún no ha añadido datos de contacto. Vuelve pronto.
-            </p>
           </>
         ) : (
           <>

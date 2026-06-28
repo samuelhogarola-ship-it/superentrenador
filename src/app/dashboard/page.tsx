@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { BadgeCheck, Clock, ExternalLink, PenLine, Search, XCircle } from "lucide-react";
+import { BadgeCheck, Clock, ExternalLink, MessageSquare, PenLine, Search, XCircle } from "lucide-react";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -18,15 +18,26 @@ export default async function DashboardPage() {
 
   const { data: trainerProfile } = await supabase
     .from("trainer_profiles")
-    .select("slug, display_name, review_status, is_published")
+    .select("id, slug, display_name, review_status, is_published")
     .eq("user_id", user.id)
     .maybeSingle();
 
   if (trainerProfile) {
-    return <TrainerDashboard profile={trainerProfile} />;
+    const { count: unread } = await supabase
+      .from("messages")
+      .select("id", { count: "exact", head: true })
+      .eq("trainer_profile_id", trainerProfile.id)
+      .is("read_at", null);
+
+    return <TrainerDashboard profile={trainerProfile} unreadMessages={unread ?? 0} />;
   }
 
-  return <ClientDashboard name={user.user_metadata?.full_name ?? user.email} />;
+  const { count: sentMessages } = await supabase
+    .from("messages")
+    .select("id", { count: "exact", head: true })
+    .eq("sender_id", user.id);
+
+  return <ClientDashboard name={user.user_metadata?.full_name ?? user.email} sentMessages={sentMessages ?? 0} />;
 }
 
 // ─── PT dashboard ────────────────────────────────────────────────────────────
@@ -34,13 +45,14 @@ export default async function DashboardPage() {
 type ReviewStatus = "pending" | "approved" | "rejected" | string;
 
 interface TrainerProfile {
+  id: string;
   slug: string;
   display_name: string;
   review_status: ReviewStatus;
   is_published: boolean;
 }
 
-function TrainerDashboard({ profile }: { profile: TrainerProfile }) {
+function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile; unreadMessages: number }) {
   const status = profile.review_status;
 
   const statusBadge =
@@ -93,6 +105,26 @@ function TrainerDashboard({ profile }: { profile: TrainerProfile }) {
           </div>
         </Link>
 
+        <Link
+          href="/dashboard/mensajes"
+          className="app-surface flex items-center gap-4 rounded-[24px] p-5 transition-colors hover:border-[var(--line-strong)]"
+        >
+          <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)]">
+            <MessageSquare size={18} className="text-[var(--accent)]" />
+            {unreadMessages > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--accent)] text-[9px] font-bold text-[var(--ink)]">
+                {unreadMessages}
+              </span>
+            )}
+          </span>
+          <div>
+            <p className="font-semibold text-[var(--text)]">Mensajes</p>
+            <p className="text-sm text-[var(--muted)]">
+              {unreadMessages > 0 ? `${unreadMessages} sin leer` : "Bandeja de entrada"}
+            </p>
+          </div>
+        </Link>
+
         {profile.is_published && (
           <Link
             href={`/entrenadores/${profile.slug}`}
@@ -114,7 +146,7 @@ function TrainerDashboard({ profile }: { profile: TrainerProfile }) {
 
 // ─── Client dashboard ─────────────────────────────────────────────────────────
 
-function ClientDashboard({ name }: { name?: string }) {
+function ClientDashboard({ name, sentMessages }: { name?: string; sentMessages: number }) {
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-8 md:px-6 lg:px-8">
       <div>
@@ -124,24 +156,35 @@ function ClientDashboard({ name }: { name?: string }) {
         </h1>
       </div>
 
-      <div className="app-surface rounded-[28px] p-6 sm:p-8">
-        <p className="text-sm text-[var(--muted)]">
-          Aquí verás tu historial de entrenadores contactados y contrataciones. Todavía no tienes ninguno.
-        </p>
-      </div>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Link
+          href="/dashboard/mensajes"
+          className="app-surface flex items-center gap-4 rounded-[24px] p-5 transition-colors hover:border-[var(--line-strong)]"
+        >
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)]">
+            <MessageSquare size={18} className="text-[var(--accent)]" />
+          </span>
+          <div>
+            <p className="font-semibold text-[var(--text)]">Mis mensajes</p>
+            <p className="text-sm text-[var(--muted)]">
+              {sentMessages > 0 ? `${sentMessages} mensaje${sentMessages !== 1 ? "s" : ""} enviado${sentMessages !== 1 ? "s" : ""}` : "Sin mensajes aún"}
+            </p>
+          </div>
+        </Link>
 
-      <Link
-        href="/entrenadores"
-        className="app-surface flex items-center gap-4 rounded-[24px] p-5 transition-colors hover:border-[var(--line-strong)] sm:max-w-xs"
-      >
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)]">
-          <Search size={18} className="text-[var(--accent)]" />
-        </span>
-        <div>
-          <p className="font-semibold text-[var(--text)]">Buscar entrenadores</p>
-          <p className="text-sm text-[var(--muted)]">Encuentra tu entrenador ideal</p>
-        </div>
-      </Link>
+        <Link
+          href="/entrenadores"
+          className="app-surface flex items-center gap-4 rounded-[24px] p-5 transition-colors hover:border-[var(--line-strong)]"
+        >
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)]">
+            <Search size={18} className="text-[var(--accent)]" />
+          </span>
+          <div>
+            <p className="font-semibold text-[var(--text)]">Buscar entrenadores</p>
+            <p className="text-sm text-[var(--muted)]">Encuentra tu entrenador ideal</p>
+          </div>
+        </Link>
+      </div>
     </main>
   );
 }
