@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { BadgeCheck, Clock, ExternalLink, PenLine, Search, XCircle } from "lucide-react";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Dashboard | Super Entrenador",
 };
