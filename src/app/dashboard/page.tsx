@@ -16,11 +16,8 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/login?redirectTo=/dashboard");
 
-  const { data: trainerProfile } = await supabase
-    .from("trainer_profiles")
-    .select("id, slug, display_name, review_status, is_published")
-    .eq("user_id", user.id)
-    .maybeSingle();
+  const { data: ownTrainerProfiles } = await supabase.rpc("get_own_trainer_dashboard_profile");
+  const trainerProfile = ownTrainerProfiles?.[0] ?? null;
 
   if (trainerProfile) {
     const { count: unread } = await supabase
@@ -42,7 +39,7 @@ export default async function DashboardPage() {
 
 // ─── PT dashboard ────────────────────────────────────────────────────────────
 
-type ReviewStatus = "pending" | "approved" | "rejected" | string;
+type ReviewStatus = "pending" | "approved" | "rejected";
 
 interface TrainerProfile {
   id: string;

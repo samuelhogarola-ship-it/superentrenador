@@ -1,13 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { signIn, signInWithGoogle } from "@/lib/auth";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function getSafeRedirectTo(value: string | null) {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) {
+    return "/mi-perfil";
+  }
+  return value;
+}
+
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = getSafeRedirectTo(searchParams.get("redirectTo"));
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +46,7 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/mi-perfil");
+    router.push(redirectTo);
     router.refresh();
   }
 
@@ -47,7 +64,7 @@ export default function LoginPage() {
         <button
           type="button"
           disabled={googleLoading}
-          onClick={async () => { setGoogleLoading(true); await signInWithGoogle(); }}
+          onClick={async () => { setGoogleLoading(true); await signInWithGoogle(redirectTo); }}
           className="mt-6 inline-flex w-full items-center justify-center gap-3 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-sm font-semibold text-[var(--text)] transition-transform hover:-translate-y-0.5 disabled:opacity-50"
         >
           <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">

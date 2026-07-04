@@ -17,6 +17,14 @@ interface ContactPanelProps {
   trainerProfileId: string;
 }
 
+async function fetchContactInfo(trainerSlug: string) {
+  const response = await fetch(`/api/trainer-contact?slug=${encodeURIComponent(trainerSlug)}`);
+  if (!response.ok) return "";
+
+  const payload = (await response.json()) as { contactInfo?: string };
+  return payload.contactInfo ?? "";
+}
+
 export function ContactPanel({
   priceFrom,
   yearsExperience,
@@ -32,6 +40,7 @@ export function ContactPanel({
   const [contactInfo, setContactInfo] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<{ id: string; name: string } | null>(null);
   const [showMessageForm, setShowMessageForm] = useState(false);
+  const loginHref = `/login?redirectTo=${encodeURIComponent(`/entrenadores/${trainerSlug}`)}`;
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
@@ -46,12 +55,7 @@ export function ContactPanel({
           id: user.id,
           name: user.user_metadata?.full_name ?? user.email ?? "Usuario",
         });
-        const { data } = await supabase
-          .from("trainer_profiles")
-          .select("contact_info")
-          .eq("slug", trainerSlug)
-          .maybeSingle();
-        setContactInfo((data as { contact_info: string } | null)?.contact_info ?? "");
+        setContactInfo(await fetchContactInfo(trainerSlug));
       }
     }
 
@@ -68,14 +72,7 @@ export function ContactPanel({
           id: session.user.id,
           name: session.user.user_metadata?.full_name ?? session.user.email ?? "Usuario",
         });
-        supabase
-          .from("trainer_profiles")
-          .select("contact_info")
-          .eq("slug", trainerSlug)
-          .maybeSingle()
-          .then(({ data }) => {
-            setContactInfo((data as { contact_info: string } | null)?.contact_info ?? "");
-          });
+        fetchContactInfo(trainerSlug).then(setContactInfo);
       }
     });
 
@@ -131,8 +128,6 @@ export function ContactPanel({
                 <MessageForm
                   trainerProfileId={trainerProfileId}
                   trainerName={trainerName}
-                  senderName={currentUser.name}
-                  senderId={currentUser.id}
                   onSent={() => setShowMessageForm(false)}
                 />
               ) : (
@@ -152,7 +147,7 @@ export function ContactPanel({
             <p className="mt-3 text-sm leading-7 text-[var(--text)]">{hiddenContactHint}</p>
             <div className="mt-5 grid gap-3">
               <Link
-                href="/login"
+                href={loginHref}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
               >
                 <MessageSquare size={16} />

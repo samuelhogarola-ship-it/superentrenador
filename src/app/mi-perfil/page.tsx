@@ -39,7 +39,6 @@ function slugify(text: string) {
 export default function MiPerfilPage() {
   const router = useRouter();
   const [authLoading, setAuthLoading] = useState(true);
-  const [userId, setUserId] = useState<string | null>(null);
   const [cities, setCities] = useState<City[]>([]);
   const [allSpecialties, setAllSpecialties] = useState<string[]>(FALLBACK_SPECIALTIES);
   const [allModalities, setAllModalities] = useState<string[]>(FALLBACK_MODALITIES);
@@ -76,13 +75,11 @@ export default function MiPerfilPage() {
         return;
       }
 
-      setUserId(user.id);
-
       const [citiesRes, specialtiesRes, modalitiesRes, languagesRes, existing] = await Promise.all([
         supabase.from("cities").select("slug, name, region").order("name"),
-        supabase.from("trainer_profiles").select("specialties").eq("is_published", true),
-        supabase.from("trainer_profiles").select("modalities").eq("is_published", true),
-        supabase.from("trainer_profiles").select("languages").eq("is_published", true),
+        supabase.from("trainer_profiles_public").select("specialties"),
+        supabase.from("trainer_profiles_public").select("modalities"),
+        supabase.from("trainer_profiles_public").select("languages"),
         getTrainerProfile(),
       ]);
 
@@ -134,7 +131,6 @@ export default function MiPerfilPage() {
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (!userId) return;
 
     setError(null);
     setSaving(true);
@@ -142,7 +138,6 @@ export default function MiPerfilPage() {
     const slug = profileSlug ?? `${slugify(form.displayName)}-entrenador-personal-${form.citySlug}`;
 
     const payload = {
-      user_id: userId,
       slug,
       display_name: form.displayName,
       city_slug: form.citySlug,
@@ -156,21 +151,23 @@ export default function MiPerfilPage() {
       price_from: Number(form.priceFrom) || 0,
       contact_info: form.contactInfo,
       photo_url: form.photoUrl || null,
-      hidden_contact_hint:
-        "El contacto directo se desbloquea para usuarios registrados en el marketplace.",
     };
 
-    const supabase = getSupabaseBrowserClient();
-    const { error: dbError } = await supabase.from("trainer_profiles").upsert(payload, { onConflict: "user_id" });
+    const response = await fetch("/api/own-trainer-profile", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-    if (dbError) {
-      setError(dbError.message);
+    if (!response.ok) {
+      const result = (await response.json().catch(() => null)) as { error?: string } | null;
+      setError(result?.error ?? "No se pudo guardar el perfil.");
       setSaving(false);
       return;
     }
 
     setProfileSlug(slug);
-    if (!reviewStatus) setReviewStatus("pending");
+    setReviewStatus("pending");
     setSaved(true);
     setSaving(false);
     setTimeout(() => setSaved(false), 4000);

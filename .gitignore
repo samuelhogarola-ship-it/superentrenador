@@ -13,6 +13,8 @@
 
 # testing
 /coverage
+/.seo-cache/
+/output/
 
 # next.js
 /.next/

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { MessageSquare, SendHorizonal } from "lucide-react";
-import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { MessageForm } from "@/components/message-form";
 
 interface Message {
@@ -34,6 +33,16 @@ interface Thread {
   latestMessage: Message;
   unread: number;
   messages: Message[];
+}
+
+interface MessagesPayload {
+  ok: boolean;
+  mode?: "trainer" | "client";
+  userId?: string;
+  userName?: string;
+  trainerProfile?: TrainerProfile | null;
+  messages?: Message[];
+  trainers?: TrainerProfile[];
 }
 
 function buildThreadsAsPT(msgs: Message[], tp: TrainerProfile): Thread[] {
@@ -90,7 +99,6 @@ export default function MensajesPage() {
   const [loading, setLoading] = useState(true);
   const [isTrainer, setIsTrainer] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [currentUserName, setCurrentUserName] = useState<string>("");
   const [threads, setThreads] = useState<Thread[]>([]);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [replying, setReplying] = useState(false);
@@ -98,45 +106,28 @@ export default function MensajesPage() {
 
   useEffect(() => {
     async function load() {
-      const supabase = getSupabaseBrowserClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.replace("/login?redirectTo=/dashboard/mensajes"); return; }
+      const response = await fetch("/api/messages");
 
-      setCurrentUserId(user.id);
-      const userName = user.user_metadata?.full_name ?? user.email ?? "Usuario";
-      setCurrentUserName(userName);
+      if (response.status === 401) {
+        router.replace("/login?redirectTo=/dashboard/mensajes");
+        return;
+      }
 
-      const { data: tp } = await supabase
-        .from("trainer_profiles")
-        .select("id, display_name, slug")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      const payload = (await response.json().catch(() => null)) as MessagesPayload | null;
 
-      if (tp) {
+      if (!response.ok || !payload?.ok || !payload.userId || !payload.userName) {
+        setLoading(false);
+        return;
+      }
+
+      setCurrentUserId(payload.userId);
+
+      if (payload.mode === "trainer" && payload.trainerProfile) {
         setIsTrainer(true);
-        const { data: msgs } = await supabase
-          .from("messages")
-          .select("*")
-          .eq("trainer_profile_id", tp.id)
-          .order("created_at", { ascending: true });
-        setThreads(buildThreadsAsPT(msgs ?? [], tp));
+        setThreads(buildThreadsAsPT(payload.messages ?? [], payload.trainerProfile));
       } else {
-        const { data: msgs } = await supabase
-          .from("messages")
-          .select("*")
-          .eq("sender_id", user.id)
-          .order("created_at", { ascending: true });
-
-        const trainerIds = [...new Set((msgs ?? []).map((m) => m.trainer_profile_id))];
-        let trainers: TrainerProfile[] = [];
-        if (trainerIds.length > 0) {
-          const { data: tps } = await supabase
-            .from("trainer_profiles_public")
-            .select("id, display_name, slug")
-            .in("id", trainerIds);
-          trainers = (tps ?? []) as TrainerProfile[];
-        }
-        setThreads(buildThreadsAsClient(msgs ?? [], trainers, user.id, userName));
+        setIsTrainer(false);
+        setThreads(buildThreadsAsClient(payload.messages ?? [], payload.trainers ?? [], payload.userId, payload.userName));
       }
 
       setLoading(false);
@@ -148,12 +139,12 @@ export default function MensajesPage() {
 
   async function markThreadRead(thread: Thread) {
     if (!isTrainer || thread.unread === 0) return;
-    const supabase = getSupabaseBrowserClient();
     const unreadIds = thread.messages.filter((m) => !m.read_at).map((m) => m.id);
-    await supabase
-      .from("messages")
-      .update({ read_at: new Date().toISOString() })
-      .in("id", unreadIds);
+    await fetch("/api/messages", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messageIds: unreadIds }),
+    });
     setThreads((prev) =>
       prev.map((t) =>
         t.key === thread.key
@@ -248,8 +239,6 @@ export default function MensajesPage() {
                     <MessageForm
                       trainerProfileId={selectedThread.trainerProfileId}
                       trainerName={selectedThread.trainerDisplayName}
-                      senderName={currentUserName}
-                      senderId={currentUserId!}
                       onSent={() => { setReplying(false); setReloadToken((n) => n + 1); }}
                     />
                   ) : (
