@@ -55,18 +55,14 @@ function CoachStudioContent() {
         return;
       }
 
-      const { data } = await supabase
-        .from("trainer_profiles")
-        .select("subscription_status")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      const { data } = await supabase.rpc("get_own_trainer_subscription_status");
 
       if (!data) {
         setStatus("no-profile");
         return;
       }
 
-      setStatus(data.subscription_status === "active" ? "active" : "inactive");
+      setStatus(data === "active" ? "active" : "inactive");
     }
 
     load();

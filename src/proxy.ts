@@ -30,8 +30,23 @@ export async function proxy(request: NextRequest) {
   if (!user) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
-    loginUrl.searchParams.set("redirectTo", request.nextUrl.pathname);
+    loginUrl.searchParams.set("redirectTo", `${request.nextUrl.pathname}${request.nextUrl.search}`);
     return NextResponse.redirect(loginUrl);
+  }
+
+  if (request.nextUrl.pathname.startsWith("/admin")) {
+    const { data: adminRecord } = await supabase
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (!adminRecord) {
+      const dashboardUrl = request.nextUrl.clone();
+      dashboardUrl.pathname = "/dashboard";
+      dashboardUrl.search = "";
+      return NextResponse.redirect(dashboardUrl);
+    }
   }
 
   return supabaseResponse;

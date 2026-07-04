@@ -6,6 +6,9 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
+export type ReviewStatus = "pending" | "approved" | "rejected"
+export type SubscriptionStatus = "inactive" | "active"
+
 export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
@@ -148,13 +151,15 @@ export type Database = {
           photo_url: string | null
           price_from: number
           rating: number
-          review_status: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          review_status: ReviewStatus
           reviews_count: number
           short_bio: string
           slug: string
           specialties: string[]
           stripe_customer_id: string | null
-          subscription_status: string
+          subscription_status: SubscriptionStatus
           user_id: string | null
           verified: boolean
           years_experience: number
@@ -174,13 +179,15 @@ export type Database = {
           photo_url?: string | null
           price_from?: number
           rating?: number
-          review_status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          review_status?: ReviewStatus
           reviews_count?: number
           short_bio: string
           slug: string
           specialties?: string[]
           stripe_customer_id?: string | null
-          subscription_status?: string
+          subscription_status?: SubscriptionStatus
           user_id?: string | null
           verified?: boolean
           years_experience?: number
@@ -200,13 +207,15 @@ export type Database = {
           photo_url?: string | null
           price_from?: number
           rating?: number
-          review_status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          review_status?: ReviewStatus
           reviews_count?: number
           short_bio?: string
           slug?: string
           specialties?: string[]
           stripe_customer_id?: string | null
-          subscription_status?: string
+          subscription_status?: SubscriptionStatus
           user_id?: string | null
           verified?: boolean
           years_experience?: number
@@ -240,7 +249,7 @@ export type Database = {
           photo_url: string | null
           price_from: number | null
           rating: number | null
-          review_status: string | null
+          review_status: ReviewStatus | null
           reviews_count: number | null
           short_bio: string | null
           slug: string | null
@@ -260,7 +269,54 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      get_own_trainer_profile: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          slug: string
+          display_name: string
+          city_slug: string
+          headline: string
+          short_bio: string
+          long_bio: string
+          specialties: string[]
+          modalities: string[]
+          languages: string[]
+          years_experience: number
+          price_from: number
+          hidden_contact_hint: string
+          contact_info: string
+          photo_url: string | null
+          review_status: ReviewStatus
+        }[]
+      }
+      get_own_trainer_dashboard_profile: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          slug: string
+          display_name: string
+          review_status: ReviewStatus
+          is_published: boolean
+        }[]
+      }
+      get_own_trainer_message_profile: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          display_name: string
+          slug: string
+        }[]
+      }
+      get_own_trainer_subscription_status: {
+        Args: Record<PropertyKey, never>
+        Returns: SubscriptionStatus | null
+      }
+      get_public_trainer_contact_info: {
+        Args: {
+          trainer_slug: string
+        }
+        Returns: string | null
+      }
     }
     Enums: {
       [_ in never]: never

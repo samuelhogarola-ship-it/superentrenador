@@ -2,17 +2,14 @@
 
 import { useState } from "react";
 import { SendHorizonal } from "lucide-react";
-import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 interface MessageFormProps {
   trainerProfileId: string;
   trainerName: string;
-  senderName: string;
-  senderId: string;
   onSent?: () => void;
 }
 
-export function MessageForm({ trainerProfileId, trainerName, senderName, senderId, onSent }: MessageFormProps) {
+export function MessageForm({ trainerProfileId, trainerName, onSent }: MessageFormProps) {
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -24,15 +21,16 @@ export function MessageForm({ trainerProfileId, trainerName, senderName, senderI
     setSending(true);
     setError(null);
 
-    const supabase = getSupabaseBrowserClient();
-    const { error: err } = await supabase.from("messages").insert({
-      sender_id: senderId,
-      sender_name: senderName,
-      trainer_profile_id: trainerProfileId,
-      body: body.trim(),
+    const response = await fetch("/api/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        trainerProfileId,
+        body: body.trim(),
+      }),
     });
 
-    if (err) {
+    if (!response.ok) {
       setError("No se pudo enviar el mensaje. Inténtalo de nuevo.");
     } else {
       setSent(true);

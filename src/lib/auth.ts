@@ -2,12 +2,12 @@
 
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
-export async function signInWithGoogle() {
+export async function signInWithGoogle(redirectPath = "/mi-perfil") {
   const supabase = getSupabaseBrowserClient();
   return supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
+      redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectPath)}`,
     },
   });
 }
@@ -59,11 +59,7 @@ export async function getTrainerProfile(): Promise<TrainerProfileRow | null> {
 
   if (!user) return null;
 
-  const { data } = await supabase
-    .from("trainer_profiles")
-    .select("slug, display_name, city_slug, headline, short_bio, long_bio, specialties, modalities, languages, years_experience, price_from, hidden_contact_hint, contact_info, photo_url, review_status")
-    .eq("user_id", user.id)
-    .maybeSingle();
+  const { data } = await supabase.rpc("get_own_trainer_profile");
 
-  return (data as TrainerProfileRow | null) ?? null;
+  return (data?.[0] as TrainerProfileRow | undefined) ?? null;
 }
