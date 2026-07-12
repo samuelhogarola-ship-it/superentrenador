@@ -30,7 +30,7 @@ export function FiltersBar({ specialties, modalities, cities, basePath, lockCity
     "w-full rounded-full border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-2 text-sm font-medium text-[var(--text)] outline-none sm:w-auto";
 
   return (
-    <div className="app-surface rounded-[24px] p-3">
+    <div className="app-surface rounded-[20px] p-3">
       <span className="mb-2 inline-flex items-center gap-2 px-2 text-sm font-semibold text-[var(--muted)] sm:hidden">
         <SlidersHorizontal size={15} />
         Filtrar

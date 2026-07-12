@@ -80,7 +80,7 @@ export function ContactPanel({
   }, [trainerSlug]);
 
   return (
-    <div className="rounded-[30px] border border-[var(--line)] bg-[var(--bg-soft)] p-6">
+    <div className="rounded-[28px] border border-[var(--line)] bg-[var(--bg-soft)] p-6">
       <p className="text-xs text-[var(--muted)]">Desde</p>
       <p className="font-heading text-4xl text-[var(--text)]">
         {priceFrom}€<span className="text-base font-medium text-[var(--muted)]"> /sesión</span>
@@ -101,7 +101,7 @@ export function ContactPanel({
         </span>
       </div>
 
-      <div className="mt-6 rounded-[24px] border border-[var(--line)] bg-[var(--surface)] p-5">
+      <div className="mt-6 rounded-[20px] border border-[var(--line)] bg-[var(--surface)] p-5">
         {!checked ? null : loggedIn && currentUser ? (
           <>
             {contactInfo ? (

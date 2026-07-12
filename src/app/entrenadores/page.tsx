@@ -11,9 +11,12 @@ import {
 } from "@/lib/repositories/trainers";
 
 export const metadata: Metadata = {
-  title: "Entrenadores personales | Super Entrenador",
+  title: "Entrenadores personales",
   description:
     "Explora perfiles públicos de entrenadores personales por ciudad, especialidad y formato antes de desbloquear contacto y contratación.",
+  alternates: {
+    canonical: "/entrenadores",
+  },
 };
 
 interface TrainersPageProps {
@@ -36,7 +39,7 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8 lg:px-8">
-      <section className="app-surface rounded-[32px] px-6 py-7 sm:px-8">
+      <section className="app-surface rounded-[28px] px-6 py-7 sm:px-8">
         <p className="app-kicker">Marketplace</p>
         <h1 className="app-title mt-2 text-3xl text-[var(--text)] sm:text-4xl">
           {trainers.length} entrenador{trainers.length === 1 ? "" : "es"} disponible{trainers.length === 1 ? "" : "s"}
@@ -57,7 +60,7 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
           </Reveal>
         ))}
         {trainers.length === 0 ? (
-          <div className="app-surface rounded-[26px] p-8 text-center text-sm text-[var(--muted)]">
+          <div className="app-surface rounded-[20px] p-8 text-center text-sm text-[var(--muted)]">
             No hay entrenadores que coincidan con esos filtros todavía. Prueba a quitar alguno.
           </div>
         ) : null}

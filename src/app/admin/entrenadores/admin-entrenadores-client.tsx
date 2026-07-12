@@ -89,7 +89,7 @@ export function AdminEntrenadoresClient({ initialTrainers }: { initialTrainers: 
           ))}
         </section>
       ) : (
-        <div className="app-surface rounded-[24px] px-6 py-8 text-center text-sm text-[var(--muted)]">
+        <div className="app-surface rounded-[20px] px-6 py-8 text-center text-sm text-[var(--muted)]">
           No hay perfiles pendientes de revisión.
         </div>
       )}
@@ -140,7 +140,7 @@ function TrainerReviewCard({
         : Clock;
 
   return (
-    <div className="app-surface flex flex-col gap-4 rounded-[24px] p-5 sm:flex-row sm:items-start sm:gap-5">
+    <div className="app-surface flex flex-col gap-4 rounded-[20px] p-5 sm:flex-row sm:items-start sm:gap-5">
       <Avatar name={trainer.display_name} photoUrl={trainer.photo_url} size="lg" />
 
       <div className="flex-1 min-w-0">

@@ -1,21 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #08090f;
-  --bg-soft: #0f1118;
-  --surface: #141824;
-  --panel: rgba(14, 17, 27, 0.88);
-  --panel-strong: #101420;
-  --text: #ededf5;
-  --muted: rgba(237, 237, 245, 0.48);
-  --ink: #07090e;
-  --accent: #f5a623;
-  --accent-2: #3d8bff;
-  --accent-soft: rgba(245, 166, 35, 0.14);
-  --line: rgba(237, 237, 245, 0.07);
-  --line-strong: rgba(237, 237, 245, 0.15);
-  --shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
-  --shadow-soft: 0 10px 28px rgba(0, 0, 0, 0.45);
+  --bg: #f5f3ee;
+  --bg-soft: #ece8de;
+  --surface: #ffffff;
+  --panel: #ffffff;
+  --panel-strong: #fcfaf5;
+  --text: #171717;
+  --muted: #676457;
+  --ink: #101010;
+  --accent: #166534;
+  --accent-2: #0f172a;
+  --accent-soft: rgba(22, 101, 52, 0.10);
+  --line: rgba(23, 23, 23, 0.08);
+  --line-strong: rgba(23, 23, 23, 0.16);
+  --shadow: 0 28px 80px rgba(39, 34, 20, 0.08);
+  --shadow-soft: 0 12px 32px rgba(39, 34, 20, 0.06);
 }
 
 @theme inline {
@@ -37,10 +37,7 @@ body {
   margin: 0;
   min-height: 100%;
   overflow-x: hidden;
-  background:
-    radial-gradient(ellipse at 8% 5%, rgba(61, 143, 255, 0.12), transparent 35%),
-    radial-gradient(ellipse at 92% 80%, rgba(245, 166, 35, 0.10), transparent 35%),
-    linear-gradient(180deg, #08090f 0%, #0b0d16 100%);
+  background: linear-gradient(180deg, #f8f5ee 0%, #f3efe6 100%);
   color: var(--text);
   font-family: var(--font-plus-jakarta), "Segoe UI", sans-serif;
 }
@@ -51,14 +48,14 @@ a {
 }
 
 ::selection {
-  background: rgba(245, 166, 35, 0.28);
+  background: rgba(22, 101, 52, 0.16);
   color: var(--text);
 }
 
 :focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 8px;
+  outline-offset: 3px;
+  border-radius: 12px;
 }
 
 select,
@@ -98,32 +95,6 @@ button {
   }
 }
 
-body::before,
-body::after {
-  position: fixed;
-  z-index: -1;
-  content: "";
-  pointer-events: none;
-  border-radius: 999px;
-  filter: blur(80px);
-}
-
-body::before {
-  top: -100px;
-  left: -60px;
-  width: 420px;
-  height: 420px;
-  background: radial-gradient(circle, rgba(61, 143, 255, 0.10), transparent 72%);
-}
-
-body::after {
-  right: -80px;
-  bottom: 15%;
-  width: 360px;
-  height: 360px;
-  background: radial-gradient(circle, rgba(245, 166, 35, 0.09), transparent 72%);
-}
-
 .app-shell {
   padding-bottom: 6rem;
 }
@@ -138,31 +109,42 @@ body::after {
   border: 1px solid var(--line);
   background: var(--panel);
   box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(20px);
 }
 
 .app-kicker {
   color: var(--accent);
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
 .app-title {
   font-family: var(--font-sora), "Segoe UI", sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.06em;
+  font-weight: 700;
+  letter-spacing: -0.045em;
 }
 
 .app-copy {
   color: var(--muted);
-  line-height: 1.7;
+  line-height: 1.65;
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #f5a623 0%, #ededf5 45%, #3d8bff 100%);
+  background: linear-gradient(135deg, #166534 0%, #1f2937 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.hero-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.75fr);
+    align-items: stretch;
+  }
 }

@@ -4,7 +4,7 @@ import { ArrowRight, Compass } from "lucide-react";
 export default function NotFound() {
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 items-center px-4 py-10 md:px-6 lg:px-8">
-      <section className="app-surface w-full rounded-[36px] p-6 text-center sm:p-10">
+      <section className="app-surface w-full rounded-[28px] p-6 text-center sm:p-10">
         <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[var(--accent-soft)]">
           <Compass size={22} className="text-[var(--accent)]" />
         </span>

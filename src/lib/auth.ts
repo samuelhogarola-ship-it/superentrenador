@@ -24,7 +24,14 @@ export async function signIn(email: string, password: string) {
 
 export async function signOut() {
   const supabase = getSupabaseBrowserClient();
-  return supabase.auth.signOut();
+  await supabase.auth.signOut();
+
+  return fetch("/auth/sign-out", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }
 
 export async function getSession() {

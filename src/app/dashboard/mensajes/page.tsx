@@ -172,7 +172,7 @@ export default function MensajesPage() {
       </div>
 
       {threads.length === 0 ? (
-        <div className="app-surface rounded-[24px] px-6 py-10 text-center text-sm text-[var(--muted)]">
+        <div className="app-surface rounded-[20px] px-6 py-10 text-center text-sm text-[var(--muted)]">
           <MessageSquare size={32} className="mx-auto mb-3 opacity-30" />
           No tienes mensajes todavía.
         </div>
@@ -204,7 +204,7 @@ export default function MensajesPage() {
           </div>
 
           {selectedThread ? (
-            <div className="app-surface flex flex-col gap-4 rounded-[24px] p-5">
+            <div className="app-surface flex flex-col gap-4 rounded-[20px] p-5">
               <div className="border-b border-[var(--line)] pb-4">
                 <p className="font-semibold text-[var(--text)]">
                   {isTrainer ? selectedThread.senderName : selectedThread.trainerDisplayName}
@@ -254,7 +254,7 @@ export default function MensajesPage() {
               )}
             </div>
           ) : (
-            <div className="app-surface flex items-center justify-center rounded-[24px] p-10 text-sm text-[var(--muted)]">
+            <div className="app-surface flex items-center justify-center rounded-[20px] p-10 text-sm text-[var(--muted)]">
               Selecciona una conversación
             </div>
           )}

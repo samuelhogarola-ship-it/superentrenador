@@ -39,10 +39,10 @@ export function CategoryGrid({ specialties }: CategoryGridProps) {
           <Reveal key={specialty} delay={(index % 5) * 60}>
             <Link
               href={`/entrenadores?specialty=${encodeURIComponent(specialty)}`}
-              className="app-surface group flex flex-col gap-3 rounded-[24px] p-5 transition-transform hover:-translate-y-1"
+              className="group flex items-center gap-3 rounded-[16px] border border-[var(--line)] bg-[var(--surface)] px-4 py-4 transition-colors hover:border-[var(--accent)]"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--accent-soft)] transition-colors group-hover:bg-[var(--accent)]">
-                <Icon size={19} className="text-[var(--accent)] transition-colors group-hover:text-white" />
+              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--accent-soft)]">
+                <Icon size={18} className="text-[var(--accent)]" />
               </span>
               <span className="text-sm font-semibold leading-snug text-[var(--text)]">{specialty}</span>
             </Link>

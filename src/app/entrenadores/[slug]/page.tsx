@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: TrainerProfilePageProps): Pro
 
   if (!trainer) {
     return {
-      title: "Entrenador no encontrado | Super Entrenador",
+      title: "Entrenador no encontrado",
     };
   }
 
@@ -68,7 +68,7 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
         <span className="text-[var(--text)]">{trainer.displayName}</span>
       </nav>
 
-      <section className="app-surface grid gap-8 rounded-[36px] p-6 sm:p-8 lg:grid-cols-[1.4fr_0.8fr]">
+      <section className="app-surface grid gap-8 rounded-[28px] p-6 sm:p-8 lg:grid-cols-[1.4fr_0.8fr]">
         <div>
           <div className="flex flex-wrap items-center gap-4">
             <Avatar name={trainer.displayName} photoUrl={trainer.photoUrl ?? undefined} size="xl" />
@@ -123,15 +123,15 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
 
       <Reveal>
         <section className="grid gap-6 lg:grid-cols-3">
-          <article className="app-surface rounded-[30px] p-6">
+          <article className="app-surface rounded-[28px] p-6">
             <h2 className="app-title text-2xl text-[var(--text)]">Idiomas</h2>
             <p className="app-copy mt-3">{trainer.languages.join(" · ")}</p>
           </article>
-          <article className="app-surface rounded-[30px] p-6">
+          <article className="app-surface rounded-[28px] p-6">
             <h2 className="app-title text-2xl text-[var(--text)]">Modalidades</h2>
             <p className="app-copy mt-3">{trainer.modalities.join(" · ")}</p>
           </article>
-          <article className="app-surface rounded-[30px] p-6">
+          <article className="app-surface rounded-[28px] p-6">
             <h2 className="app-title text-2xl text-[var(--text)]">Experiencia</h2>
             <p className="app-copy mt-3">{trainer.yearsExperience} años entrenando clientes reales</p>
           </article>
@@ -140,7 +140,7 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
 
       {trainer.reviewsCount > 0 ? (
         <Reveal>
-          <section className="app-surface rounded-[30px] p-6 sm:p-8">
+          <section className="app-surface rounded-[28px] p-6 sm:p-8">
             <p className="app-kicker">Opiniones</p>
             <h2 className="app-title mt-2 text-3xl text-[var(--text)]">
               {trainer.rating} de 5 · {trainer.reviewsCount} opiniones verificadas
