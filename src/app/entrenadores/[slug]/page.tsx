@@ -4,8 +4,10 @@ import { BadgeCheck, ChevronRight, MapPin } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Avatar } from "@/components/avatar";
 import { ContactPanel } from "@/components/contact-panel";
+import { JsonLd } from "@/components/json-ld";
 import { RatingStars } from "@/components/rating-stars";
 import { Reveal } from "@/components/reveal";
+import { trainerProfileJsonLd } from "@/lib/marketplace-seo";
 import { getPublicTrainerProfileBySlug, listPublicTrainerProfiles } from "@/lib/repositories/trainers";
 import { siteConfig } from "@/lib/site";
 
@@ -56,6 +58,7 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8 lg:px-8">
+      <JsonLd data={trainerProfileJsonLd(trainer)} />
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-[var(--muted)]">
         <Link href="/entrenadores" className="hover:text-[var(--text)]">
           Entrenadores

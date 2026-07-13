@@ -143,22 +143,22 @@ export function ContactPanel({
           </>
         ) : (
           <>
-            <p className="app-kicker">Acceso premium</p>
+            <p className="app-kicker">Contacto protegido</p>
             <p className="mt-3 text-sm leading-7 text-[var(--text)]">{hiddenContactHint}</p>
             <div className="mt-5 grid gap-3">
               <Link
                 href={loginHref}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
               >
                 <MessageSquare size={16} />
-                Iniciar sesión para desbloquear
+                Contactar con {trainerName}
               </Link>
               <Link
                 href="/registro"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--line)] px-4 py-3 text-sm font-semibold text-[var(--text)]"
               >
                 <LockKeyhole size={16} />
-                Crear cuenta gratis
+                Crear cuenta para contactar
               </Link>
             </div>
           </>

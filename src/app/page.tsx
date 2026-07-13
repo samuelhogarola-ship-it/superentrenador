@@ -2,10 +2,13 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2, MapPin } from "lucide-react";
 import { CategoryGrid } from "@/components/category-grid";
 import { HeroSearchBar } from "@/components/hero-search-bar";
+import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { StatsBar } from "@/components/stats-bar";
 import { TrainerCard } from "@/components/trainer-card";
+import { marketplaceWebsiteJsonLd, trainerCollectionJsonLd } from "@/lib/marketplace-seo";
+import { siteConfig } from "@/lib/site";
 import {
   getMarketplaceStats,
   listAllSpecialties,
@@ -29,6 +32,8 @@ export default async function Home() {
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-14 px-4 py-8 md:px-6 md:py-10 lg:px-8">
+      <JsonLd data={marketplaceWebsiteJsonLd()} />
+      <JsonLd data={trainerCollectionJsonLd(featuredTrainers, siteConfig.url, "Entrenadores personales destacados")} />
       <section className="rounded-[28px] border border-[var(--line)] bg-[var(--surface)] p-6 shadow-[var(--shadow)] sm:p-8 lg:p-10">
         <p className="app-kicker">Marketplace de entrenadores</p>
         <h1 className="app-title mt-4 max-w-3xl text-4xl leading-[1.02] sm:text-6xl">
