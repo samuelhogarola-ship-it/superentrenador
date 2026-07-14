@@ -7,6 +7,7 @@ import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { StatsBar } from "@/components/stats-bar";
 import { TrainerCard } from "@/components/trainer-card";
+import { isAndaluciaCity, sortCitiesByName } from "@/lib/coverage";
 import { marketplaceWebsiteJsonLd, trainerCollectionJsonLd } from "@/lib/marketplace-seo";
 import { siteConfig } from "@/lib/site";
 import {
@@ -53,6 +54,7 @@ export default async function Home() {
     listAllSpecialties(),
     getMarketplaceStats(),
   ]);
+  const andaluciaCities = sortCitiesByName(cities.filter(isAndaluciaCity));
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-14 px-4 py-8 md:px-6 md:py-10 lg:px-8">
@@ -181,14 +183,23 @@ export default async function Home() {
 
       <section className="flex flex-col gap-6">
         <Reveal>
-          <SectionHeading
-            eyebrow="Cobertura actual"
-            title="Ciudades activas con estructura lista para crecer"
-            body="Landings locales para empezar por demanda real y expandir sin rehacer el producto."
-          />
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <SectionHeading
+              eyebrow="Cobertura Andalucía"
+              title="Andalucía queda lista como primera región comercial"
+              body="Capitales y plazas de alta demanda con landings locales para SEO, captación de entrenadores y validación de mercado antes de escalar al resto de España."
+            />
+            <Link
+              href="/andalucia"
+              className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-5 py-2.5 text-sm font-semibold text-[var(--text)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
+            >
+              Ver Andalucía
+              <ArrowRight size={15} />
+            </Link>
+          </div>
         </Reveal>
         <div className="grid gap-4 md:grid-cols-3">
-          {cities.map((city, index) => (
+          {andaluciaCities.slice(0, 6).map((city, index) => (
             <Reveal key={city.slug} delay={index * 80}>
               <Link
                 href={`/ciudades/${city.slug}`}

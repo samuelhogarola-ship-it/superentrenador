@@ -11,7 +11,7 @@ import { signOut } from "@/lib/auth";
 
 const navItems = [
   { href: "/entrenadores", label: "Entrenadores", icon: UserRound },
-  { href: "/ciudades/fuengirola", label: "Fuengirola", icon: MapPinned },
+  { href: "/andalucia", label: "Andalucía", icon: MapPinned },
   { href: "/ciudades/malaga", label: "Málaga", icon: MapPinned },
 ];
 

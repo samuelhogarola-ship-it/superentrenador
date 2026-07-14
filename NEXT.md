@@ -106,6 +106,21 @@
 - Pulir hero + branding + legal + cookies.
 - Validar dominio raíz y dejar el marketplace listo para presentación comercial.
 - Priorizar Marketplaces: home, listado, ciudades, fichas y conversión a contacto/registro.
+- Andalucía queda como primera región completa; siguiente bloque: Comunidad Valenciana, Madrid, Cataluña y principales capitales de España.
+
+## Expansión territorial
+
+- Mantener cada región con una landing índice propia (`/andalucia`, después `/madrid`, `/comunidad-valenciana`, etc.).
+- Añadir ciudades por oleadas comerciales, no una lista infinita sin intención.
+- Prioridad España:
+  - capitales autonómicas
+  - capitales de provincia
+  - ciudades de costa/alto valor fitness
+  - áreas metropolitanas con demanda SEO
+- Cada ciudad nueva debe añadirse en:
+  - `src/lib/marketplace-data.ts`
+  - `supabase/seed.sql`
+  - landing regional si aplica
 
 ## Criterio de “listo”
 

@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const navItems = [
   { href: "/", label: "Inicio", icon: Home },
   { href: "/entrenadores", label: "Buscar", icon: UserRound },
-  { href: "/ciudades/fuengirola", label: "Ciudad", icon: MapPinned },
+  { href: "/andalucia", label: "Zonas", icon: MapPinned },
   { href: "/login", label: "Acceso", icon: Building2 },
 ];
 

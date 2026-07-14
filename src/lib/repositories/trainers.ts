@@ -64,6 +64,13 @@ function mapCity(row: CityRow): MarketplaceCity {
   };
 }
 
+function mergeCitiesWithFallback(rows: CityRow[] = []) {
+  const bySlug = new Map<string, MarketplaceCity>();
+  marketplaceCities.forEach((city) => bySlug.set(city.slug, city));
+  rows.map(mapCity).forEach((city) => bySlug.set(city.slug, city));
+  return Array.from(bySlug.values()).sort((a, b) => a.name.localeCompare(b.name, "es"));
+}
+
 function mapTrainer(row: TrainerRow): PublicTrainerProfile {
   return {
     id: row.id,
@@ -125,10 +132,10 @@ export async function listMarketplaceCities(): Promise<MarketplaceCity[]> {
 
   if (error || !data) {
     console.error("[supabase] listMarketplaceCities failed", error);
-    return [];
+    return marketplaceCities;
   }
 
-  return (data as CityRow[]).map(mapCity);
+  return mergeCitiesWithFallback(data as CityRow[]);
 }
 
 export async function getMarketplaceCity(slug: string): Promise<MarketplaceCity | null> {
@@ -139,9 +146,13 @@ export async function getMarketplaceCity(slug: string): Promise<MarketplaceCity 
   const supabase = getSupabaseServerClient();
   const { data, error } = await supabase.from("cities").select("*").eq("slug", slug).maybeSingle();
 
-  if (error || !data) {
+  if (error) {
     console.error("[supabase] getMarketplaceCity failed", error);
-    return null;
+    return marketplaceCities.find((city) => city.slug === slug) ?? null;
+  }
+
+  if (!data) {
+    return marketplaceCities.find((city) => city.slug === slug) ?? null;
   }
 
   return mapCity(data as CityRow);
@@ -289,7 +300,7 @@ export async function getMarketplaceStats() {
           (rows.reduce((s, r) => s + Number(r.rating), 0) / rows.length).toFixed(1)
         )
       : 0;
-  const totalCities = citiesCountRes.count ?? 0;
+  const totalCities = Math.max(citiesCountRes.count ?? 0, marketplaceCities.length);
 
   return { totalTrainers, totalReviews, avgRating, totalCities };
 }
