@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { FiltersBar } from "@/components/filters-bar";
+import { JsonLd } from "@/components/json-ld";
+import { MarketplaceEmptyState } from "@/components/marketplace-empty-state";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { TrainerListItem } from "@/components/trainer-list-item";
+import { cityCollectionJsonLd } from "@/lib/marketplace-seo";
 import {
   getMarketplaceCity,
   listAllModalities,
@@ -29,12 +32,12 @@ export async function generateMetadata({ params }: CityPageProps): Promise<Metad
 
   if (!currentCity) {
     return {
-      title: "Ciudad no encontrada | Super Entrenador",
+      title: "Ciudad no encontrada",
     };
   }
 
   return {
-    title: `${currentCity.heroTitle} | Super Entrenador`,
+    title: currentCity.heroTitle,
     description: currentCity.seoDescription,
     alternates: {
       canonical: `/ciudades/${currentCity.slug}`,
@@ -64,7 +67,8 @@ export default async function CityPage({ params, searchParams }: CityPageProps) 
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8 lg:px-8">
-      <section className="app-surface rounded-[36px] px-6 py-8 sm:px-8 sm:py-10">
+      <JsonLd data={cityCollectionJsonLd(currentCity, trainers)} />
+      <section className="app-surface rounded-[28px] px-6 py-8 sm:px-8 sm:py-10">
         <SectionHeading
           eyebrow={`${currentCity.name} · ${currentCity.region}`}
           title={currentCity.heroTitle}
@@ -89,9 +93,7 @@ export default async function CityPage({ params, searchParams }: CityPageProps) 
           </Reveal>
         ))}
         {trainers.length === 0 ? (
-          <div className="app-surface rounded-[26px] p-8 text-center text-sm text-[var(--muted)]">
-            Todavía no hay entrenadores con esos filtros en {currentCity.name}.
-          </div>
+          <MarketplaceEmptyState cityName={currentCity.name} resetHref={`/ciudades/${currentCity.slug}`} />
         ) : null}
       </div>
     </main>

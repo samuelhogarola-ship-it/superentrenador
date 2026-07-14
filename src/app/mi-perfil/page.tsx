@@ -226,7 +226,7 @@ export default function MiPerfilPage() {
         </div>
       ) : null}
 
-      <form onSubmit={handleSubmit} className="app-surface flex flex-col gap-8 rounded-[32px] p-6 sm:p-8">
+      <form onSubmit={handleSubmit} className="app-surface flex flex-col gap-8 rounded-[28px] p-6 sm:p-8">
         <fieldset className="flex flex-col gap-4">
           <legend className="text-base font-semibold text-[var(--text)]">Información básica</legend>
 

@@ -31,9 +31,6 @@ export const metadata: Metadata = {
     ],
     apple: "/logo.png",
   },
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
     type: "website",
     title: "Super Entrenador",

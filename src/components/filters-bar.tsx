@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { SlidersHorizontal } from "lucide-react";
+import Link from "next/link";
+import { RotateCcw, SlidersHorizontal } from "lucide-react";
 import type { MarketplaceCity } from "@/types/marketplace";
 
 interface FiltersBarProps {
@@ -15,6 +16,7 @@ interface FiltersBarProps {
 export function FiltersBar({ specialties, modalities, cities, basePath, lockCity = false }: FiltersBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const hasActiveFilters = searchParams.toString().length > 0;
 
   function updateParam(key: string, value: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -30,7 +32,7 @@ export function FiltersBar({ specialties, modalities, cities, basePath, lockCity
     "w-full rounded-full border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-2 text-sm font-medium text-[var(--text)] outline-none sm:w-auto";
 
   return (
-    <div className="app-surface rounded-[24px] p-3">
+    <div className="app-surface rounded-[20px] p-3">
       <span className="mb-2 inline-flex items-center gap-2 px-2 text-sm font-semibold text-[var(--muted)] sm:hidden">
         <SlidersHorizontal size={15} />
         Filtrar
@@ -92,6 +94,16 @@ export function FiltersBar({ specialties, modalities, cities, basePath, lockCity
           <option value="price-asc">Precio: menor a mayor</option>
           <option value="price-desc">Precio: mayor a menor</option>
         </select>
+
+        {hasActiveFilters ? (
+          <Link
+            href={basePath}
+            className="col-span-2 inline-flex items-center justify-center gap-2 rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold text-[var(--muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] sm:col-span-1"
+          >
+            <RotateCcw size={14} />
+            Limpiar
+          </Link>
+        ) : null}
       </div>
     </div>
   );

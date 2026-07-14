@@ -1,6 +1,6 @@
 export function TrainerListItemSkeleton() {
   return (
-    <div className="app-surface flex flex-col gap-5 rounded-[26px] p-5 sm:flex-row sm:items-center sm:p-6">
+    <div className="app-surface flex flex-col gap-5 rounded-[20px] p-5 sm:flex-row sm:items-center sm:p-6">
       <div className="skeleton h-20 w-20 shrink-0 rounded-full" />
       <div className="flex-1 space-y-3">
         <div className="skeleton h-5 w-40" />
@@ -23,7 +23,7 @@ export function TrainerListItemSkeleton() {
 
 export function FiltersBarSkeleton() {
   return (
-    <div className="app-surface flex flex-wrap items-center gap-3 rounded-[24px] p-3">
+    <div className="app-surface flex flex-wrap items-center gap-3 rounded-[20px] p-3">
       <div className="skeleton h-9 w-44 rounded-full" />
       <div className="skeleton h-9 w-36 rounded-full" />
       <div className="skeleton h-9 w-32 rounded-full" />
@@ -35,7 +35,7 @@ export function FiltersBarSkeleton() {
 export function TrainerProfileSkeleton() {
   return (
     <div className="flex flex-col gap-6">
-      <div className="app-surface grid gap-8 rounded-[36px] p-6 sm:p-8 lg:grid-cols-[1.4fr_0.8fr]">
+      <div className="app-surface grid gap-8 rounded-[28px] p-6 sm:p-8 lg:grid-cols-[1.4fr_0.8fr]">
         <div>
           <div className="flex items-center gap-4">
             <div className="skeleton h-28 w-28 shrink-0 rounded-full" />
@@ -51,7 +51,7 @@ export function TrainerProfileSkeleton() {
             <div className="skeleton h-4 w-2/3" />
           </div>
         </div>
-        <div className="skeleton h-72 w-full rounded-[30px]" />
+        <div className="skeleton h-72 w-full rounded-[28px]" />
       </div>
     </div>
   );

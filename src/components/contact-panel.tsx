@@ -80,7 +80,7 @@ export function ContactPanel({
   }, [trainerSlug]);
 
   return (
-    <div className="rounded-[30px] border border-[var(--line)] bg-[var(--bg-soft)] p-6">
+    <div className="rounded-[28px] border border-[var(--line)] bg-[var(--bg-soft)] p-6">
       <p className="text-xs text-[var(--muted)]">Desde</p>
       <p className="font-heading text-4xl text-[var(--text)]">
         {priceFrom}€<span className="text-base font-medium text-[var(--muted)]"> /sesión</span>
@@ -101,7 +101,7 @@ export function ContactPanel({
         </span>
       </div>
 
-      <div className="mt-6 rounded-[24px] border border-[var(--line)] bg-[var(--surface)] p-5">
+      <div className="mt-6 rounded-[20px] border border-[var(--line)] bg-[var(--surface)] p-5">
         {!checked ? null : loggedIn && currentUser ? (
           <>
             {contactInfo ? (
@@ -143,22 +143,22 @@ export function ContactPanel({
           </>
         ) : (
           <>
-            <p className="app-kicker">Acceso premium</p>
+            <p className="app-kicker">Contacto protegido</p>
             <p className="mt-3 text-sm leading-7 text-[var(--text)]">{hiddenContactHint}</p>
             <div className="mt-5 grid gap-3">
               <Link
                 href={loginHref}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
               >
                 <MessageSquare size={16} />
-                Iniciar sesión para desbloquear
+                Contactar con {trainerName}
               </Link>
               <Link
                 href="/registro"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--line)] px-4 py-3 text-sm font-semibold text-[var(--text)]"
               >
                 <LockKeyhole size={16} />
-                Crear cuenta gratis
+                Crear cuenta para contactar
               </Link>
             </div>
           </>

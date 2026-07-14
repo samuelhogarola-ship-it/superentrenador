@@ -10,12 +10,9 @@ interface TrainerListItemProps {
 
 export function TrainerListItem({ trainer }: TrainerListItemProps) {
   return (
-    <article className="app-surface group flex flex-col gap-5 rounded-[26px] p-5 transition-transform hover:-translate-y-0.5 sm:flex-row sm:gap-6 sm:p-6">
-      <div className="relative shrink-0 self-start">
+    <article className="group flex flex-col gap-5 rounded-[20px] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow-soft)] transition-colors hover:border-[var(--line-strong)] sm:flex-row sm:gap-6 sm:p-6">
+      <div className="shrink-0 self-start">
         <Avatar name={trainer.displayName} photoUrl={trainer.photoUrl} size="xl" />
-        <span className="absolute -bottom-1 -right-1 flex items-center justify-center rounded-full border-2 border-[var(--bg)] bg-[var(--accent)] px-2 py-0.5 font-heading text-xs font-bold text-[var(--ink)] shadow-sm whitespace-nowrap">
-          {trainer.priceFrom}€
-        </span>
       </div>
 
       <div className="flex flex-1 flex-col gap-0">
@@ -40,11 +37,11 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
 
         <p className="mt-2 line-clamp-2 text-sm text-[var(--text)]">{trainer.headline}</p>
 
-        <div className="mt-3 flex flex-wrap gap-2">
-          {trainer.specialties.slice(0, 3).map((specialty) => (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {trainer.specialties.slice(0, 2).map((specialty) => (
             <span
               key={specialty}
-              className="rounded-full border border-[var(--line)] bg-[var(--bg-soft)] px-3 py-1 text-xs font-medium text-[var(--text)]"
+              className="rounded-full bg-[var(--bg-soft)] px-3 py-1 text-xs font-medium text-[var(--text)]"
             >
               {specialty}
             </span>
@@ -54,14 +51,14 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
 
       <div className="flex shrink-0 flex-row items-center justify-between gap-3 border-t border-[var(--line)] pt-4 sm:flex-col sm:items-end sm:justify-center sm:border-t-0 sm:border-l sm:pl-6 sm:pt-0">
         <div className="text-right">
-          <p className="text-xs text-[var(--muted)]">Desde</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--muted)]">Desde</p>
           <p className="font-heading text-2xl text-[var(--text)]">
             {trainer.priceFrom}€<span className="text-sm font-medium text-[var(--muted)]"> /ses.</span>
           </p>
         </div>
         <Link
           href={`/entrenadores/${trainer.slug}`}
-          className="inline-flex items-center justify-center rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] transition-transform group-hover:-translate-y-0.5"
+          className="inline-flex items-center justify-center rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-5 py-2.5 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
         >
           Ver perfil
         </Link>

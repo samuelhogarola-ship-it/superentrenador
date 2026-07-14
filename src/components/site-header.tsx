@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, LayoutDashboard, MapPinned, Sparkles, UserRound } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { BrandMark } from "@/components/brand-mark";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -17,7 +17,6 @@ const navItems = [
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const router = useRouter();
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -38,17 +37,16 @@ export function SiteHeader() {
 
   async function handleSignOut() {
     await signOut();
-    router.push("/");
-    router.refresh();
+    window.location.assign("/");
   }
 
   return (
     <>
-      <header className="sticky top-0 z-30 px-4 pt-4 md:px-6 lg:px-8">
-        <div className="app-surface mx-auto flex max-w-7xl items-center justify-between gap-6 rounded-[28px] px-5 py-4 lg:px-8">
+      <header className="sticky top-0 z-30 border-b border-[var(--line)] bg-[color:rgba(245,243,238,0.92)] backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-4 md:px-6 lg:px-8">
           <BrandMark />
 
-          <nav className="hidden items-center gap-3 md:flex">
+          <nav className="hidden items-center gap-2 md:flex">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -59,8 +57,8 @@ export function SiteHeader() {
                   href={item.href}
                   className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
                     isActive
-                      ? "bg-[var(--accent-soft)] text-[var(--text)]"
-                      : "text-[var(--muted)] hover:text-[var(--text)]"
+                      ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+                      : "text-[var(--muted)] hover:bg-[var(--surface)] hover:text-[var(--text)]"
                   }`}
                 >
                   <Icon size={15} className={isActive ? "text-[var(--accent)]" : "text-current"} />
@@ -75,14 +73,14 @@ export function SiteHeader() {
               <>
                 <Link
                   href="/coach-studio"
-                  className="inline-flex items-center gap-2 rounded-full border border-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--accent)] transition-colors hover:bg-[var(--accent-soft)]"
+                  className="inline-flex items-center gap-2 rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)]"
                 >
                   <Sparkles size={15} />
                   Coach Studio
                 </Link>
                 <Link
                   href="/mi-perfil"
-                  className="inline-flex items-center gap-2 rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--line-strong)]"
+                  className="inline-flex items-center gap-2 rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)]"
                 >
                   <LayoutDashboard size={15} />
                   Mi perfil
@@ -98,7 +96,7 @@ export function SiteHeader() {
               <>
                 <Link
                   href="/registro"
-                  className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-2 rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)]"
                 >
                   Publica tu anuncio
                 </Link>
@@ -112,9 +110,9 @@ export function SiteHeader() {
             )}
             <Link
               href="/entrenadores"
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:opacity-92"
             >
-              Buscar PT
+              Buscar entrenador
               <ArrowRight size={15} />
             </Link>
           </div>
@@ -123,7 +121,7 @@ export function SiteHeader() {
             {loggedIn ? (
               <Link
                 href="/mi-perfil"
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--ink)]"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white"
               >
                 <LayoutDashboard size={15} />
                 Mi perfil
@@ -131,9 +129,9 @@ export function SiteHeader() {
             ) : (
               <Link
                 href="/entrenadores"
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--ink)]"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white"
               >
-                Ver PT
+                Buscar
                 <ArrowRight size={15} />
               </Link>
             )}

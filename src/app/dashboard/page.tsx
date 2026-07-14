@@ -91,7 +91,7 @@ function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile
       <div className="grid gap-4 sm:grid-cols-2">
         <Link
           href="/mi-perfil"
-          className="app-surface flex items-center gap-4 rounded-[24px] p-5 transition-colors hover:border-[var(--line-strong)]"
+          className="app-surface flex items-center gap-4 rounded-[20px] p-5 transition-colors hover:border-[var(--line-strong)]"
         >
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)]">
             <PenLine size={18} className="text-[var(--accent)]" />
@@ -104,7 +104,7 @@ function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile
 
         <Link
           href="/dashboard/mensajes"
-          className="app-surface flex items-center gap-4 rounded-[24px] p-5 transition-colors hover:border-[var(--line-strong)]"
+          className="app-surface flex items-center gap-4 rounded-[20px] p-5 transition-colors hover:border-[var(--line-strong)]"
         >
           <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)]">
             <MessageSquare size={18} className="text-[var(--accent)]" />
@@ -125,7 +125,7 @@ function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile
         {profile.is_published && (
           <Link
             href={`/entrenadores/${profile.slug}`}
-            className="app-surface flex items-center gap-4 rounded-[24px] p-5 transition-colors hover:border-[var(--line-strong)]"
+            className="app-surface flex items-center gap-4 rounded-[20px] p-5 transition-colors hover:border-[var(--line-strong)]"
           >
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)]">
               <ExternalLink size={18} className="text-[var(--accent)]" />
@@ -156,7 +156,7 @@ function ClientDashboard({ name, sentMessages }: { name?: string; sentMessages: 
       <div className="grid gap-4 sm:grid-cols-2">
         <Link
           href="/dashboard/mensajes"
-          className="app-surface flex items-center gap-4 rounded-[24px] p-5 transition-colors hover:border-[var(--line-strong)]"
+          className="app-surface flex items-center gap-4 rounded-[20px] p-5 transition-colors hover:border-[var(--line-strong)]"
         >
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)]">
             <MessageSquare size={18} className="text-[var(--accent)]" />
@@ -171,7 +171,7 @@ function ClientDashboard({ name, sentMessages }: { name?: string; sentMessages: 
 
         <Link
           href="/entrenadores"
-          className="app-surface flex items-center gap-4 rounded-[24px] p-5 transition-colors hover:border-[var(--line-strong)]"
+          className="app-surface flex items-center gap-4 rounded-[20px] p-5 transition-colors hover:border-[var(--line-strong)]"
         >
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)]">
             <Search size={18} className="text-[var(--accent)]" />

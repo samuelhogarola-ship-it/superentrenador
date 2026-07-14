@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Política de privacidad | Super Entrenador",
+  title: "Política de privacidad",
   description: "Cómo recopilamos, usamos y protegemos tus datos en el marketplace de entrenadores personales Super Entrenador.",
+  alternates: {
+    canonical: "/politica-privacidad",
+  },
 };
 
 export default function PoliticaPrivacidadPage() {
   return (
     <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-10 md:px-6 md:py-14 lg:px-8">
-      <div className="app-surface rounded-[32px] px-6 py-10 sm:px-10 sm:py-12">
+      <div className="app-surface rounded-[28px] px-6 py-10 sm:px-10 sm:py-12">
         <p className="app-kicker">Legal</p>
         <h1 className="app-title mt-3 text-4xl text-[var(--text)]">Política de privacidad</h1>
         <p className="app-copy mt-4 text-sm">Última actualización: junio 2026</p>
