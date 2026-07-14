@@ -2,19 +2,67 @@
 
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
+function getAuthCallbackUrl(redirectPath: string) {
+  return `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectPath)}`;
+}
+
+export function getAuthErrorMessage(message: string) {
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes("email rate limit")) {
+    return "Hemos alcanzado el límite temporal de emails de acceso. Inténtalo de nuevo en unos minutos.";
+  }
+  if (normalized.includes("signups not allowed")) {
+    return "No existe una cuenta con ese email. Crea una cuenta gratis primero.";
+  }
+  if (message === "Invalid login credentials") {
+    return "Email o contraseña incorrectos.";
+  }
+
+  return message;
+}
+
 export async function signInWithGoogle(redirectPath = "/mi-perfil") {
   const supabase = getSupabaseBrowserClient();
   return supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectPath)}`,
+      redirectTo: getAuthCallbackUrl(redirectPath),
+    },
+  });
+}
+
+export async function signInWithMagicLink(email: string, redirectPath = "/mi-perfil") {
+  const supabase = getSupabaseBrowserClient();
+  return supabase.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: getAuthCallbackUrl(redirectPath),
+      shouldCreateUser: false,
+    },
+  });
+}
+
+export async function signUpWithMagicLink(email: string, redirectPath = "/mi-perfil") {
+  const supabase = getSupabaseBrowserClient();
+  return supabase.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: getAuthCallbackUrl(redirectPath),
+      shouldCreateUser: true,
     },
   });
 }
 
 export async function signUp(email: string, password: string) {
   const supabase = getSupabaseBrowserClient();
-  return supabase.auth.signUp({ email, password });
+  return supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: getAuthCallbackUrl("/mi-perfil"),
+    },
+  });
 }
 
 export async function signIn(email: string, password: string) {
