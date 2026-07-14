@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BadgeCheck, MapPin } from "lucide-react";
+import { BadgeCheck, MapPin, ShieldCheck } from "lucide-react";
 import { Avatar } from "@/components/avatar";
 import { RatingStars } from "@/components/rating-stars";
 import type { PublicTrainerProfile } from "@/types/marketplace";
@@ -10,7 +10,7 @@ interface TrainerListItemProps {
 
 export function TrainerListItem({ trainer }: TrainerListItemProps) {
   return (
-    <article className="group flex flex-col gap-5 rounded-[20px] border border-[var(--line)] bg-[var(--surface)] p-5 shadow-[var(--shadow-soft)] transition-colors hover:border-[var(--line-strong)] sm:flex-row sm:gap-6 sm:p-6">
+    <article className="group flex flex-col gap-5 rounded-[24px] border border-[var(--line)] bg-[linear-gradient(180deg,#fff,#fcfaf5)] p-5 shadow-[var(--shadow-soft)] transition duration-200 hover:-translate-y-0.5 hover:border-[var(--line-strong)] hover:shadow-[var(--shadow)] sm:flex-row sm:gap-6 sm:p-6">
       <div className="shrink-0 self-start">
         <Avatar name={trainer.displayName} photoUrl={trainer.photoUrl} size="xl" />
       </div>
@@ -18,12 +18,14 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
       <div className="flex flex-1 flex-col gap-0">
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="font-heading text-xl text-[var(--text)]">{trainer.displayName}</h3>
-          {trainer.verified ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-700">
-              <BadgeCheck size={13} />
-              Verificado
-            </span>
-          ) : null}
+          <span
+            className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${
+              trainer.verified ? "bg-emerald-500/10 text-emerald-700" : "bg-[var(--gold-soft)] text-[var(--gold)]"
+            }`}
+          >
+            {trainer.verified ? <BadgeCheck size={13} /> : <ShieldCheck size={13} />}
+            {trainer.verified ? "Verificado" : "En revisión"}
+          </span>
         </div>
 
         <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-[var(--muted)]">
@@ -47,6 +49,15 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
             </span>
           ))}
         </div>
+
+        <div className="mt-4 flex flex-wrap gap-2 text-xs text-[var(--muted)]">
+          <span className="rounded-full border border-[var(--line)] bg-white/70 px-3 py-1.5">
+            {trainer.yearsExperience} años de experiencia
+          </span>
+          <span className="rounded-full border border-[var(--line)] bg-white/70 px-3 py-1.5">
+            {trainer.modalities.join(" · ")}
+          </span>
+        </div>
       </div>
 
       <div className="flex shrink-0 flex-row items-center justify-between gap-3 border-t border-[var(--line)] pt-4 sm:flex-col sm:items-end sm:justify-center sm:border-t-0 sm:border-l sm:pl-6 sm:pt-0">
@@ -58,7 +69,7 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
         </div>
         <Link
           href={`/entrenadores/${trainer.slug}`}
-          className="inline-flex items-center justify-center rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-5 py-2.5 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+          className="inline-flex items-center justify-center rounded-full border border-[var(--text)] bg-[var(--text)] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:border-[var(--accent)] hover:bg-[var(--accent)]"
         >
           Ver perfil
         </Link>

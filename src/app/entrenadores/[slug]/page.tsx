@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BadgeCheck, ChevronRight, MapPin } from "lucide-react";
+import { BadgeCheck, ChevronRight, MapPin, ShieldCheck, Sparkles } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Avatar } from "@/components/avatar";
 import { ContactPanel } from "@/components/contact-panel";
@@ -71,7 +71,7 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
         <span className="text-[var(--text)]">{trainer.displayName}</span>
       </nav>
 
-      <section className="app-surface grid gap-8 rounded-[28px] p-6 sm:p-8 lg:grid-cols-[1.4fr_0.8fr]">
+      <section className="premium-card grid gap-8 rounded-[32px] p-6 sm:p-8 lg:grid-cols-[1.4fr_0.8fr]">
         <div>
           <div className="flex flex-wrap items-center gap-4">
             <Avatar name={trainer.displayName} photoUrl={trainer.photoUrl ?? undefined} size="xl" />
@@ -85,18 +85,35 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
               </h1>
               <div className="mt-3 flex flex-wrap items-center gap-3">
                 <RatingStars rating={trainer.rating} reviewsCount={trainer.reviewsCount} size={16} />
-                {trainer.verified ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-700">
-                    <BadgeCheck size={13} />
-                    Verificado
-                  </span>
-                ) : null}
+                <span
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
+                    trainer.verified ? "bg-emerald-500/10 text-emerald-700" : "bg-[var(--gold-soft)] text-[var(--gold)]"
+                  }`}
+                >
+                  {trainer.verified ? <BadgeCheck size={13} /> : <ShieldCheck size={13} />}
+                  {trainer.verified ? "Verificado" : "En revisión editorial"}
+                </span>
               </div>
             </div>
           </div>
 
           <p className="mt-6 text-xl font-semibold text-[var(--text)]">{trainer.headline}</p>
           <p className="app-copy mt-4 max-w-3xl text-base">{trainer.longBio}</p>
+
+          <div className="mt-7 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-[18px] border border-[var(--line)] bg-white/70 p-4">
+              <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--muted)]">Experiencia</p>
+              <p className="mt-1 font-heading text-2xl text-[var(--text)]">{trainer.yearsExperience} años</p>
+            </div>
+            <div className="rounded-[18px] border border-[var(--line)] bg-white/70 p-4">
+              <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--muted)]">Desde</p>
+              <p className="mt-1 font-heading text-2xl text-[var(--text)]">{trainer.priceFrom}€</p>
+            </div>
+            <div className="rounded-[18px] border border-[var(--line)] bg-white/70 p-4">
+              <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--muted)]">Formato</p>
+              <p className="mt-1 text-sm font-semibold text-[var(--text)]">{trainer.modalities.join(" · ")}</p>
+            </div>
+          </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
             {trainer.specialties.map((specialty) => (
@@ -143,14 +160,25 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
 
       {trainer.reviewsCount > 0 ? (
         <Reveal>
-          <section className="app-surface rounded-[28px] p-6 sm:p-8">
-            <p className="app-kicker">Opiniones</p>
-            <h2 className="app-title mt-2 text-3xl text-[var(--text)]">
-              {trainer.rating} de 5 · {trainer.reviewsCount} opiniones verificadas
-            </h2>
-            <p className="app-copy mt-4 text-sm">
-              Inicia sesión para ver el detalle de cada reseña y contactar con {trainer.displayName}.
-            </p>
+          <section className="premium-card grid gap-5 rounded-[28px] p-6 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <p className="app-kicker inline-flex items-center gap-2">
+                <Sparkles size={13} />
+                Señal de confianza
+              </p>
+              <h2 className="app-title mt-2 text-3xl text-[var(--text)]">
+                {trainer.rating} de 5 · {trainer.reviewsCount} opiniones verificadas
+              </h2>
+              <p className="app-copy mt-4 text-sm">
+                Inicia sesión para ver el detalle de cada reseña y contactar con {trainer.displayName}.
+              </p>
+            </div>
+            <Link
+              href={`/login?redirectTo=${encodeURIComponent(`/entrenadores/${trainer.slug}`)}`}
+              className="inline-flex items-center justify-center rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-bold text-white transition-transform hover:-translate-y-0.5"
+            >
+              Desbloquear contacto
+            </Link>
           </section>
         </Reveal>
       ) : null}

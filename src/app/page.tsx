@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, MapPin } from "lucide-react";
+import { ArrowRight, BadgeCheck, CheckCircle2, MapPin, ShieldCheck, Sparkles, Target } from "lucide-react";
 import { CategoryGrid } from "@/components/category-grid";
 import { HeroSearchBar } from "@/components/hero-search-bar";
 import { JsonLd } from "@/components/json-ld";
@@ -17,9 +17,33 @@ import {
 } from "@/lib/repositories/trainers";
 
 const HERO_POINTS = [
-  "Ciudad, especialidad y modalidad en un solo paso.",
-  "Perfiles comparables con señal suficiente para decidir.",
-  "Contacto protegido hasta que tengas claro a quién escribir.",
+  "Comparativa clara antes de contactar.",
+  "Perfiles revisados y preparados para SEO local.",
+  "Contacto protegido para conversaciones con intención real.",
+];
+
+const TRUST_SIGNALS = [
+  { value: "3 min", label: "para encontrar una shortlist" },
+  { value: "0 ruido", label: "sin feeds, anuncios ni perfiles inflados" },
+  { value: "1 criterio", label: "objetivo, ciudad y modalidad" },
+];
+
+const FLOW_STEPS = [
+  {
+    icon: Target,
+    title: "Define el objetivo",
+    body: "Fuerza, pérdida de grasa, posparto, rendimiento o seguimiento online. El filtro empieza por intención real.",
+  },
+  {
+    icon: BadgeCheck,
+    title: "Compara señal útil",
+    body: "Experiencia, modalidad, precio de entrada, reseñas y especialidad aparecen en el mismo lenguaje visual.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Contacta con control",
+    body: "El marketplace protege el contacto y empuja conversaciones más serias para usuarios y entrenadores.",
+  },
 ];
 
 export default async function Home() {
@@ -34,36 +58,61 @@ export default async function Home() {
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-14 px-4 py-8 md:px-6 md:py-10 lg:px-8">
       <JsonLd data={marketplaceWebsiteJsonLd()} />
       <JsonLd data={trainerCollectionJsonLd(featuredTrainers, siteConfig.url, "Entrenadores personales destacados")} />
-      <section className="rounded-[28px] border border-[var(--line)] bg-[var(--surface)] p-6 shadow-[var(--shadow)] sm:p-8 lg:p-10">
-        <p className="app-kicker">Marketplace de entrenadores</p>
-        <h1 className="app-title mt-4 max-w-3xl text-4xl leading-[1.02] sm:text-6xl">
-          Encuentra entrenador personal en tu ciudad sin adivinar.
-        </h1>
-        <p className="app-copy mt-5 max-w-2xl text-lg">
-          Busca por ciudad y especialidad, compara perfiles claros y escribe solo cuando tengas criterio para elegir.
-        </p>
+      <section className="premium-hero rounded-[32px] p-6 sm:p-8 lg:p-10">
+        <div className="relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+          <div>
+            <p className="app-kicker inline-flex items-center gap-2">
+              <Sparkles size={13} />
+              Marketplace premium de entrenadores
+            </p>
+            <h1 className="app-title mt-4 max-w-4xl text-4xl leading-[0.98] sm:text-6xl lg:text-7xl">
+              Elige entrenador personal con criterio, no por intuición.
+            </h1>
+            <p className="app-copy mt-6 max-w-2xl text-lg">
+              Compara especialistas locales por objetivo, ciudad, modalidad, reputación y precio de entrada. Menos ruido, mejores conversaciones y fichas listas para posicionar.
+            </p>
 
-        <div className="mt-8 max-w-4xl">
-          <HeroSearchBar specialties={specialties} cities={cities} />
-        </div>
+            <div className="mt-8 max-w-4xl">
+              <HeroSearchBar specialties={specialties} cities={cities} />
+            </div>
 
-        <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--muted)]">
-          {HERO_POINTS.map((item) => (
-            <span key={item} className="inline-flex items-center gap-2">
-              <CheckCircle2 size={15} className="text-[var(--accent)]" />
-              {item}
-            </span>
-          ))}
-        </div>
+            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--muted)]">
+              {HERO_POINTS.map((item) => (
+                <span key={item} className="inline-flex items-center gap-2">
+                  <CheckCircle2 size={15} className="text-[var(--accent)]" />
+                  {item}
+                </span>
+              ))}
+            </div>
 
-        <div className="mt-6">
-          <Link
-            href="/registro"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--text)] underline decoration-[var(--line-strong)] underline-offset-4 transition-colors hover:text-[var(--accent)]"
-          >
-            Soy entrenador
-            <ArrowRight size={14} />
-          </Link>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link
+                href="/entrenadores"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-bold text-white shadow-[0_18px_36px_rgba(22,101,52,0.22)] transition-transform hover:-translate-y-0.5"
+              >
+                Ver entrenadores
+                <ArrowRight size={16} />
+              </Link>
+              <Link
+                href="/registro"
+                className="inline-flex items-center gap-2 rounded-full border border-[var(--line-strong)] bg-white/70 px-6 py-3 text-sm font-bold text-[var(--text)] backdrop-blur transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+              >
+                Soy entrenador
+              </Link>
+            </div>
+          </div>
+
+          <aside className="premium-card rounded-[28px] p-5">
+            <p className="app-kicker">Por qué funciona</p>
+            <div className="mt-5 grid gap-4">
+              {TRUST_SIGNALS.map((signal) => (
+                <div key={signal.label} className="rounded-[20px] border border-[var(--line)] bg-white/70 p-4">
+                  <strong className="font-heading text-3xl text-[var(--text)]">{signal.value}</strong>
+                  <p className="mt-1 text-sm leading-6 text-[var(--muted)]">{signal.label}</p>
+                </div>
+              ))}
+            </div>
+          </aside>
         </div>
       </section>
 
@@ -80,11 +129,28 @@ export default async function Home() {
         <Reveal>
           <SectionHeading
             eyebrow="Accesos rápidos"
-            title="Empieza por el objetivo que ya tienes en mente"
-            body="Atajos para navegar directo a la especialidad que te interesa, sin recorrer el marketplace completo."
+            title="Empieza por el resultado que quieres conseguir"
+            body="El marketplace no te obliga a navegar como una red social: filtra por intención y llega antes a una lista corta."
           />
         </Reveal>
         <CategoryGrid specialties={specialties} />
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-3">
+        {FLOW_STEPS.map((step, index) => {
+          const Icon = step.icon;
+          return (
+            <Reveal key={step.title} delay={index * 80}>
+              <article className="premium-card h-full rounded-[24px] p-6">
+                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent)]">
+                  <Icon size={19} />
+                </span>
+                <h2 className="app-title mt-5 text-2xl text-[var(--text)]">{step.title}</h2>
+                <p className="app-copy mt-3 text-sm">{step.body}</p>
+              </article>
+            </Reveal>
+          );
+        })}
       </section>
 
       <section className="flex flex-col gap-6">
@@ -92,8 +158,8 @@ export default async function Home() {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <SectionHeading
               eyebrow="Perfiles destacados"
-              title="Una selección para empezar a comparar con ventaja"
-              body="Perfiles bien presentados, con señal suficiente para decidir si merece la pena profundizar."
+              title="Perfiles que ya parecen una decisión seria"
+              body="Cada ficha muestra señal comercial útil: especialidad, reputación, precio de entrada y formato de trabajo."
             />
             <Link
               href="/entrenadores"

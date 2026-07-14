@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Award, Globe2, LockKeyhole, MapPin, MessageSquare, Phone } from "lucide-react";
+import { Award, Globe2, LockKeyhole, MapPin, MessageSquare, Phone, ShieldCheck } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { MessageForm } from "@/components/message-form";
 
@@ -80,28 +80,33 @@ export function ContactPanel({
   }, [trainerSlug]);
 
   return (
-    <div className="rounded-[28px] border border-[var(--line)] bg-[var(--bg-soft)] p-6">
-      <p className="text-xs text-[var(--muted)]">Desde</p>
+    <div className="rounded-[28px] border border-[var(--line)] bg-[var(--text)] p-6 text-white shadow-[var(--shadow)]">
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-white/55">Desde</p>
       <p className="font-heading text-4xl text-[var(--text)]">
-        {priceFrom}€<span className="text-base font-medium text-[var(--muted)]"> /sesión</span>
+        <span className="text-white">{priceFrom}€</span>
+        <span className="text-base font-medium text-white/55"> /sesión</span>
+      </p>
+      <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs font-semibold text-white/78">
+        <ShieldCheck size={13} />
+        Contacto protegido por registro
       </p>
 
-      <div className="mt-6 grid gap-4 text-sm text-[var(--muted)]">
+      <div className="mt-6 grid gap-4 text-sm text-white/70">
         <span className="inline-flex items-center gap-3">
-          <Award size={16} className="text-[var(--accent)]" />
+          <Award size={16} className="text-emerald-300" />
           {yearsExperience} años de experiencia
         </span>
         <span className="inline-flex items-center gap-3">
-          <MapPin size={16} className="text-[var(--accent)]" />
+          <MapPin size={16} className="text-emerald-300" />
           {modalities.join(" · ")}
         </span>
         <span className="inline-flex items-center gap-3">
-          <Globe2 size={16} className="text-[var(--accent)]" />
+          <Globe2 size={16} className="text-emerald-300" />
           {languages.join(" · ")}
         </span>
       </div>
 
-      <div className="mt-6 rounded-[20px] border border-[var(--line)] bg-[var(--surface)] p-5">
+      <div className="mt-6 rounded-[22px] border border-white/10 bg-white p-5 text-[var(--text)]">
         {!checked ? null : loggedIn && currentUser ? (
           <>
             {contactInfo ? (
@@ -148,7 +153,7 @@ export function ContactPanel({
             <div className="mt-5 grid gap-3">
               <Link
                 href={loginHref}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition-transform hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-bold text-white transition-transform hover:-translate-y-0.5"
               >
                 <MessageSquare size={16} />
                 Contactar con {trainerName}
