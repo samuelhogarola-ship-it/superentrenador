@@ -40,7 +40,9 @@ export function ContactPanel({
   const [contactInfo, setContactInfo] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<{ id: string; name: string } | null>(null);
   const [showMessageForm, setShowMessageForm] = useState(false);
-  const loginHref = `/login?redirectTo=${encodeURIComponent(`/entrenadores/${trainerSlug}`)}`;
+  const profilePath = `/entrenadores/${trainerSlug}`;
+  const loginHref = `/login?redirectTo=${encodeURIComponent(profilePath)}`;
+  const registerHref = `/registro?intent=client&redirectTo=${encodeURIComponent(profilePath)}`;
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
@@ -159,7 +161,7 @@ export function ContactPanel({
                 Contactar con {trainerName}
               </Link>
               <Link
-                href="/registro"
+                href={registerHref}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--line)] px-4 py-3 text-sm font-semibold text-[var(--text)]"
               >
                 <LockKeyhole size={16} />

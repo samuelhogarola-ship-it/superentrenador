@@ -16,7 +16,7 @@ export function LoginPageClient() {
 
 function getSafeRedirectTo(value: string | null) {
   if (!value || !value.startsWith("/") || value.startsWith("//")) {
-    return "/mi-perfil";
+    return "/dashboard";
   }
   return value;
 }
@@ -25,6 +25,8 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = getSafeRedirectTo(searchParams.get("redirectTo"));
+  const registerIntent = redirectTo.startsWith("/entrenadores/") ? "client" : "trainer";
+  const registerHref = `/registro?intent=${registerIntent}&redirectTo=${encodeURIComponent(redirectTo)}`;
   const callbackError = searchParams.get("error");
   const [email, setEmail] = useState("");
   const [magicEmail, setMagicEmail] = useState("");
@@ -99,7 +101,7 @@ function LoginForm() {
           <h2 className="app-title text-2xl text-[var(--text)]">Iniciar sesión</h2>
           <p className="app-copy mt-2 text-sm">
             ¿No tienes cuenta?{" "}
-            <Link href="/registro" className="font-semibold text-[var(--text)] hover:text-[var(--accent)]">
+            <Link href={registerHref} className="font-semibold text-[var(--text)] hover:text-[var(--accent)]">
               Regístrate gratis
             </Link>
           </p>

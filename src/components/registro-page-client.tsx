@@ -1,22 +1,48 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { ArrowRight, CheckCircle, Mail, Sparkles } from "lucide-react";
-import { getAuthErrorMessage, signInWithGoogle, signUpWithMagicLink } from "@/lib/auth";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
+import { ArrowRight, CheckCircle, Mail, Sparkles, UserRound, Dumbbell } from "lucide-react";
+import { getAuthErrorMessage, signInWithGoogle, signUpWithMagicLink, type AuthIntent } from "@/lib/auth";
 
 export function RegistroPageClient() {
+  return (
+    <Suspense fallback={null}>
+      <RegistroForm />
+    </Suspense>
+  );
+}
+
+function getSafeRedirectTo(value: string | null) {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) {
+    return "/dashboard";
+  }
+  return value;
+}
+
+function getInitialIntent(value: string | null, redirectTo: string): AuthIntent {
+  if (value === "client" || value === "trainer") return value;
+  return redirectTo.startsWith("/entrenadores/") ? "client" : "trainer";
+}
+
+function RegistroForm() {
+  const searchParams = useSearchParams();
+  const redirectTo = getSafeRedirectTo(searchParams.get("redirectTo"));
+  const [intent, setIntent] = useState<AuthIntent>(() => getInitialIntent(searchParams.get("intent"), redirectTo));
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const destination = intent === "trainer" ? "/mi-perfil" : redirectTo;
+  const isTrainer = intent === "trainer";
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setError(null);
     setLoading(true);
-    const { error: authError } = await signUpWithMagicLink(email, "/mi-perfil");
+    const { error: authError } = await signUpWithMagicLink(email, destination, intent);
 
     if (authError) {
       console.error("[auth/client/register] signInWithOtp failed", authError);
@@ -38,13 +64,14 @@ export function RegistroPageClient() {
           </span>
           <h1 className="app-title mt-5 text-2xl text-[var(--text)]">Revisa tu email</h1>
           <p className="app-copy mx-auto mt-3 max-w-xs text-sm">
-            Te hemos enviado un enlace mágico a <strong>{email}</strong>. Haz clic en él para entrar y completar tu perfil.
+            Te hemos enviado un enlace mágico a <strong>{email}</strong>. Haz clic en él para entrar
+            {isTrainer ? " y completar tu perfil." : "."}
           </p>
           <Link
-            href="/mi-perfil"
+            href={destination}
             className="mt-7 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-semibold text-white"
           >
-            Ir a mi perfil
+            {isTrainer ? "Ir a mi perfil" : "Ir a mi panel"}
             <ArrowRight size={15} />
           </Link>
         </div>
@@ -56,20 +83,34 @@ export function RegistroPageClient() {
     <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-4 py-12 md:px-6">
       <div className="grid w-full gap-6 lg:grid-cols-[1.02fr_0.98fr]">
         <section className="rounded-[28px] bg-[var(--panel-strong)] p-8 sm:p-10">
-          <p className="app-kicker">Para entrenadores</p>
-          <h1 className="app-title mt-4 text-4xl text-[var(--text)] sm:text-5xl">Publica tu perfil y capta demanda local.</h1>
+          <p className="app-kicker">{isTrainer ? "Para entrenadores" : "Para clientes"}</p>
+          <h1 className="app-title mt-4 text-4xl text-[var(--text)] sm:text-5xl">
+            {isTrainer ? "Publica tu perfil y capta demanda local." : "Contacta con entrenadores sin ruido."}
+          </h1>
           <p className="app-copy mt-4 max-w-md text-base">
-            Crea una cuenta para aparecer en tu ciudad, mostrar tu especialidad y responder desde un flujo de contacto ordenado.
+            {isTrainer
+              ? "Crea una cuenta para aparecer en tu ciudad, mostrar tu especialidad y responder desde un flujo de contacto ordenado."
+              : "Crea una cuenta para guardar tu sesión, contactar desde perfiles públicos y seguir tus mensajes desde el panel."}
           </p>
           <div className="mt-8 rounded-[20px] border border-[var(--line)] bg-[var(--surface)] p-5">
             <div className="flex items-center gap-2 text-sm font-semibold text-[var(--text)]">
               <Sparkles size={16} className="text-[var(--accent)]" />
-              Qué consigues con tu cuenta
+              {isTrainer ? "Qué consigues con tu cuenta" : "Qué desbloquea tu cuenta"}
             </div>
             <ul className="mt-4 grid gap-2 text-sm text-[var(--muted)]">
-              <li>Perfil público con especialidad, experiencia y precio.</li>
-              <li>Mensajería integrada para leads interesados.</li>
-              <li>Acceso posterior a Coach Studio si activas la parte premium.</li>
+              {isTrainer ? (
+                <>
+                  <li>Perfil público con especialidad, experiencia y precio.</li>
+                  <li>Mensajería integrada para leads interesados.</li>
+                  <li>Acceso posterior a Coach Studio si activas la parte premium.</li>
+                </>
+              ) : (
+                <>
+                  <li>Contacto protegido con entrenadores publicados.</li>
+                  <li>Panel con tus mensajes enviados.</li>
+                  <li>Sesión segura por magic link, sin contraseña obligatoria.</li>
+                </>
+              )}
             </ul>
           </div>
         </section>
@@ -88,7 +129,7 @@ export function RegistroPageClient() {
             disabled={googleLoading}
             onClick={async () => {
               setGoogleLoading(true);
-              await signInWithGoogle();
+              await signInWithGoogle(destination);
             }}
             className="mt-6 inline-flex w-full items-center justify-center gap-3 rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-4 py-3 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)] disabled:opacity-50"
           >
@@ -105,6 +146,29 @@ export function RegistroPageClient() {
             <div className="h-px flex-1 bg-[var(--line)]" />
             <span className="text-xs text-[var(--muted)]">o con magic link</span>
             <div className="h-px flex-1 bg-[var(--line)]" />
+          </div>
+
+          <div className="mt-5 grid gap-2 rounded-[22px] border border-[var(--line)] bg-[var(--bg-soft)] p-2 sm:grid-cols-2">
+            <button
+              type="button"
+              onClick={() => setIntent("client")}
+              className={`inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold transition-colors ${
+                intent === "client" ? "bg-[var(--surface)] text-[var(--text)] shadow-[var(--shadow-soft)]" : "text-[var(--muted)]"
+              }`}
+            >
+              <UserRound size={15} />
+              Quiero contactar
+            </button>
+            <button
+              type="button"
+              onClick={() => setIntent("trainer")}
+              className={`inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold transition-colors ${
+                intent === "trainer" ? "bg-[var(--surface)] text-[var(--text)] shadow-[var(--shadow-soft)]" : "text-[var(--muted)]"
+              }`}
+            >
+              <Dumbbell size={15} />
+              Soy entrenador
+            </button>
           </div>
 
           <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-4">
@@ -132,7 +196,9 @@ export function RegistroPageClient() {
             </button>
 
             <p className="text-center text-xs text-[var(--muted)]">
-              Al registrarte aceptas que tu información sea pública en el marketplace.
+              {isTrainer
+                ? "Al registrarte aceptas que tu perfil enviado pueda revisarse antes de publicarse en el marketplace."
+                : "Al registrarte aceptas que usemos tu email para mantener tu sesión y tus mensajes."}
             </p>
           </form>
         </div>

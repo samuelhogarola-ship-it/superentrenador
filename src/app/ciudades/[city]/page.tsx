@@ -58,7 +58,7 @@ export default async function CityPage({ params, searchParams }: CityPageProps) 
     listTrainerProfilesByCity(currentCity.slug, {
       specialty: search.specialty,
       modality: search.modality,
-      sort: search.sort as "rating" | "price-asc" | "price-desc" | undefined,
+      sort: search.sort as "featured" | "rating" | "price-asc" | "price-desc" | undefined,
     }),
     listAllSpecialties(),
     listAllModalities(),

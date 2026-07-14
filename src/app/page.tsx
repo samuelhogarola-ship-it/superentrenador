@@ -38,7 +38,7 @@ const FLOW_STEPS = [
   {
     icon: BadgeCheck,
     title: "Compara señal útil",
-    body: "Experiencia, modalidad, precio de entrada, reseñas y especialidad aparecen en el mismo lenguaje visual.",
+    body: "Experiencia, modalidad, precio de entrada y especialidad aparecen en el mismo lenguaje visual.",
   },
   {
     icon: ShieldCheck,
@@ -71,7 +71,7 @@ export default async function Home() {
               Elige entrenador personal con criterio, no por intuición.
             </h1>
             <p className="app-copy mt-6 max-w-2xl text-lg">
-              Compara especialistas locales por objetivo, ciudad, modalidad, reputación y precio de entrada. Menos ruido, mejores conversaciones y fichas listas para posicionar.
+              Compara especialistas locales por objetivo, ciudad, modalidad y precio de entrada. Menos ruido, mejores conversaciones y fichas listas para posicionar.
             </p>
 
             <div className="mt-8 max-w-4xl">
@@ -121,8 +121,6 @@ export default async function Home() {
       <section>
         <StatsBar
           totalTrainers={stats.totalTrainers}
-          avgRating={stats.avgRating}
-          totalReviews={stats.totalReviews}
           totalCities={stats.totalCities}
         />
       </section>
@@ -161,7 +159,7 @@ export default async function Home() {
             <SectionHeading
               eyebrow="Perfiles destacados"
               title="Perfiles que ya parecen una decisión seria"
-              body="Cada ficha muestra señal comercial útil: especialidad, reputación, precio de entrada y formato de trabajo."
+              body="Cada ficha muestra señal comercial útil: especialidad, revisión editorial, precio de entrada y formato de trabajo."
             />
             <Link
               href="/entrenadores"

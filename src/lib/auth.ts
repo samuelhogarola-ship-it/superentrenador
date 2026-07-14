@@ -2,6 +2,8 @@
 
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
+export type AuthIntent = "client" | "trainer";
+
 function getAuthCallbackUrl(redirectPath: string) {
   return `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectPath)}`;
 }
@@ -22,7 +24,7 @@ export function getAuthErrorMessage(message: string) {
   return message;
 }
 
-export async function signInWithGoogle(redirectPath = "/mi-perfil") {
+export async function signInWithGoogle(redirectPath = "/dashboard") {
   const supabase = getSupabaseBrowserClient();
   return supabase.auth.signInWithOAuth({
     provider: "google",
@@ -32,7 +34,7 @@ export async function signInWithGoogle(redirectPath = "/mi-perfil") {
   });
 }
 
-export async function signInWithMagicLink(email: string, redirectPath = "/mi-perfil") {
+export async function signInWithMagicLink(email: string, redirectPath = "/dashboard") {
   const supabase = getSupabaseBrowserClient();
   return supabase.auth.signInWithOtp({
     email,
@@ -43,13 +45,16 @@ export async function signInWithMagicLink(email: string, redirectPath = "/mi-per
   });
 }
 
-export async function signUpWithMagicLink(email: string, redirectPath = "/mi-perfil") {
+export async function signUpWithMagicLink(email: string, redirectPath = "/dashboard", intent: AuthIntent = "client") {
   const supabase = getSupabaseBrowserClient();
   return supabase.auth.signInWithOtp({
     email,
     options: {
       emailRedirectTo: getAuthCallbackUrl(redirectPath),
       shouldCreateUser: true,
+      data: {
+        intent,
+      },
     },
   });
 }

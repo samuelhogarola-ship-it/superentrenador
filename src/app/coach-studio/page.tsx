@@ -2,24 +2,24 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle, Dumbbell, ExternalLink, Loader2, Salad, Sparkles, Users } from "lucide-react";
+import { CheckCircle, ExternalLink, Loader2, MessageSquare, ShieldCheck, Sparkles, UserRoundCog } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 const FEATURES = [
   {
-    icon: Dumbbell,
-    title: "Rutinas personalizadas",
-    desc: "Crea y asigna programas de entrenamiento completos a cada cliente.",
+    icon: UserRoundCog,
+    title: "Perfil profesional",
+    desc: "Mantén tu ficha pública revisada, clara y lista para captar demanda local.",
   },
   {
-    icon: Salad,
-    title: "Planes de nutrición",
-    desc: "Diseña dietas adaptadas a los objetivos y preferencias de tus clientes.",
+    icon: MessageSquare,
+    title: "Mensajes ordenados",
+    desc: "Centraliza leads del marketplace antes de activar herramientas avanzadas.",
   },
   {
-    icon: Users,
-    title: "Gestión de clientes",
-    desc: "Ficha completa por cliente, historial de progreso y seguimiento en tiempo real.",
+    icon: ShieldCheck,
+    title: "Acceso privado",
+    desc: "Activación manual mientras cerramos la capa comercial y operativa.",
   },
 ];
 
@@ -42,6 +42,7 @@ export default function CoachStudioPage() {
 function CoachStudioContent() {
   const router = useRouter();
   const [status, setStatus] = useState<Status>("loading");
+  const coachStudioUrl = process.env.NEXT_PUBLIC_COACH_STUDIO_URL;
 
   useEffect(() => {
     async function load() {
@@ -112,7 +113,7 @@ function CoachStudioContent() {
         <div>
           <p className="app-kicker">Tu suscripción</p>
           <h1 className="app-title mt-1 text-3xl text-[var(--text)]">Coach Studio</h1>
-          <p className="app-copy mt-2 text-sm">Suscripción activa — accede a tu área de trabajo.</p>
+          <p className="app-copy mt-2 text-sm">Acceso activo a tu área profesional.</p>
         </div>
 
         <div className="app-surface flex flex-col gap-5 rounded-[28px] p-6 sm:flex-row sm:items-center sm:gap-8">
@@ -122,18 +123,27 @@ function CoachStudioContent() {
           <div className="min-w-0 flex-1">
             <h2 className="font-heading text-lg text-[var(--text)]">Acceder a Coach Studio</h2>
             <p className="mt-0.5 text-sm text-[var(--muted)]">
-              Rutinas, dietas y gestión de clientes en un solo lugar.
+              Accede al entorno conectado cuando esté configurado para tu cuenta.
             </p>
           </div>
-          <a
-            href={process.env.NEXT_PUBLIC_COACH_STUDIO_URL ?? "#"}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
-          >
-            Ir a Coach Studio
-            <ExternalLink size={14} />
-          </a>
+          {coachStudioUrl ? (
+            <a
+              href={coachStudioUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
+            >
+              Ir a Coach Studio
+              <ExternalLink size={14} />
+            </a>
+          ) : (
+            <a
+              href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "soporte@superentrenador.com"}?subject=Configurar%20Coach%20Studio`}
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
+            >
+              Solicitar acceso
+            </a>
+          )}
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
@@ -158,8 +168,8 @@ function CoachStudioContent() {
         <p className="app-kicker">Para entrenadores</p>
         <h1 className="app-title mt-2 text-3xl text-[var(--text)]">Coach Studio</h1>
         <p className="app-copy mx-auto mt-3 max-w-lg text-base">
-          Tu área de trabajo profesional. Rutinas, planes de nutrición y gestión de clientes desde
-          un único panel.
+          Área profesional en acceso privado. Hoy priorizamos perfil público, mensajes y captación;
+          las herramientas avanzadas se activarán por fases.
         </p>
       </div>
 
@@ -181,19 +191,16 @@ function CoachStudioContent() {
         </div>
 
         <div>
-          <p className="font-heading text-4xl text-[var(--text)]">
-            49<span className="text-xl">€</span>
-            <span className="text-lg font-normal text-[var(--muted)]">/mes</span>
-          </p>
-          <p className="mt-1 text-xs text-[var(--muted)]">Sin permanencia. Cancela cuando quieras.</p>
+          <p className="font-heading text-4xl text-[var(--text)]">Acceso privado</p>
+          <p className="mt-1 text-xs text-[var(--muted)]">Activación manual mientras validamos el producto.</p>
         </div>
 
         <ul className="flex w-full flex-col gap-2 text-left">
           {[
-            "Rutinas personalizadas ilimitadas",
-            "Planes de nutrición",
-            "Gestión de clientes",
-            "Soporte prioritario",
+            "Perfil público revisado",
+            "Mensajes del marketplace",
+            "Preparado para herramientas avanzadas",
+            "Acompañamiento de activación",
           ].map((item) => (
             <li key={item} className="flex items-center gap-2.5 text-sm text-[var(--text)]">
               <CheckCircle size={15} className="shrink-0 text-emerald-500" />
@@ -210,7 +217,7 @@ function CoachStudioContent() {
         </a>
 
         <p className="text-xs text-[var(--muted)]">
-          Te activamos el acceso en menos de 24 h.
+          Te responderemos con el siguiente paso y el estado real de activación.
         </p>
       </div>
     </main>

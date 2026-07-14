@@ -3,7 +3,7 @@ import { RegistroPageClient } from "@/components/registro-page-client";
 
 export const metadata: Metadata = {
   title: "Crear cuenta",
-  description: "Crea tu cuenta en Super Entrenador para publicar tu perfil o contactar con entrenadores verificados.",
+  description: "Crea tu cuenta en Super Entrenador para contactar con entrenadores o publicar tu perfil profesional.",
   alternates: {
     canonical: "/registro",
   },

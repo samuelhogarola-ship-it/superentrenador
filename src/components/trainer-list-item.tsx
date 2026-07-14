@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { BadgeCheck, MapPin, ShieldCheck } from "lucide-react";
 import { Avatar } from "@/components/avatar";
-import { RatingStars } from "@/components/rating-stars";
 import type { PublicTrainerProfile } from "@/types/marketplace";
 
 interface TrainerListItemProps {
@@ -33,9 +32,7 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
           {trainer.city} · {trainer.region}
         </p>
 
-        <div className="mt-2">
-          <RatingStars rating={trainer.rating} reviewsCount={trainer.reviewsCount} />
-        </div>
+        <p className="mt-2 text-sm font-semibold text-[var(--accent)]">Perfil revisado editorialmente</p>
 
         <p className="mt-2 line-clamp-2 text-sm text-[var(--text)]">{trainer.headline}</p>
 

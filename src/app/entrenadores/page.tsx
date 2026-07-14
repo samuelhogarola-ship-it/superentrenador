@@ -36,7 +36,7 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
       specialty: params.specialty,
       citySlug: params.city,
       modality: params.modality,
-      sort: params.sort as "rating" | "price-asc" | "price-desc" | undefined,
+      sort: params.sort as "featured" | "rating" | "price-asc" | "price-desc" | undefined,
     }),
     listAllSpecialties(),
     listAllModalities(),
@@ -53,7 +53,7 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
             {trainers.length} entrenador{trainers.length === 1 ? "" : "es"} para comparar con criterio
           </h1>
           <p className="app-copy mt-3 max-w-2xl text-sm">
-            Filtra por especialidad, ciudad o modalidad y revisa perfiles con precio, reputación y formato antes de desbloquear el contacto.
+            Filtra por especialidad, ciudad o modalidad y revisa perfiles con precio, experiencia y formato antes de desbloquear el contacto.
           </p>
         </div>
         <Link

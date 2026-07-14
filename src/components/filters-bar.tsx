@@ -45,6 +45,7 @@ export function FiltersBar({ specialties, modalities, cities, basePath, lockCity
         </span>
 
         <select
+          aria-label="Filtrar por especialidad"
           defaultValue={searchParams.get("specialty") ?? ""}
           onChange={(event) => updateParam("specialty", event.target.value)}
           className={`${selectClass} col-span-2 sm:col-span-1`}
@@ -59,6 +60,7 @@ export function FiltersBar({ specialties, modalities, cities, basePath, lockCity
 
         {lockCity ? null : (
           <select
+            aria-label="Filtrar por ciudad"
             defaultValue={searchParams.get("city") ?? ""}
             onChange={(event) => updateParam("city", event.target.value)}
             className={selectClass}
@@ -73,6 +75,7 @@ export function FiltersBar({ specialties, modalities, cities, basePath, lockCity
         )}
 
         <select
+          aria-label="Filtrar por modalidad"
           defaultValue={searchParams.get("modality") ?? ""}
           onChange={(event) => updateParam("modality", event.target.value)}
           className={selectClass}
@@ -86,11 +89,12 @@ export function FiltersBar({ specialties, modalities, cities, basePath, lockCity
         </select>
 
         <select
-          defaultValue={searchParams.get("sort") ?? "rating"}
+          aria-label="Ordenar perfiles"
+          defaultValue={searchParams.get("sort") ?? "featured"}
           onChange={(event) => updateParam("sort", event.target.value)}
           className={`${selectClass} col-span-2 sm:col-span-1 sm:ml-auto`}
         >
-          <option value="rating">Mejor valorados</option>
+          <option value="featured">Destacados</option>
           <option value="price-asc">Precio: menor a mayor</option>
           <option value="price-desc">Precio: mayor a menor</option>
         </select>

@@ -7,7 +7,7 @@ export interface TrainerFilters {
   specialty?: string;
   citySlug?: string;
   modality?: string;
-  sort?: "rating" | "price-asc" | "price-desc";
+  sort?: "featured" | "price-asc" | "price-desc" | "rating";
 }
 
 interface CityRow {
@@ -51,6 +51,20 @@ const PUBLIC_VIEW_COLUMNS =
   "headline, short_bio, long_bio, specialties, verified, years_experience, " +
   "rating, reviews_count, price_from, modalities, languages, " +
   "hidden_contact_hint, photo_url, review_status";
+
+const DEMO_PROFILE_SLUGS = new Set(publicTrainerProfiles.map((trainer) => trainer.slug));
+
+function isMarketplaceDemoMode() {
+  return process.env.MARKETPLACE_DEMO_MODE === "true";
+}
+
+function getDemoTrainerProfiles() {
+  return isMarketplaceDemoMode() ? publicTrainerProfiles : [];
+}
+
+function isProductionDemoProfile(row: Pick<TrainerRow, "slug">) {
+  return !isMarketplaceDemoMode() && DEMO_PROFILE_SLUGS.has(row.slug);
+}
 
 function mapCity(row: CityRow): MarketplaceCity {
   return {
@@ -103,11 +117,14 @@ function sortTrainers(trainers: PublicTrainerProfile[], sort: TrainerFilters["so
   if (sort === "price-desc") {
     return [...trainers].sort((a, b) => b.priceFrom - a.priceFrom);
   }
-  return [...trainers].sort((a, b) => b.rating - a.rating);
+  return [...trainers].sort((a, b) => {
+    if (a.verified !== b.verified) return Number(b.verified) - Number(a.verified);
+    return a.displayName.localeCompare(b.displayName, "es");
+  });
 }
 
 function filterStaticTrainers(filters: TrainerFilters) {
-  let trainers = [...publicTrainerProfiles];
+  let trainers = getDemoTrainerProfiles();
 
   if (filters.specialty) {
     trainers = trainers.filter((trainer) => trainer.specialties.includes(filters.specialty!));
@@ -183,7 +200,7 @@ export async function listPublicTrainerProfiles(filters: TrainerFilters = {}): P
   } else if (filters.sort === "price-desc") {
     query = query.order("price_from", { ascending: false });
   } else {
-    query = query.order("rating", { ascending: false });
+    query = query.order("verified", { ascending: false }).order("created_at", { ascending: false });
   }
 
   const { data, error } = await query;
@@ -193,11 +210,11 @@ export async function listPublicTrainerProfiles(filters: TrainerFilters = {}): P
     return [];
   }
 
-  return (data as unknown as TrainerRow[]).map(mapTrainer);
+  return (data as unknown as TrainerRow[]).filter((row) => !isProductionDemoProfile(row)).map(mapTrainer);
 }
 
 export async function listFeaturedTrainerProfiles(): Promise<PublicTrainerProfile[]> {
-  const trainers = await listPublicTrainerProfiles({ sort: "rating" });
+  const trainers = await listPublicTrainerProfiles({ sort: "featured" });
   return trainers.slice(0, 3);
 }
 
@@ -207,7 +224,7 @@ export async function listTrainerProfilesByCity(citySlug: string, filters: Train
 
 export async function getPublicTrainerProfileBySlug(slug: string): Promise<PublicTrainerProfile | null> {
   if (!hasSupabaseEnv()) {
-    return publicTrainerProfiles.find((trainer) => trainer.slug === slug) ?? null;
+    return getDemoTrainerProfiles().find((trainer) => trainer.slug === slug) ?? null;
   }
 
   const supabase = getSupabaseServerClient();
@@ -222,26 +239,33 @@ export async function getPublicTrainerProfileBySlug(slug: string): Promise<Publi
     return null;
   }
 
-  return mapTrainer(data as unknown as TrainerRow);
+  const trainer = data as unknown as TrainerRow;
+  if (isProductionDemoProfile(trainer)) {
+    return null;
+  }
+
+  return mapTrainer(trainer);
 }
 
 /** Only fetches the `specialties` column — avoids loading full profiles. */
 export async function listAllSpecialties(): Promise<string[]> {
   if (!hasSupabaseEnv()) {
     const set = new Set<string>();
-    publicTrainerProfiles.forEach((t) => t.specialties.forEach((s) => set.add(s)));
+    getDemoTrainerProfiles().forEach((t) => t.specialties.forEach((s) => set.add(s)));
     return Array.from(set).sort();
   }
 
   const supabase = getSupabaseServerClient();
   const { data } = await supabase
     .from("trainer_profiles_public")
-    .select("specialties");
+    .select("slug, specialties");
 
   if (!data) return [];
 
   const set = new Set<string>();
-  data.forEach((row) => (row.specialties as string[] ?? []).forEach((s) => set.add(s)));
+  (data as Pick<TrainerRow, "slug" | "specialties">[])
+    .filter((row) => !isProductionDemoProfile(row))
+    .forEach((row) => (row.specialties ?? []).forEach((s) => set.add(s)));
   return Array.from(set).sort();
 }
 
@@ -249,58 +273,47 @@ export async function listAllSpecialties(): Promise<string[]> {
 export async function listAllModalities(): Promise<string[]> {
   if (!hasSupabaseEnv()) {
     const set = new Set<string>();
-    publicTrainerProfiles.forEach((t) => t.modalities.forEach((m) => set.add(m)));
+    getDemoTrainerProfiles().forEach((t) => t.modalities.forEach((m) => set.add(m)));
     return Array.from(set).sort();
   }
 
   const supabase = getSupabaseServerClient();
   const { data } = await supabase
     .from("trainer_profiles_public")
-    .select("modalities");
+    .select("slug, modalities");
 
   if (!data) return [];
 
   const set = new Set<string>();
-  data.forEach((row) => (row.modalities as string[] ?? []).forEach((m) => set.add(m)));
+  (data as Pick<TrainerRow, "slug" | "modalities">[])
+    .filter((row) => !isProductionDemoProfile(row))
+    .forEach((row) => (row.modalities ?? []).forEach((m) => set.add(m)));
   return Array.from(set).sort();
 }
 
 /** Uses lightweight COUNT + aggregation queries — does not call listPublicTrainerProfiles. */
 export async function getMarketplaceStats() {
   if (!hasSupabaseEnv()) {
-    const trainers = publicTrainerProfiles;
+    const trainers = getDemoTrainerProfiles();
     const totalTrainers = trainers.length;
-    const totalReviews = trainers.reduce((s, t) => s + t.reviewsCount, 0);
-    const avgRating = Number(
-      (trainers.reduce((s, t) => s + t.rating, 0) / Math.max(totalTrainers, 1)).toFixed(1)
-    );
-    return { totalTrainers, totalReviews, avgRating, totalCities: marketplaceCities.length };
+    return { totalTrainers, totalCities: marketplaceCities.length };
   }
 
   const supabase = getSupabaseServerClient();
 
-  const [countRes, aggregateRes, citiesCountRes] = await Promise.all([
+  const [profilesRes, citiesCountRes] = await Promise.all([
     supabase
       .from("trainer_profiles_public")
-      .select("*", { count: "exact", head: true }),
-    supabase
-      .from("trainer_profiles_public")
-      .select("reviews_count, rating"),
+      .select("slug"),
     supabase
       .from("cities")
       .select("*", { count: "exact", head: true }),
   ]);
 
-  const totalTrainers = countRes.count ?? 0;
-  const rows = aggregateRes.data ?? [];
-  const totalReviews = rows.reduce((s, r) => s + ((r.reviews_count as number) ?? 0), 0);
-  const avgRating =
-    rows.length > 0
-      ? Number(
-          (rows.reduce((s, r) => s + Number(r.rating), 0) / rows.length).toFixed(1)
-        )
-      : 0;
+  const totalTrainers = ((profilesRes.data ?? []) as Pick<TrainerRow, "slug">[]).filter(
+    (row) => !isProductionDemoProfile(row)
+  ).length;
   const totalCities = Math.max(citiesCountRes.count ?? 0, marketplaceCities.length);
 
-  return { totalTrainers, totalReviews, avgRating, totalCities };
+  return { totalTrainers, totalCities };
 }

@@ -4,7 +4,7 @@ import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
 
 function getSafeNextPath(value: string | null) {
   if (!value || !value.startsWith("/") || value.startsWith("//")) {
-    return "/mi-perfil";
+    return "/dashboard";
   }
   return value;
 }

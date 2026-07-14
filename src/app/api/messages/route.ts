@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
+import { getClientIp, rateLimit } from "@/lib/server/rate-limit";
 
 interface PublicTrainerProfile {
   id: string;
@@ -112,6 +113,15 @@ export async function POST(request: Request) {
 
   if (!user) {
     return NextResponse.json({ ok: false }, { status: 401 });
+  }
+
+  const limited = rateLimit(`messages:post:${user.id}:${getClientIp(request)}`, {
+    limit: 5,
+    windowMs: 10 * 60 * 1000,
+  });
+
+  if (!limited.allowed) {
+    return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
   }
 
   const { error } = await supabase.from("messages").insert({
