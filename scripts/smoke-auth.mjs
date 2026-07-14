@@ -25,6 +25,7 @@ const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SERVICE
 
 const baseUrl = "http://127.0.0.1:3000";
 const email = `codex-smoke-${Date.now()}@example.com`;
+const registerEmail = `codex-register-${Date.now()}@example.com`;
 const password = "codex123";
 
 async function ensureDisposableUser() {
@@ -41,6 +42,12 @@ async function ensureDisposableUser() {
 async function cleanupUser(userId) {
   if (!userId) return;
   await supabase.auth.admin.deleteUser(userId);
+}
+
+async function findUserIdByEmail(targetEmail) {
+  const { data, error } = await supabase.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  if (error) return null;
+  return data.users.find((user) => user.email === targetEmail)?.id ?? null;
 }
 
 async function run() {
@@ -60,22 +67,37 @@ async function run() {
     report.push(`home-h1:${(await page.locator("h1").first().textContent())?.trim() ?? ""}`);
 
     await page.goto(`${baseUrl}/login`, { waitUntil: "networkidle" });
-    await page.getByLabel("Email").fill("nobody@example.com");
+    await page.locator('input[type="email"]').first().fill(email);
+    await page.getByRole("button", { name: /entrar con magic link/i }).click();
+    await page.waitForTimeout(1200);
+    const loginMagicSent = await page.getByText("Te hemos enviado un enlace mágico.").count() > 0;
+    const loginMagicRateLimited = await page.getByText("Hemos alcanzado el límite temporal").count() > 0;
+    report.push(`magic-link-sent:${loginMagicSent}`);
+    report.push(`magic-link-rate-limited:${loginMagicRateLimited}`);
+    if (!loginMagicSent && !loginMagicRateLimited) {
+      throw new Error("Magic-link login did not show success or rate-limit feedback.");
+    }
+
+    await page.locator('input[type="email"]').nth(1).fill("nobody@example.com");
     await page.getByLabel("Contraseña").fill("wrongpass");
     await page.getByRole("button", { name: /iniciar sesión/i }).click();
     await page.waitForTimeout(1200);
     report.push(`invalid-login-error:${await page.getByText("Email o contraseña incorrectos.").count() > 0}`);
 
     await page.goto(`${baseUrl}/registro`, { waitUntil: "networkidle" });
-    await page.getByLabel("Email").fill(`mismatch-${Date.now()}@example.com`);
-    await page.getByLabel("Contraseña", { exact: true }).fill("codex123");
-    await page.getByLabel("Confirmar contraseña").fill("codex999");
-    await page.getByRole("button", { name: /crear cuenta gratis/i }).click();
-    await page.waitForTimeout(400);
-    report.push(`registro-mismatch-error:${await page.getByText("Las contraseñas no coinciden.").count() > 0}`);
+    await page.getByLabel("Email").fill(registerEmail);
+    await page.getByRole("button", { name: /crear cuenta con magic link/i }).click();
+    await page.waitForTimeout(1200);
+    const registerMagicSent = await page.getByText("Te hemos enviado un enlace mágico").count() > 0;
+    const registerMagicRateLimited = await page.getByText("Hemos alcanzado el límite temporal").count() > 0;
+    report.push(`register-magic-link-sent:${registerMagicSent}`);
+    report.push(`register-magic-link-rate-limited:${registerMagicRateLimited}`);
+    if (!registerMagicSent && !registerMagicRateLimited) {
+      throw new Error("Magic-link registration did not show success or rate-limit feedback.");
+    }
 
     await page.goto(`${baseUrl}/login`, { waitUntil: "networkidle" });
-    await page.getByLabel("Email").fill(email);
+    await page.locator('input[type="email"]').nth(1).fill(email);
     await page.getByLabel("Contraseña", { exact: true }).fill(password);
     await page.getByRole("button", { name: /iniciar sesión/i }).click();
     await page.waitForURL(/\/mi-perfil/, { timeout: 15000 });
@@ -99,6 +121,8 @@ async function run() {
   } finally {
     if (browser) await browser.close().catch(() => {});
     await cleanupUser(userId).catch(() => {});
+    const registeredUserId = await findUserIdByEmail(registerEmail).catch(() => null);
+    await cleanupUser(registeredUserId).catch(() => {});
   }
 }
 
