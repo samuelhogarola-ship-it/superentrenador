@@ -67,7 +67,7 @@ export default function PoliticaPrivacidadPage() {
               <div>
                 <h3 className="font-semibold text-[var(--text)]">4. Destinatarios de la información</h3>
                 <div className="app-copy mt-2 flex flex-col gap-3">
-                  <p>Parte de tu información es visible en tu perfil público (nombre, ciudad, especialidades, precio, valoraciones). Los datos de contacto directo solo se revelan a usuarios registrados que hayan accedido a la zona premium.</p>
+                  <p>Parte de tu información es visible en tu perfil público (nombre, ciudad, especialidades, experiencia y precio de entrada). Los datos de contacto directo solo se revelan a usuarios registrados cuando el flujo del marketplace lo permite.</p>
                   <p>Trabajamos con proveedores técnicos de confianza (alojamiento, autenticación, analítica) que pueden acceder a tus datos exclusivamente para prestar sus servicios. No compartimos tus datos con terceros con fines comerciales propios.</p>
                 </div>
               </div>
