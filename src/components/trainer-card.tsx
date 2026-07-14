@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { BadgeCheck, MapPin, ShieldCheck } from "lucide-react";
 import { Avatar } from "@/components/avatar";
-import { RatingStars } from "@/components/rating-stars";
 import type { PublicTrainerProfile } from "@/types/marketplace";
 
 interface TrainerCardProps {
@@ -39,9 +38,7 @@ export function TrainerCard({ trainer, featured = false }: TrainerCardProps) {
             <MapPin size={13} className="text-[var(--accent)]" />
             {trainer.city} · {trainer.region}
           </p>
-          <div className="mt-3">
-            <RatingStars rating={trainer.rating} reviewsCount={trainer.reviewsCount} />
-          </div>
+          <p className="mt-3 text-sm font-semibold text-[var(--accent)]">Perfil revisado editorialmente</p>
         </div>
       </div>
 

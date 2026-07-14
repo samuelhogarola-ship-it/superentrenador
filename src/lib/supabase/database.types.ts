@@ -144,6 +144,7 @@ export type Database = {
           headline: string
           hidden_contact_hint: string
           id: string
+          is_demo: boolean
           is_published: boolean
           languages: string[]
           long_bio: string
@@ -172,6 +173,7 @@ export type Database = {
           headline: string
           hidden_contact_hint?: string
           id?: string
+          is_demo?: boolean
           is_published?: boolean
           languages?: string[]
           long_bio: string
@@ -200,6 +202,7 @@ export type Database = {
           headline?: string
           hidden_contact_hint?: string
           id?: string
+          is_demo?: boolean
           is_published?: boolean
           languages?: string[]
           long_bio?: string

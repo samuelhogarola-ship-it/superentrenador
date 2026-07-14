@@ -19,7 +19,7 @@ export const marketplaceCities: MarketplaceCity[] = [
     country: "España",
     heroTitle: "Entrenadores personales en Cádiz",
     intro:
-      "Marketplace de entrenadores personales en Cádiz con fichas claras para comparar objetivos, modalidades y reputación antes de contactar.",
+      "Marketplace de entrenadores personales en Cádiz con fichas claras para comparar objetivos, modalidades y experiencia antes de contactar.",
     seoDescription:
       "Compara entrenadores personales en Cádiz por especialidad, experiencia, valoración y formato de entrenamiento.",
   },
@@ -41,9 +41,9 @@ export const marketplaceCities: MarketplaceCity[] = [
     country: "España",
     heroTitle: "Entrenadores personales en Fuengirola",
     intro:
-      "Descubre entrenadores verificados para recomposición corporal, fuerza, pérdida de grasa y entrenamiento online o presencial.",
+      "Descubre entrenadores revisados para recomposición corporal, fuerza, pérdida de grasa y entrenamiento online o presencial.",
     seoDescription:
-      "Marketplace de entrenadores personales en Fuengirola con perfiles públicos, especialidades, reseñas y acceso privado tras registro o pago.",
+      "Marketplace de entrenadores personales en Fuengirola con perfiles públicos, especialidades y contacto protegido tras registro.",
   },
   {
     slug: "granada",
@@ -54,7 +54,7 @@ export const marketplaceCities: MarketplaceCity[] = [
     intro:
       "Perfiles de entrenadores personales en Granada para comparar fuerza, recomposición corporal, rendimiento y planes online o presenciales.",
     seoDescription:
-      "Marketplace de entrenadores personales en Granada con perfiles indexables, reseñas, especialidades y contacto tras registro.",
+      "Marketplace de entrenadores personales en Granada con perfiles indexables, especialidades y contacto tras registro.",
   },
   {
     slug: "huelva",
@@ -85,7 +85,7 @@ export const marketplaceCities: MarketplaceCity[] = [
     country: "España",
     heroTitle: "Entrenadores personales en Jerez",
     intro:
-      "Compara entrenadores personales en Jerez por especialidad, reputación y modalidad antes de iniciar una conversación.",
+      "Compara entrenadores personales en Jerez por especialidad, experiencia y modalidad antes de iniciar una conversación.",
     seoDescription:
       "Marketplace de entrenadores personales en Jerez con perfiles públicos, contacto protegido y estructura SEO local.",
   },
@@ -131,7 +131,7 @@ export const marketplaceCities: MarketplaceCity[] = [
     intro:
       "Marketplace de entrenadores personales en Sevilla con perfiles comparables para fuerza, salud, estética y seguimiento online.",
     seoDescription:
-      "Compara entrenadores personales en Sevilla por especialidad, experiencia, modalidad, reputación y precio de entrada.",
+      "Compara entrenadores personales en Sevilla por especialidad, experiencia, modalidad y precio de entrada.",
   },
   {
     slug: "torremolinos",

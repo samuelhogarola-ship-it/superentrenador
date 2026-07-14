@@ -49,14 +49,6 @@ export function trainerProfileJsonLd(trainer: PublicTrainerProfile) {
       addressCountry: "ES",
     },
     knowsAbout: trainer.specialties,
-    aggregateRating:
-      trainer.reviewsCount > 0
-        ? {
-            "@type": "AggregateRating",
-            ratingValue: trainer.rating,
-            reviewCount: trainer.reviewsCount,
-          }
-        : undefined,
     makesOffer: {
       "@type": "Offer",
       price: trainer.priceFrom,

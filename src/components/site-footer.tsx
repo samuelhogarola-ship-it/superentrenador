@@ -43,7 +43,7 @@ export function SiteFooter() {
             </p>
             <span className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--accent)]">
               <ShieldCheck size={13} className="text-[var(--accent)]" />
-              Perfiles verificados
+              Contacto protegido
             </span>
           </div>
 
