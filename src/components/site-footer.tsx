@@ -14,8 +14,10 @@ const COLUMNS = [
   {
     title: "Ciudades",
     links: [
-      { href: "/ciudades/fuengirola", label: "Fuengirola" },
+      { href: "/andalucia", label: "Andalucía" },
       { href: "/ciudades/malaga", label: "Málaga" },
+      { href: "/ciudades/sevilla", label: "Sevilla" },
+      { href: "/ciudades/marbella", label: "Marbella" },
     ],
   },
   {

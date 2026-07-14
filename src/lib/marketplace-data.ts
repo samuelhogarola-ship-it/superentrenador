@@ -2,6 +2,39 @@ import type { MarketplaceCity, PublicTrainerProfile } from "@/types/marketplace"
 
 export const marketplaceCities: MarketplaceCity[] = [
   {
+    slug: "almeria",
+    name: "Almería",
+    region: "Almería",
+    country: "España",
+    heroTitle: "Entrenadores personales en Almería",
+    intro:
+      "Compara entrenadores personales en Almería para fuerza, pérdida de grasa, salud y seguimiento online con perfiles preparados para captar demanda local.",
+    seoDescription:
+      "Encuentra entrenadores personales en Almería por especialidad, modalidad, experiencia y precio antes de desbloquear el contacto.",
+  },
+  {
+    slug: "cadiz",
+    name: "Cádiz",
+    region: "Cádiz",
+    country: "España",
+    heroTitle: "Entrenadores personales en Cádiz",
+    intro:
+      "Marketplace de entrenadores personales en Cádiz con fichas claras para comparar objetivos, modalidades y reputación antes de contactar.",
+    seoDescription:
+      "Compara entrenadores personales en Cádiz por especialidad, experiencia, valoración y formato de entrenamiento.",
+  },
+  {
+    slug: "cordoba",
+    name: "Córdoba",
+    region: "Córdoba",
+    country: "España",
+    heroTitle: "Entrenadores personales en Córdoba",
+    intro:
+      "Descubre entrenadores personales en Córdoba con perfiles pensados para decisiones rápidas: objetivo, experiencia, precio y modalidad.",
+    seoDescription:
+      "Encuentra entrenadores personales en Córdoba para entrenamiento presencial, online o híbrido con contacto protegido.",
+  },
+  {
     slug: "fuengirola",
     name: "Fuengirola",
     region: "Málaga",
@@ -11,6 +44,50 @@ export const marketplaceCities: MarketplaceCity[] = [
       "Descubre entrenadores verificados para recomposición corporal, fuerza, pérdida de grasa y entrenamiento online o presencial.",
     seoDescription:
       "Marketplace de entrenadores personales en Fuengirola con perfiles públicos, especialidades, reseñas y acceso privado tras registro o pago.",
+  },
+  {
+    slug: "granada",
+    name: "Granada",
+    region: "Granada",
+    country: "España",
+    heroTitle: "Entrenadores personales en Granada",
+    intro:
+      "Perfiles de entrenadores personales en Granada para comparar fuerza, recomposición corporal, rendimiento y planes online o presenciales.",
+    seoDescription:
+      "Marketplace de entrenadores personales en Granada con perfiles indexables, reseñas, especialidades y contacto tras registro.",
+  },
+  {
+    slug: "huelva",
+    name: "Huelva",
+    region: "Huelva",
+    country: "España",
+    heroTitle: "Entrenadores personales en Huelva",
+    intro:
+      "Encuentra entrenadores personales en Huelva con una experiencia de búsqueda simple, local y centrada en objetivos reales.",
+    seoDescription:
+      "Compara entrenadores personales en Huelva por objetivo, modalidad, precio de entrada y experiencia profesional.",
+  },
+  {
+    slug: "jaen",
+    name: "Jaén",
+    region: "Jaén",
+    country: "España",
+    heroTitle: "Entrenadores personales en Jaén",
+    intro:
+      "Landings locales para entrenadores personales en Jaén con estructura SEO y perfiles comparables para captar demanda cercana.",
+    seoDescription:
+      "Encuentra entrenadores personales en Jaén para fuerza, salud, pérdida de grasa y entrenamiento online o presencial.",
+  },
+  {
+    slug: "jerez",
+    name: "Jerez",
+    region: "Cádiz",
+    country: "España",
+    heroTitle: "Entrenadores personales en Jerez",
+    intro:
+      "Compara entrenadores personales en Jerez por especialidad, reputación y modalidad antes de iniciar una conversación.",
+    seoDescription:
+      "Marketplace de entrenadores personales en Jerez con perfiles públicos, contacto protegido y estructura SEO local.",
   },
   {
     slug: "malaga",
@@ -24,6 +101,17 @@ export const marketplaceCities: MarketplaceCity[] = [
       "Compara entrenadores personales en Málaga por especialidad, experiencia y formato de servicio antes de desbloquear el contacto.",
   },
   {
+    slug: "marbella",
+    name: "Marbella",
+    region: "Málaga",
+    country: "España",
+    heroTitle: "Entrenadores personales en Marbella",
+    intro:
+      "Perfiles premium de entrenadores personales en Marbella para comparar servicios presenciales, online e híbridos con criterio.",
+    seoDescription:
+      "Encuentra entrenadores personales en Marbella por especialidad, valoración, experiencia y precio desde el marketplace.",
+  },
+  {
     slug: "madrid",
     name: "Madrid",
     region: "Comunidad de Madrid",
@@ -33,6 +121,28 @@ export const marketplaceCities: MarketplaceCity[] = [
       "Ciudad preparada para escalar el marketplace con perfiles indexables por barrio, objetivo y modalidad de entrenamiento.",
     seoDescription:
       "Marketplace SEO de entrenadores personales en Madrid con perfiles públicos optimizados para buscadores y captación premium.",
+  },
+  {
+    slug: "sevilla",
+    name: "Sevilla",
+    region: "Sevilla",
+    country: "España",
+    heroTitle: "Entrenadores personales en Sevilla",
+    intro:
+      "Marketplace de entrenadores personales en Sevilla con perfiles comparables para fuerza, salud, estética y seguimiento online.",
+    seoDescription:
+      "Compara entrenadores personales en Sevilla por especialidad, experiencia, modalidad, reputación y precio de entrada.",
+  },
+  {
+    slug: "torremolinos",
+    name: "Torremolinos",
+    region: "Málaga",
+    country: "España",
+    heroTitle: "Entrenadores personales en Torremolinos",
+    intro:
+      "Encuentra entrenadores personales en Torremolinos con fichas claras, contacto protegido y cobertura local conectada con Málaga.",
+    seoDescription:
+      "Marketplace de entrenadores personales en Torremolinos para comparar servicios presenciales, online e híbridos.",
   },
 ];
 
