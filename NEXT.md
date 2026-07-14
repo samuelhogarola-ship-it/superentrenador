@@ -2,12 +2,15 @@
 
 ## Prioridad inmediata
 
+- Activar en Supabase cloud la configuracion de Auth preparada en este repo cuando haya cuenta Owner/Admin y SMTP real.
 - Pulir la home pública ya migrada al sistema visual tipo Saulo para llevarla a un nivel comercial real.
 - Tomar como referencia de tono: Porsche, McDonald's, Superprof.
 - Mantener el marketplace en Next.js y terminar de cerrar la capa pública antes de abrir más frentes.
 
 ## Problemas detectados
 
+- Supabase Auth esta implementado en app y configurado en repo, pero el push cloud devolvio `403` por falta de permisos de la cuenta actual.
+- Magic link necesita SMTP propio para evitar el limite bajo del SMTP integrado de Supabase.
 - La nueva base visual ya es más coherente, pero la hero aún no transmite suficiente autoridad de marca.
 - Falta el logo real de Super Entrenador.
 - Falta la capa legal reutilizable desde `core-general`.
@@ -27,6 +30,18 @@
 - Referencia funcional: discovery limpio tipo Superprof.
 
 ## Trabajo a realizar
+
+### 0. Bloqueos externos que no puede resolver Codex sin acceso
+
+- Entrar con una cuenta Supabase Owner/Admin del proyecto `qxugymzyvtbxeyqcvtgk`.
+- Configurar SMTP real en variables:
+  - `SUPABASE_AUTH_SMTP_HOST`
+  - `SUPABASE_AUTH_SMTP_USER`
+  - `SUPABASE_AUTH_SMTP_PASS`
+  - `SUPABASE_AUTH_SMTP_ADMIN_EMAIL`
+- Ejecutar `scripts/push-supabase-auth-config.sh`.
+- Confirmar en dashboard Auth que Magic Link, redirect URLs y rate limits quedan aplicados.
+- Validar DNS/dominio final de `superentrenador.com` y `www.superentrenador.com`.
 
 ### 1. Replanteamiento visual
 
@@ -90,6 +105,7 @@
 - Cerrar la capa pública comercial de `superentrenador`.
 - Pulir hero + branding + legal + cookies.
 - Validar dominio raíz y dejar el marketplace listo para presentación comercial.
+- Priorizar Marketplaces: home, listado, ciudades, fichas y conversión a contacto/registro.
 
 ## Criterio de “listo”
 

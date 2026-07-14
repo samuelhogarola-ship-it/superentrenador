@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Suspense } from "react";
+import { ArrowRight, ShieldCheck } from "lucide-react";
 import { FiltersBar } from "@/components/filters-bar";
 import { JsonLd } from "@/components/json-ld";
 import { MarketplaceEmptyState } from "@/components/marketplace-empty-state";
@@ -44,14 +46,34 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8 lg:px-8">
       <JsonLd data={trainerCollectionJsonLd(trainers, `${siteConfig.url}/entrenadores`, "Entrenadores personales")} />
-      <section className="app-surface rounded-[28px] px-6 py-7 sm:px-8">
-        <p className="app-kicker">Marketplace</p>
-        <h1 className="app-title mt-2 text-3xl text-[var(--text)] sm:text-4xl">
-          {trainers.length} entrenador{trainers.length === 1 ? "" : "es"} disponible{trainers.length === 1 ? "" : "s"}
-        </h1>
-        <p className="app-copy mt-2 max-w-2xl text-sm">
-          Filtra por especialidad, ciudad o modalidad y compara perfiles reales antes de desbloquear el contacto.
-        </p>
+      <section className="premium-card grid gap-5 rounded-[28px] px-6 py-7 sm:px-8 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div>
+          <p className="app-kicker">Marketplace</p>
+          <h1 className="app-title mt-2 text-3xl text-[var(--text)] sm:text-5xl">
+            {trainers.length} entrenador{trainers.length === 1 ? "" : "es"} para comparar con criterio
+          </h1>
+          <p className="app-copy mt-3 max-w-2xl text-sm">
+            Filtra por especialidad, ciudad o modalidad y revisa perfiles con precio, reputación y formato antes de desbloquear el contacto.
+          </p>
+        </div>
+        <Link
+          href="/registro"
+          className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-5 py-3 text-sm font-bold text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+        >
+          Publicar perfil
+          <ArrowRight size={15} />
+        </Link>
+      </section>
+
+      <section className="grid gap-3 md:grid-cols-3">
+        {["Contacto protegido", "Perfiles comparables", "SEO local por ciudad"].map((item) => (
+          <div key={item} className="rounded-[18px] border border-[var(--line)] bg-white/55 px-4 py-3 text-sm font-semibold text-[var(--text)]">
+            <span className="inline-flex items-center gap-2">
+              <ShieldCheck size={15} className="text-[var(--accent)]" />
+              {item}
+            </span>
+          </div>
+        ))}
       </section>
 
       <Suspense fallback={null}>
