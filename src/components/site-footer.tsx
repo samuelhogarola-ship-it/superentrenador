@@ -71,6 +71,8 @@ export function SiteFooter() {
           <div className="flex flex-wrap items-center gap-4">
             <p>© {new Date().getFullYear()} Super Entrenador · Todos los derechos reservados.</p>
             <Link href="/politica-privacidad" className="hover:text-[var(--accent)]">Política de privacidad</Link>
+            <Link href="/terminos" className="hover:text-[var(--accent)]">Términos</Link>
+            <Link href="/cookies" className="hover:text-[var(--accent)]">Cookies</Link>
           </div>
         </div>
       </div>

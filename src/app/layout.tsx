@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Sora } from "next/font/google";
 import "./globals.css";
+import { CookieConsent } from "@/components/cookie-consent";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { siteConfig } from "@/lib/site";
@@ -55,6 +56,7 @@ export default function RootLayout({
           <SiteHeader />
           {children}
           <SiteFooter />
+          <CookieConsent />
         </div>
       </body>
     </html>
