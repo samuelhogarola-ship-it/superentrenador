@@ -90,6 +90,21 @@ button {
   100% { transform: translateX(100%); }
 }
 
+.reveal-enter {
+  animation: reveal-enter 620ms ease-out both;
+}
+
+@keyframes reveal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

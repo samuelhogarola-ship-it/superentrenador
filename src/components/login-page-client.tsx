@@ -8,9 +8,20 @@ import { getAuthErrorMessage, signIn, signInWithGoogle, signInWithMagicLink } fr
 
 export function LoginPageClient() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<LoginFallback />}>
       <LoginForm />
     </Suspense>
+  );
+}
+
+function LoginFallback() {
+  return (
+    <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-4 py-12 md:px-6">
+      <div className="grid w-full gap-6 lg:grid-cols-[0.92fr_1.08fr]">
+        <div className="skeleton h-80 rounded-[28px]" />
+        <div className="skeleton h-[34rem] rounded-[28px]" />
+      </div>
+    </main>
   );
 }
 
@@ -137,6 +148,7 @@ function LoginForm() {
                 type="email"
                 value={magicEmail}
                 onChange={(e) => setMagicEmail(e.target.value)}
+                autoComplete="email"
                 required
                 placeholder="tu@email.com"
                 className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
@@ -180,6 +192,7 @@ function LoginForm() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
                 required
                 placeholder="tu@email.com"
                 className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
@@ -192,6 +205,7 @@ function LoginForm() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
                 required
                 placeholder="••••••••"
                 className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
