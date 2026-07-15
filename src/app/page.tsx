@@ -18,15 +18,15 @@ import {
 } from "@/lib/repositories/trainers";
 
 const HERO_POINTS = [
-  "Comparativa clara antes de contactar.",
-  "Perfiles revisados y preparados para SEO local.",
+  "Andalucía preparada como primera región comercial.",
+  "Plazas abiertas para entrenadores fundadores.",
   "Contacto protegido para conversaciones con intención real.",
 ];
 
 const TRUST_SIGNALS = [
-  { value: "3 min", label: "para encontrar una shortlist" },
+  { value: "13", label: "ciudades preparadas para captación local" },
   { value: "0 ruido", label: "sin feeds, anuncios ni perfiles inflados" },
-  { value: "1 criterio", label: "objetivo, ciudad y modalidad" },
+  { value: "1 región", label: "Andalucía como primer mercado completo" },
 ];
 
 const FLOW_STEPS = [
@@ -65,13 +65,13 @@ export default async function Home() {
           <div>
             <p className="app-kicker inline-flex items-center gap-2">
               <Sparkles size={13} />
-              Marketplace premium de entrenadores
+              Marketplace premium en lanzamiento
             </p>
             <h1 className="app-title mt-4 max-w-4xl text-4xl leading-[0.98] sm:text-6xl lg:text-7xl">
-              Elige entrenador personal con criterio, no por intuición.
+              Entrenadores personales con presencia local desde el primer día.
             </h1>
             <p className="app-copy mt-6 max-w-2xl text-lg">
-              Compara especialistas locales por objetivo, ciudad, modalidad y precio de entrada. Menos ruido, mejores conversaciones y fichas listas para posicionar.
+              Estamos activando Andalucía con perfiles claros, contacto protegido y landings locales preparadas para captar demanda ciudad por ciudad.
             </p>
 
             <div className="mt-8 max-w-4xl">
@@ -92,14 +92,14 @@ export default async function Home() {
                 href="/entrenadores"
                 className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-bold text-white shadow-[0_18px_36px_rgba(22,101,52,0.22)] transition-transform hover:-translate-y-0.5"
               >
-                Ver entrenadores
+                Ver marketplace
                 <ArrowRight size={16} />
               </Link>
               <Link
                 href="/registro"
                 className="inline-flex items-center gap-2 rounded-full border border-[var(--line-strong)] bg-white/70 px-6 py-3 text-sm font-bold text-[var(--text)] backdrop-blur transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
               >
-                Soy entrenador
+                Publicar como fundador
               </Link>
             </div>
           </div>
@@ -159,7 +159,7 @@ export default async function Home() {
             <SectionHeading
               eyebrow="Perfiles destacados"
               title="Perfiles que ya parecen una decisión seria"
-              body="Cada ficha muestra señal comercial útil: especialidad, revisión editorial, precio de entrada y formato de trabajo."
+              body="Cada ficha publicada muestra señal comercial útil: especialidad, revisión editorial, precio de entrada y formato de trabajo."
             />
             <Link
               href="/entrenadores"
@@ -171,11 +171,32 @@ export default async function Home() {
           </div>
         </Reveal>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {featuredTrainers.map((trainer, index) => (
-            <Reveal key={trainer.id} delay={index * 80}>
-              <TrainerCard trainer={trainer} featured={index === 0} />
+          {featuredTrainers.length > 0 ? (
+            featuredTrainers.map((trainer, index) => (
+              <Reveal key={trainer.id} delay={index * 80}>
+                <TrainerCard trainer={trainer} featured={index === 0} />
+              </Reveal>
+            ))
+          ) : (
+            <Reveal>
+              <div className="premium-card rounded-[24px] p-6 md:col-span-2 lg:col-span-3">
+                <p className="app-kicker">Oferta inicial</p>
+                <h3 className="app-title mt-3 text-2xl text-[var(--text)]">
+                  Estamos seleccionando los primeros perfiles publicados.
+                </h3>
+                <p className="app-copy mt-3 max-w-2xl text-sm">
+                  Si eres entrenador en Andalucía, puedes entrar como perfil fundador y aparecer antes de abrir campañas locales a clientes.
+                </p>
+                <Link
+                  href="/registro"
+                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-bold text-white transition-colors hover:opacity-95"
+                >
+                  Crear perfil fundador
+                  <ArrowRight size={15} />
+                </Link>
+              </div>
             </Reveal>
-          ))}
+          )}
         </div>
       </section>
 
@@ -224,7 +245,7 @@ export default async function Home() {
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/70">Para entrenadores</p>
             <h2 className="font-heading mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-              Publica tu perfil y conviértete en una opción clara para clientes locales.
+              Publica tu perfil fundador y entra antes de abrir tráfico local.
             </h2>
             <p className="mt-4 max-w-2xl text-sm text-white/78">
               Crea una ficha pública, recibe mensajes desde el marketplace y deja listo el salto a Coach Studio cuando actives la parte profesional.

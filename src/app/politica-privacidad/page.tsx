@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Política de privacidad",
@@ -14,7 +15,7 @@ export default function PoliticaPrivacidadPage() {
       <div className="app-surface rounded-[28px] px-6 py-10 sm:px-10 sm:py-12">
         <p className="app-kicker">Legal</p>
         <h1 className="app-title mt-3 text-4xl text-[var(--text)]">Política de privacidad</h1>
-        <p className="app-copy mt-4 text-sm">Última actualización: junio 2026</p>
+        <p className="app-copy mt-4 text-sm">Última actualización: julio 2026</p>
 
         <div className="prose-custom mt-10 flex flex-col gap-8 text-sm leading-7 text-[var(--text)]">
 
@@ -42,7 +43,7 @@ export default function PoliticaPrivacidadPage() {
                 <div className="app-copy mt-2 flex flex-col gap-3">
                   <p><strong className="text-[var(--text)]">2.1. Información que nos envías directamente.</strong> Al utilizar nuestra plataforma, puedes enviarnos información que probablemente te identifique (&ldquo;Datos personales&rdquo;), en particular al completar formularios de registro, al contactar con otro miembro, al comunicarte con nosotros por correo electrónico o al informarnos de un problema.</p>
                   <p>Esta información incluye: nombre y apellidos, dirección de correo electrónico, contraseña, ciudad, fotografía de perfil, descripción profesional, especialidades, precio, datos de contacto directo (teléfono o redes sociales) que el entrenador decide compartir voluntariamente, e historial de mensajes intercambiados en la plataforma.</p>
-                  <p><strong className="text-[var(--text)]">2.2. Datos que recopilamos automáticamente.</strong> Durante cada visita podemos recopilar, de acuerdo con la legislación aplicable, información relacionada con los dispositivos y redes desde los que accedes: dirección IP, tipo de navegador, sistema operativo, páginas visitadas, tiempo de permanencia, términos de búsqueda utilizados e identificador de publicidad del dispositivo.</p>
+                  <p><strong className="text-[var(--text)]">2.2. Datos que recopilamos automáticamente.</strong> Durante cada visita podemos recopilar, de acuerdo con la legislación aplicable, información técnica relacionada con los dispositivos y redes desde los que accedes: dirección IP, tipo de navegador, sistema operativo, páginas visitadas y datos básicos de seguridad o diagnóstico.</p>
                   <p><strong className="text-[var(--text)]">2.3. Plazo de conservación.</strong> Tus datos se conservarán mientras mantengas una cuenta activa. Puedes solicitar su supresión en cualquier momento escribiendo a <strong className="text-[var(--accent)]">hola@superentrenador.com</strong>.</p>
                 </div>
               </div>
@@ -115,7 +116,13 @@ export default function PoliticaPrivacidadPage() {
 
               <div>
                 <h3 className="font-semibold text-[var(--text)]">10. Cookies</h3>
-                <p className="app-copy mt-2">Utilizamos cookies técnicas necesarias para el funcionamiento de la plataforma (sesión de usuario, preferencias) y, con tu consentimiento, cookies analíticas para mejorar la experiencia. Puedes gestionar tus preferencias desde el banner de cookies o desde la configuración de tu navegador.</p>
+                <p className="app-copy mt-2">
+                  Utilizamos cookies técnicas necesarias para el funcionamiento de la plataforma (sesión de usuario y preferencias básicas). En esta fase no activamos cookies analíticas o publicitarias no necesarias desde la propia aplicación. Puedes consultar más detalle en la{" "}
+                  <Link href="/cookies" className="font-semibold text-[var(--accent)] hover:underline">
+                    política de cookies
+                  </Link>
+                  .
+                </p>
               </div>
 
               <div>
@@ -131,17 +138,6 @@ export default function PoliticaPrivacidadPage() {
                   <p className="mt-1 text-[var(--muted)]">Email: <a href="mailto:hola@superentrenador.com" className="text-[var(--accent)] hover:underline">hola@superentrenador.com</a></p>
                 </div>
               </div>
-            </div>
-          </section>
-
-          <section>
-            <h2 className="app-title text-xl text-[var(--text)]">III — Derecho de desistimiento</h2>
-            <div className="app-copy mt-4 flex flex-col gap-3">
-              <p>De acuerdo con la legislación vigente, el consumidor dispone de un plazo de catorce días naturales para ejercer su derecho de desistimiento de un contrato celebrado a distancia, sin necesidad de justificar su decisión ni asumir penalización alguna.</p>
-              <p>El plazo comienza el día de la celebración del contrato o de la activación de la suscripción.</p>
-              <p>Para ejercer el derecho de desistimiento, envía un correo a <strong className="text-[var(--accent)]">hola@superentrenador.com</strong> con el asunto <strong className="text-[var(--text)]">Derecho de desistimiento</strong> indicando tu nombre, email registrado y fecha de contratación.</p>
-              <p>Una vez recibida la solicitud, realizaremos el reembolso en un plazo máximo de 14 días por el mismo medio de pago utilizado en la transacción original.</p>
-              <p><strong className="text-[var(--text)]">Excepción:</strong> El derecho de desistimiento no será aplicable una vez que el alumno haya accedido a los datos de contacto del entrenador, al tratarse de contenido digital que se suministra de forma inmediata con el consentimiento expreso del usuario.</p>
             </div>
           </section>
 

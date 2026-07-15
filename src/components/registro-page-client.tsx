@@ -8,9 +8,20 @@ import { getAuthErrorMessage, signInWithGoogle, signUpWithMagicLink, type AuthIn
 
 export function RegistroPageClient() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<RegistroFallback />}>
       <RegistroForm />
     </Suspense>
+  );
+}
+
+function RegistroFallback() {
+  return (
+    <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-4 py-12 md:px-6">
+      <div className="grid w-full gap-6 lg:grid-cols-[1.02fr_0.98fr]">
+        <div className="skeleton h-80 rounded-[28px]" />
+        <div className="skeleton h-96 rounded-[28px]" />
+      </div>
+    </main>
   );
 }
 
@@ -151,6 +162,7 @@ function RegistroForm() {
           <div className="mt-5 grid gap-2 rounded-[22px] border border-[var(--line)] bg-[var(--bg-soft)] p-2 sm:grid-cols-2">
             <button
               type="button"
+              aria-pressed={intent === "client"}
               onClick={() => setIntent("client")}
               className={`inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold transition-colors ${
                 intent === "client" ? "bg-[var(--surface)] text-[var(--text)] shadow-[var(--shadow-soft)]" : "text-[var(--muted)]"
@@ -161,6 +173,7 @@ function RegistroForm() {
             </button>
             <button
               type="button"
+              aria-pressed={intent === "trainer"}
               onClick={() => setIntent("trainer")}
               className={`inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold transition-colors ${
                 intent === "trainer" ? "bg-[var(--surface)] text-[var(--text)] shadow-[var(--shadow-soft)]" : "text-[var(--muted)]"
@@ -178,6 +191,7 @@ function RegistroForm() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
                 required
                 placeholder="tu@email.com"
                 className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
@@ -196,9 +210,17 @@ function RegistroForm() {
             </button>
 
             <p className="text-center text-xs text-[var(--muted)]">
-              {isTrainer
-                ? "Al registrarte aceptas que tu perfil enviado pueda revisarse antes de publicarse en el marketplace."
-                : "Al registrarte aceptas que usemos tu email para mantener tu sesión y tus mensajes."}
+              Al registrarte aceptas los{" "}
+              <Link href="/terminos" className="font-semibold text-[var(--text)] hover:text-[var(--accent)]">
+                términos
+              </Link>
+              {" "}y la{" "}
+              <Link href="/politica-privacidad" className="font-semibold text-[var(--text)] hover:text-[var(--accent)]">
+                política de privacidad
+              </Link>
+              . {isTrainer
+                ? "Tu perfil enviado puede revisarse antes de publicarse."
+                : "Usaremos tu email para mantener tu sesión y tus mensajes."}
             </p>
           </form>
         </div>

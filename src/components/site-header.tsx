@@ -12,7 +12,7 @@ import { signOut } from "@/lib/auth";
 const navItems = [
   { href: "/entrenadores", label: "Entrenadores", icon: UserRound },
   { href: "/andalucia", label: "Andalucía", icon: MapPinned },
-  { href: "/ciudades/malaga", label: "Málaga", icon: MapPinned },
+  { href: "/registro", label: "Fundadores", icon: Sparkles },
 ];
 
 export function SiteHeader() {

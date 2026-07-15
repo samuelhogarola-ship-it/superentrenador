@@ -16,17 +16,24 @@ import {
   listPublicTrainerProfiles,
 } from "@/lib/repositories/trainers";
 
-export const metadata: Metadata = {
-  title: "Entrenadores personales",
-  description:
-    "Explora perfiles públicos de entrenadores personales por ciudad, especialidad y formato antes de desbloquear contacto y contratación.",
-  alternates: {
-    canonical: "/entrenadores",
-  },
-};
-
 interface TrainersPageProps {
   searchParams: Promise<{ specialty?: string; city?: string; modality?: string; sort?: string }>;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const trainers = await listPublicTrainerProfiles();
+  const hasPublishedSupply = trainers.length > 0;
+
+  return {
+    title: hasPublishedSupply ? "Entrenadores personales" : "Entrenadores fundadores",
+    description: hasPublishedSupply
+      ? "Explora perfiles públicos de entrenadores personales por ciudad, especialidad y formato antes de desbloquear contacto y contratación."
+      : "Programa de entrenadores fundadores de Super Entrenador para publicar perfiles locales antes del lanzamiento abierto a clientes.",
+    alternates: {
+      canonical: "/entrenadores",
+    },
+    robots: hasPublishedSupply ? undefined : { index: false, follow: true },
+  };
 }
 
 export default async function TrainersPage({ searchParams }: TrainersPageProps) {
@@ -50,10 +57,14 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
         <div>
           <p className="app-kicker">Marketplace</p>
           <h1 className="app-title mt-2 text-3xl text-[var(--text)] sm:text-5xl">
-            {trainers.length} entrenador{trainers.length === 1 ? "" : "es"} para comparar con criterio
+            {trainers.length > 0
+              ? `${trainers.length} entrenador${trainers.length === 1 ? "" : "es"} para comparar con criterio`
+              : "Abrimos plazas para entrenadores fundadores"}
           </h1>
           <p className="app-copy mt-3 max-w-2xl text-sm">
-            Filtra por especialidad, ciudad o modalidad y revisa perfiles con precio, experiencia y formato antes de desbloquear el contacto.
+            {trainers.length > 0
+              ? "Filtra por especialidad, ciudad o modalidad y revisa perfiles con precio, experiencia y formato antes de desbloquear el contacto."
+              : "Estamos preparando la primera oferta publicada por ciudades. Si eres entrenador, entra ahora para dejar tu perfil listo antes de abrir tráfico local a clientes."}
           </p>
         </div>
         <Link
