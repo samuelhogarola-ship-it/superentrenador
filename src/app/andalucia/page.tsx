@@ -5,19 +5,24 @@ import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { isAndaluciaCity, sortCitiesByName } from "@/lib/coverage";
-import { listMarketplaceCities } from "@/lib/repositories/trainers";
+import { listMarketplaceCities, listPublicTrainerProfiles } from "@/lib/repositories/trainers";
 import { siteConfig } from "@/lib/site";
 
 const ANDALUCIA_DESCRIPTION =
   "Marketplace de entrenadores personales en Andalucía. Compara perfiles por ciudad, especialidad, modalidad, experiencia y precio antes de contactar.";
 
-export const metadata: Metadata = {
-  title: "Entrenadores personales en Andalucía",
-  description: ANDALUCIA_DESCRIPTION,
-  alternates: {
-    canonical: "/andalucia",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const trainers = await listPublicTrainerProfiles();
+
+  return {
+    title: "Entrenadores personales en Andalucía",
+    description: ANDALUCIA_DESCRIPTION,
+    alternates: {
+      canonical: "/andalucia",
+    },
+    robots: trainers.length > 0 ? undefined : { index: false, follow: true },
+  };
+}
 
 export default async function AndaluciaPage() {
   const cities = sortCitiesByName((await listMarketplaceCities()).filter(isAndaluciaCity));
@@ -44,6 +49,7 @@ export default async function AndaluciaPage() {
             eyebrow="Cobertura Andalucía"
             title="Entrenadores personales en Andalucía, ciudad por ciudad"
             body="Estamos desplegando el marketplace por territorios con landings locales preparadas para SEO, captación y contacto protegido. Andalucía queda como primera región completa antes de escalar al resto de España."
+            titleAs="h1"
           />
           <aside className="premium-card rounded-[24px] p-5">
             <p className="app-kicker">Estado actual</p>

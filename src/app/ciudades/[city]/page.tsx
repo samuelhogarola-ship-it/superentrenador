@@ -36,12 +36,16 @@ export async function generateMetadata({ params }: CityPageProps): Promise<Metad
     };
   }
 
+  const trainers = await listTrainerProfilesByCity(currentCity.slug);
+  const hasPublishedSupply = trainers.length > 0;
+
   return {
     title: currentCity.heroTitle,
     description: currentCity.seoDescription,
     alternates: {
       canonical: `/ciudades/${currentCity.slug}`,
     },
+    robots: hasPublishedSupply ? undefined : { index: false, follow: true },
   };
 }
 
@@ -73,6 +77,7 @@ export default async function CityPage({ params, searchParams }: CityPageProps) 
           eyebrow={`${currentCity.name} · ${currentCity.region}`}
           title={currentCity.heroTitle}
           body={currentCity.intro}
+          titleAs="h1"
         />
       </section>
 
