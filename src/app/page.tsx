@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, CheckCircle2, MapPin, ShieldCheck, Sparkles, Target } from "lucide-react";
+import { ArrowRight, BadgeCheck, BookOpen, CheckCircle2, MapPin, ShieldCheck, Sparkles, Target } from "lucide-react";
 import { CategoryGrid } from "@/components/category-grid";
 import { HeroSearchBar } from "@/components/hero-search-bar";
 import { JsonLd } from "@/components/json-ld";
@@ -7,6 +7,7 @@ import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { StatsBar } from "@/components/stats-bar";
 import { TrainerCard } from "@/components/trainer-card";
+import { listBlogPosts } from "@/lib/blog";
 import { isAndaluciaCity, sortCitiesByName } from "@/lib/coverage";
 import { marketplaceWebsiteJsonLd, trainerCollectionJsonLd } from "@/lib/marketplace-seo";
 import { siteConfig } from "@/lib/site";
@@ -55,6 +56,7 @@ export default async function Home() {
     getMarketplaceStats(),
   ]);
   const andaluciaCities = sortCitiesByName(cities.filter(isAndaluciaCity));
+  const latestPosts = listBlogPosts().slice(0, 3);
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-14 px-4 py-8 md:px-6 md:py-10 lg:px-8">
@@ -232,6 +234,43 @@ export default async function Home() {
                 <p className="app-copy mt-4 text-sm">{city.intro}</p>
                 <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)]">
                   Ver entrenadores
+                  <ArrowRight size={14} />
+                </span>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-6">
+        <Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <SectionHeading
+              eyebrow="Blog"
+              title="Guías para decidir mejor antes de contactar"
+              body="Contenido práctico para clientes que comparan entrenadores y profesionales que quieren publicar una ficha más fuerte desde el lanzamiento."
+            />
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-5 py-2.5 text-sm font-semibold text-[var(--text)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
+            >
+              Ver blog
+              <BookOpen size={15} />
+            </Link>
+          </div>
+        </Reveal>
+        <div className="grid gap-4 md:grid-cols-3">
+          {latestPosts.map((post, index) => (
+            <Reveal key={post.slug} delay={index * 80}>
+              <Link
+                href={`/blog/${post.slug}`}
+                className="group flex h-full flex-col rounded-[22px] border border-[var(--line)] bg-[var(--surface)] p-6 shadow-[var(--shadow-soft)] transition duration-200 hover:-translate-y-0.5 hover:border-[var(--line-strong)]"
+              >
+                <p className="app-kicker">{post.category}</p>
+                <h3 className="app-title mt-3 text-2xl text-[var(--text)]">{post.title}</h3>
+                <p className="app-copy mt-3 flex-1 text-sm">{post.excerpt}</p>
+                <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[var(--accent)]">
+                  Leer guía
                   <ArrowRight size={14} />
                 </span>
               </Link>
