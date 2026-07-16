@@ -28,6 +28,14 @@ const COLUMNS = [
       { href: "/coach-studio", label: "Coach Studio" },
     ],
   },
+  {
+    title: "Blog",
+    links: [
+      { href: "/blog", label: "Todas las guías" },
+      { href: "/blog/como-elegir-entrenador-personal-con-criterio", label: "Elegir entrenador" },
+      { href: "/blog/por-que-publicar-perfil-fundador", label: "Perfil fundador" },
+    ],
+  },
 ];
 
 export function SiteFooter() {
@@ -47,7 +55,7 @@ export function SiteFooter() {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
             {COLUMNS.map((column) => (
               <div key={column.title}>
                 <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--muted)]">{column.title}</p>
