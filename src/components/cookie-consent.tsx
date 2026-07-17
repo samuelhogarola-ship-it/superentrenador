@@ -43,7 +43,7 @@ export function CookieConsent() {
             window.localStorage.setItem(STORAGE_KEY, "accepted");
             setVisible(false);
           }}
-          className="inline-flex shrink-0 items-center justify-center rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:opacity-95"
+          className="inline-flex shrink-0 items-center justify-center rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-bold text-[var(--ink)] transition-colors hover:opacity-95"
         >
           Entendido
         </button>

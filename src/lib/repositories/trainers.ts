@@ -296,7 +296,11 @@ export async function getMarketplaceStats() {
   if (!hasSupabaseEnv()) {
     const trainers = getDemoTrainerProfiles();
     const totalTrainers = trainers.length;
-    return { totalTrainers, totalCities: marketplaceCities.length };
+    const totalReviews = trainers.reduce((sum, trainer) => sum + trainer.reviewsCount, 0);
+    const avgRating = totalTrainers
+      ? trainers.reduce((sum, trainer) => sum + trainer.rating, 0) / totalTrainers
+      : 0;
+    return { totalTrainers, totalCities: marketplaceCities.length, totalReviews, avgRating };
   }
 
   const supabase = getSupabaseServerClient();
@@ -304,16 +308,21 @@ export async function getMarketplaceStats() {
   const [profilesRes, citiesCountRes] = await Promise.all([
     supabase
       .from("trainer_profiles_public")
-      .select("slug"),
+      .select("slug, rating, reviews_count"),
     supabase
       .from("cities")
       .select("*", { count: "exact", head: true }),
   ]);
 
-  const totalTrainers = ((profilesRes.data ?? []) as Pick<TrainerRow, "slug">[]).filter(
+  const profiles = ((profilesRes.data ?? []) as Pick<TrainerRow, "slug" | "rating" | "reviews_count">[]).filter(
     (row) => !isProductionDemoProfile(row)
-  ).length;
+  );
+  const totalTrainers = profiles.length;
   const totalCities = Math.max(citiesCountRes.count ?? 0, marketplaceCities.length);
+  const totalReviews = profiles.reduce((sum, row) => sum + (row.reviews_count ?? 0), 0);
+  const avgRating = totalTrainers
+    ? profiles.reduce((sum, row) => sum + (row.rating ?? 0), 0) / totalTrainers
+    : 0;
 
-  return { totalTrainers, totalCities };
+  return { totalTrainers, totalCities, totalReviews, avgRating };
 }

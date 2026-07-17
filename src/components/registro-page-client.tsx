@@ -80,7 +80,7 @@ function RegistroForm() {
           </p>
           <Link
             href={destination}
-            className="mt-7 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-semibold text-white"
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-semibold text-[var(--ink)]"
           >
             {isTrainer ? "Ir a mi perfil" : "Ir a mi panel"}
             <ArrowRight size={15} />
@@ -203,7 +203,7 @@ function RegistroForm() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition-colors hover:opacity-95 disabled:opacity-50"
+              className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[var(--ink)] transition-colors hover:opacity-95 disabled:opacity-50"
             >
               <Mail size={15} />
               {loading ? "Enviando enlace…" : "Crear cuenta con magic link"}

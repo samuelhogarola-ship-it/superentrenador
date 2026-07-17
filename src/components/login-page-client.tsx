@@ -164,7 +164,7 @@ function LoginForm() {
             <button
               type="submit"
               disabled={magicLoading}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition-colors hover:opacity-95 disabled:opacity-50"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[var(--ink)] transition-colors hover:opacity-95 disabled:opacity-50"
             >
               <Mail size={15} />
               {magicLoading ? "Enviando enlace…" : "Entrar con magic link"}
@@ -215,7 +215,7 @@ function LoginForm() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition-colors hover:opacity-95 disabled:opacity-50"
+              className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[var(--ink)] transition-colors hover:opacity-95 disabled:opacity-50"
             >
               {loading ? "Entrando…" : "Iniciar sesión"}
               {!loading && <ArrowRight size={15} />}

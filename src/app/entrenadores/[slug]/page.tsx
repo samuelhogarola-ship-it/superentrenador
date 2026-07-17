@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BadgeCheck, ChevronRight, MapPin, ShieldCheck } from "lucide-react";
+import { BadgeCheck, ChevronRight, MapPin, ShieldCheck, Star } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Avatar } from "@/components/avatar";
 import { ContactPanel } from "@/components/contact-panel";
@@ -91,6 +91,10 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
                   {trainer.verified ? <BadgeCheck size={13} /> : <ShieldCheck size={13} />}
                   {trainer.verified ? "Verificado" : "En revisión editorial"}
                 </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3 py-1 text-xs font-semibold text-[var(--text)]">
+                  <Star size={13} className="fill-[var(--accent)] text-[var(--accent)]" />
+                  {trainer.rating.toFixed(1)} · {trainer.reviewsCount} reseñas
+                </span>
               </div>
             </div>
           </div>
@@ -169,7 +173,7 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
           </div>
           <Link
             href={`/login?redirectTo=${encodeURIComponent(`/entrenadores/${trainer.slug}`)}`}
-            className="inline-flex items-center justify-center rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-bold text-white transition-transform hover:-translate-y-0.5"
+            className="inline-flex items-center justify-center rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-bold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
           >
             Desbloquear contacto
           </Link>
