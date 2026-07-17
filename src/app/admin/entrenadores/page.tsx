@@ -27,7 +27,7 @@ export default async function AdminEntrenadoresPage() {
   const { data } = await supabase
     .from("trainer_profiles")
     .select(
-      "id, slug, display_name, city_slug, headline, short_bio, specialties, photo_url, review_status, is_published, created_at, cities(name, region)"
+      "id, slug, display_name, city_slug, headline, short_bio, long_bio, specialties, modalities, languages, years_experience, price_from, contact_info, photo_url, review_status, is_published, created_at, cities(name, region)"
     )
     .order("created_at", { ascending: false });
 

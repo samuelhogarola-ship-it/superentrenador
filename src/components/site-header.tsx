@@ -12,7 +12,7 @@ import { signOut } from "@/lib/auth";
 const navItems = [
   { href: "/entrenadores", label: "Entrenadores", icon: UserRound },
   { href: "/andalucia", label: "Andalucía", icon: MapPinned },
-  { href: "/registro", label: "Publicar perfil", icon: Sparkles },
+  { href: "/registro?intent=trainer", activePath: "/registro", label: "Publicar perfil", icon: Sparkles },
 ];
 
 export function SiteHeader() {
@@ -49,7 +49,8 @@ export function SiteHeader() {
           <nav className="hidden items-center gap-2 md:flex">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+              const activePath = item.activePath ?? item.href;
+              const isActive = pathname === activePath || pathname.startsWith(`${activePath}/`);
 
               return (
                 <Link
@@ -95,7 +96,7 @@ export function SiteHeader() {
             ) : (
               <>
                 <Link
-                  href="/registro"
+                  href="/registro?intent=trainer"
                   className="inline-flex items-center gap-2 rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)]"
                 >
                   Publica tu anuncio

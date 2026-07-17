@@ -98,7 +98,7 @@ export default async function Home() {
                 <ArrowRight size={16} />
               </Link>
               <Link
-                href="/registro"
+                href="/registro?intent=trainer"
                 className="inline-flex items-center gap-2 rounded-full border border-[var(--line-strong)] bg-[var(--panel)] px-6 py-3 text-sm font-bold text-[var(--text)] backdrop-blur transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
               >
                 Soy entrenador
@@ -192,7 +192,7 @@ export default async function Home() {
                   Si eres entrenador en Andalucía, puedes publicar tu perfil y aparecer cuando abramos campañas locales a clientes.
                 </p>
                 <Link
-                  href="/registro"
+                  href="/registro?intent=trainer"
                   className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-bold text-[var(--ink)] transition-colors hover:opacity-95"
                 >
                   Publicar perfil
@@ -294,7 +294,7 @@ export default async function Home() {
           </div>
           <div className="flex flex-wrap gap-3">
             <Link
-              href="/registro"
+              href="/registro?intent=trainer"
               className="inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-bold text-[var(--accent)] transition-colors hover:opacity-95"
             >
               Crear cuenta

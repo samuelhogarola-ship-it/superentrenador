@@ -68,7 +68,7 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
           </p>
         </div>
         <Link
-          href="/registro"
+          href="/registro?intent=trainer"
           className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-5 py-3 text-sm font-bold text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
         >
           Publicar perfil

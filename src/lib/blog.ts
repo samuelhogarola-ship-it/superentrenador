@@ -93,7 +93,7 @@ export const blogPosts: BlogPost[] = [
     ],
     cta: {
       label: "Publicar perfil",
-      href: "/registro",
+      href: "/registro?intent=trainer",
     },
   },
   {

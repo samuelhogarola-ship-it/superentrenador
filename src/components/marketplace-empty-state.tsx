@@ -34,7 +34,7 @@ export function MarketplaceEmptyState({ cityName, resetHref }: MarketplaceEmptyS
           Ver ciudades
         </Link>
         <Link
-          href="/registro"
+          href="/registro?intent=trainer"
           className="inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-bold text-[var(--accent)] transition-transform hover:-translate-y-0.5"
         >
           <UserPlus size={15} />
