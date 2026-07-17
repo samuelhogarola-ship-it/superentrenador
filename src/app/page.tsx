@@ -19,15 +19,15 @@ import {
 } from "@/lib/repositories/trainers";
 
 const HERO_POINTS = [
-  "Andalucía preparada como primera región comercial.",
-  "Alta abierta para entrenadores personales.",
-  "Contacto protegido para conversaciones con intención real.",
+  "Presencial, online o híbrido.",
+  "Precio y experiencia visibles.",
+  "Contacto protegido al dar el primer paso.",
 ];
 
 const TRUST_SIGNALS = [
-  { value: "13", label: "ciudades preparadas para captación local" },
-  { value: "0 ruido", label: "sin feeds, anuncios ni perfiles inflados" },
-  { value: "1 región", label: "Andalucía como primer mercado completo" },
+  { value: "Precio", label: "visible antes de escribir" },
+  { value: "Objetivo", label: "fuerza, grasa, salud u online" },
+  { value: "Ciudad", label: "búsqueda local sin perder tiempo" },
 ];
 
 const FLOW_STEPS = [
@@ -67,13 +67,13 @@ export default async function Home() {
           <div>
             <p className="app-kicker inline-flex items-center gap-2">
               <Sparkles size={13} />
-              Marketplace premium en lanzamiento
+              Entrenadores personales
             </p>
             <h1 className="app-title mt-4 max-w-4xl text-4xl leading-[0.98] sm:text-6xl lg:text-7xl">
-              Entrenadores personales con presencia local desde el primer día.
+              Encuentra entrenador personal cerca de ti.
             </h1>
             <p className="app-copy mt-6 max-w-2xl text-lg">
-              Estamos activando Andalucía con perfiles claros, contacto protegido y búsquedas por ciudad pensadas para encontrar entrenador sin perder tiempo.
+              Busca por objetivo y ciudad, compara precio, experiencia y modalidad, y contacta cuando tengas claro quién encaja contigo.
             </p>
 
             <div className="mt-8 max-w-4xl">
@@ -94,14 +94,14 @@ export default async function Home() {
                 href="/entrenadores"
                 className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-bold text-[var(--ink)] shadow-[0_18px_36px_rgba(245,166,35,0.18)] transition-transform hover:-translate-y-0.5"
               >
-                Ver marketplace
+                Buscar entrenador
                 <ArrowRight size={16} />
               </Link>
               <Link
                 href="/registro"
                 className="inline-flex items-center gap-2 rounded-full border border-[var(--line-strong)] bg-[var(--panel)] px-6 py-3 text-sm font-bold text-[var(--text)] backdrop-blur transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
               >
-                Publicar perfil
+                Soy entrenador
               </Link>
             </div>
           </div>
@@ -124,6 +124,8 @@ export default async function Home() {
         <StatsBar
           totalTrainers={stats.totalTrainers}
           totalCities={stats.totalCities}
+          totalReviews={stats.totalReviews}
+          avgRating={stats.avgRating}
         />
       </section>
 
@@ -207,7 +209,7 @@ export default async function Home() {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <SectionHeading
               eyebrow="Cobertura Andalucía"
-              title="Andalucía queda lista como primera región comercial"
+              title="Entrenadores personales en Andalucía, ciudad por ciudad"
               body="Capitales y zonas de alta demanda con páginas útiles para comparar entrenadores, captar profesionales y validar mercado antes de escalar al resto de España."
             />
             <Link

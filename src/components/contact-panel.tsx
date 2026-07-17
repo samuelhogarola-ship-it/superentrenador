@@ -151,11 +151,13 @@ export function ContactPanel({
         ) : (
           <>
             <p className="app-kicker">Contacto protegido</p>
-            <p className="mt-3 text-sm leading-7 text-[var(--text)]">{hiddenContactHint}</p>
+            <p className="mt-3 text-sm leading-7 text-[var(--text)]">
+              {hiddenContactHint} Te pediremos una cuenta para ordenar el primer mensaje y evitar conversaciones sin intención.
+            </p>
             <div className="mt-5 grid gap-3">
               <Link
                 href={loginHref}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-bold text-white transition-transform hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-bold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
               >
                 <MessageSquare size={16} />
                 Contactar con {trainerName}

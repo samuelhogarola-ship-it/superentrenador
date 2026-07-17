@@ -1,19 +1,23 @@
-import { MapPinned, ShieldCheck, Users } from "lucide-react";
+import { MapPinned, ShieldCheck, Star, Users } from "lucide-react";
 
 interface StatsBarProps {
   totalTrainers: number;
   totalCities: number;
+  totalReviews: number;
+  avgRating: number;
 }
 
-export function StatsBar({ totalTrainers, totalCities }: StatsBarProps) {
+export function StatsBar({ totalTrainers, totalCities, totalReviews, avgRating }: StatsBarProps) {
+  const hasReviews = totalReviews > 0;
   const stats = [
-    { icon: Users, value: `${totalTrainers}`, label: "Perfiles publicados" },
+    { icon: Users, value: `${totalTrainers}`, label: "Perfiles para comparar" },
     { icon: MapPinned, value: `${totalCities}`, label: "Ciudades" },
-    { icon: ShieldCheck, value: "100%", label: "Contacto protegido" },
+    { icon: Star, value: hasReviews ? avgRating.toFixed(1) : "Revisión", label: hasReviews ? `${totalReviews} reseñas` : "Editorial previa" },
+    { icon: ShieldCheck, value: "Registro", label: "Contacto protegido" },
   ];
 
   return (
-    <div className="grid gap-3 sm:grid-cols-3">
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => {
         const Icon = stat.icon;
         return (

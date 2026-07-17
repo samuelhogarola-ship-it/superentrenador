@@ -107,14 +107,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           ))}
         </div>
 
-        <div className="mt-10 rounded-[24px] bg-[var(--accent)] p-6 text-white sm:p-7">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/70">Siguiente paso</p>
+        <div className="mt-10 rounded-[24px] bg-[var(--accent)] p-6 text-[var(--ink)] sm:p-7">
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--ink)]/60">Siguiente paso</p>
           <h2 className="font-heading mt-3 text-2xl font-semibold leading-tight">
             Convierte esta guía en una decisión dentro del marketplace.
           </h2>
           <Link
             href={post.cta.href}
-            className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-[var(--accent)] transition-colors hover:opacity-95"
+            className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-bold text-[var(--accent)] transition-colors hover:opacity-95"
           >
             {post.cta.label}
             <ArrowRight size={15} />

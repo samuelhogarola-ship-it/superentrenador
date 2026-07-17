@@ -59,12 +59,12 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
           <h1 className="app-title mt-2 text-3xl text-[var(--text)] sm:text-5xl">
             {trainers.length > 0
               ? `${trainers.length} entrenador${trainers.length === 1 ? "" : "es"} para comparar con criterio`
-              : "Estamos preparando los primeros perfiles por ciudad"}
+              : "Encuentra entrenador personal por ciudad y objetivo"}
           </h1>
           <p className="app-copy mt-3 max-w-2xl text-sm">
             {trainers.length > 0
               ? "Filtra por especialidad, ciudad o modalidad y revisa perfiles con precio, experiencia y formato antes de desbloquear el contacto."
-              : "Estamos preparando la primera oferta publicada por ciudades. Si eres entrenador, entra ahora para dejar tu perfil listo antes de abrir tráfico local a clientes."}
+              : "Estamos ampliando la oferta ciudad por ciudad. Filtra para explorar la cobertura o publica tu perfil si eres entrenador."}
           </p>
         </div>
         <Link
