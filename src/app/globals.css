@@ -9,12 +9,15 @@
   --text: #ededf5;
   --muted: rgba(237, 237, 245, 0.56);
   --ink: #07090e;
-  --accent: #f5a623;
-  --accent-strong: #d88d14;
-  --accent-2: #3d8bff;
-  --accent-soft: rgba(245, 166, 35, 0.14);
-  --gold: #f5a623;
-  --gold-soft: rgba(245, 166, 35, 0.14);
+  --accent: #f0a000;
+  --accent-strong: #ffc229;
+  --accent-2: #0094ff;
+  --accent-hot: #ff3b16;
+  --accent-soft: rgba(240, 160, 0, 0.15);
+  --blue-soft: rgba(0, 148, 255, 0.14);
+  --hot-soft: rgba(255, 59, 22, 0.11);
+  --gold: #f0a000;
+  --gold-soft: rgba(240, 160, 0, 0.15);
   --line: rgba(237, 237, 245, 0.08);
   --line-strong: rgba(237, 237, 245, 0.16);
   --shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
@@ -41,8 +44,9 @@ body {
   min-height: 100%;
   overflow-x: hidden;
   background:
-    radial-gradient(ellipse at 8% 5%, rgba(61, 143, 255, 0.12), transparent 35%),
-    radial-gradient(ellipse at 92% 80%, rgba(245, 166, 35, 0.10), transparent 35%),
+    radial-gradient(ellipse at 8% 6%, rgba(0, 148, 255, 0.16), transparent 34%),
+    radial-gradient(ellipse at 88% 18%, rgba(255, 59, 22, 0.12), transparent 32%),
+    radial-gradient(ellipse at 78% 84%, rgba(240, 160, 0, 0.10), transparent 34%),
     linear-gradient(180deg, #08090f 0%, #0b0d16 100%);
   color: var(--text);
   font-family: var(--font-plus-jakarta), "Segoe UI", sans-serif;
@@ -54,7 +58,7 @@ a {
 }
 
 ::selection {
-  background: rgba(245, 166, 35, 0.28);
+  background: rgba(240, 160, 0, 0.30);
   color: var(--text);
 }
 
@@ -138,7 +142,9 @@ button {
   overflow: hidden;
   border: 1px solid var(--line);
   background:
-    radial-gradient(circle at 78% 10%, rgba(61, 143, 255, 0.16), transparent 24rem),
+    radial-gradient(circle at 14% 8%, rgba(0, 148, 255, 0.16), transparent 22rem),
+    radial-gradient(circle at 86% 12%, rgba(255, 59, 22, 0.11), transparent 24rem),
+    radial-gradient(circle at 72% 82%, rgba(240, 160, 0, 0.12), transparent 20rem),
     linear-gradient(135deg, rgba(20, 24, 36, 0.96), rgba(10, 12, 20, 0.9));
   box-shadow: var(--shadow);
 }
@@ -189,6 +195,22 @@ button {
   color: var(--accent);
 }
 
+.brand-super {
+  background: linear-gradient(180deg, #ffffff 0%, #9a9da4 42%, #f4f6fb 64%, #585b63 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 1px 18px rgba(237, 237, 245, 0.12);
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-entrenador {
+  background: linear-gradient(180deg, #ffe58a 0%, #f0a000 45%, #9a5c00 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 1px 20px rgba(240, 160, 0, 0.20);
+  -webkit-text-fill-color: transparent;
+}
+
 .text-\[var\(--ink\)\] {
   color: var(--ink);
 }
@@ -198,7 +220,7 @@ button {
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #f5a623 0%, #ededf5 45%, #3d8bff 100%);
+  background: linear-gradient(135deg, #f0a000 0%, #ededf5 43%, #0094ff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

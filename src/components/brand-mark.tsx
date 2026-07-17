@@ -20,10 +20,10 @@ export function BrandMark({ href = "/", compact = false }: BrandMarkProps) {
         priority
       />
       <span className="flex flex-col leading-none">
-        <strong className="font-heading text-[1.35rem] tracking-[-0.08em] text-[var(--text)]">
+        <strong className="brand-super font-heading text-[1.35rem] tracking-[-0.08em]">
           Super
         </strong>
-        <strong className="font-heading text-[1.35rem] tracking-[-0.08em] text-[var(--text)]">
+        <strong className="brand-entrenador font-heading text-[1.35rem] tracking-[-0.08em]">
           Entrenador
         </strong>
       </span>
