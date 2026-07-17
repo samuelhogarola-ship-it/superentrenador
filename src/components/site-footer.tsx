@@ -33,7 +33,7 @@ const COLUMNS = [
     links: [
       { href: "/blog", label: "Todas las guías" },
       { href: "/blog/como-elegir-entrenador-personal-con-criterio", label: "Elegir entrenador" },
-      { href: "/blog/por-que-publicar-perfil-fundador", label: "Perfil fundador" },
+      { href: "/blog/como-publicar-perfil-entrenador-que-convierte", label: "Publicar perfil" },
     ],
   },
 ];

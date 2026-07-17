@@ -156,7 +156,7 @@ function LoginForm() {
             </label>
 
             {magicSent ? (
-              <p className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              <p className="rounded-2xl bg-[var(--accent-soft)] px-4 py-3 text-sm text-[var(--accent)]">
                 Te hemos enviado un enlace mágico. Ábrelo desde este dispositivo para entrar.
               </p>
             ) : null}

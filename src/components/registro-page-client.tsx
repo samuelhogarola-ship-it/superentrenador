@@ -70,8 +70,8 @@ function RegistroForm() {
     return (
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-12 md:px-0">
         <div className="rounded-[28px] border border-[var(--line)] bg-[var(--surface)] p-8 text-center shadow-[var(--shadow-soft)]">
-          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10">
-            <CheckCircle size={24} className="text-emerald-600" />
+          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[var(--accent-soft)]">
+            <CheckCircle size={24} className="text-[var(--accent)]" />
           </span>
           <h1 className="app-title mt-5 text-2xl text-[var(--text)]">Revisa tu email</h1>
           <p className="app-copy mx-auto mt-3 max-w-xs text-sm">

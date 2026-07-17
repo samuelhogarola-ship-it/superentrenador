@@ -203,7 +203,7 @@ function CoachStudioContent() {
             "Acompañamiento de activación",
           ].map((item) => (
             <li key={item} className="flex items-center gap-2.5 text-sm text-[var(--text)]">
-              <CheckCircle size={15} className="shrink-0 text-emerald-500" />
+              <CheckCircle size={15} className="shrink-0 text-[var(--accent)]" />
               {item}
             </li>
           ))}

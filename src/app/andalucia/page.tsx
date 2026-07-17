@@ -61,7 +61,7 @@ export default async function AndaluciaPage() {
 
       <section className="grid gap-3 md:grid-cols-3">
         {["Capitales cubiertas", "Costa del Sol priorizada", "Listo para ampliar a España"].map((item) => (
-          <div key={item} className="rounded-[18px] border border-[var(--line)] bg-white/60 px-4 py-3 text-sm font-semibold text-[var(--text)]">
+          <div key={item} className="rounded-[18px] border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-sm font-semibold text-[var(--text)]">
             <span className="inline-flex items-center gap-2">
               <ShieldCheck size={15} className="text-[var(--accent)]" />
               {item}
@@ -75,7 +75,7 @@ export default async function AndaluciaPage() {
           <Reveal key={city.slug} delay={Math.min(index, 6) * 50}>
             <Link
               href={`/ciudades/${city.slug}`}
-              className="group flex h-full flex-col rounded-[24px] border border-[var(--line)] bg-[linear-gradient(180deg,#fff,#fcfaf5)] p-6 shadow-[var(--shadow-soft)] transition duration-200 hover:-translate-y-0.5 hover:border-[var(--line-strong)] hover:shadow-[var(--shadow)]"
+              className="premium-card group flex h-full flex-col rounded-[24px] p-6 transition duration-200 hover:-translate-y-0.5 hover:border-[var(--line-strong)] hover:shadow-[var(--shadow)]"
             >
               <p className="app-kicker inline-flex items-center gap-1.5">
                 <MapPin size={12} />

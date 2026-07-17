@@ -20,7 +20,7 @@ import {
 
 const HERO_POINTS = [
   "Andalucía preparada como primera región comercial.",
-  "Plazas abiertas para entrenadores fundadores.",
+  "Alta abierta para entrenadores personales.",
   "Contacto protegido para conversaciones con intención real.",
 ];
 
@@ -92,16 +92,16 @@ export default async function Home() {
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href="/entrenadores"
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-bold text-white shadow-[0_18px_36px_rgba(22,101,52,0.22)] transition-transform hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-bold text-[var(--ink)] shadow-[0_18px_36px_rgba(245,166,35,0.18)] transition-transform hover:-translate-y-0.5"
               >
                 Ver marketplace
                 <ArrowRight size={16} />
               </Link>
               <Link
                 href="/registro"
-                className="inline-flex items-center gap-2 rounded-full border border-[var(--line-strong)] bg-white/70 px-6 py-3 text-sm font-bold text-[var(--text)] backdrop-blur transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                className="inline-flex items-center gap-2 rounded-full border border-[var(--line-strong)] bg-[var(--panel)] px-6 py-3 text-sm font-bold text-[var(--text)] backdrop-blur transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
               >
-                Publicar como fundador
+                Publicar perfil
               </Link>
             </div>
           </div>
@@ -110,7 +110,7 @@ export default async function Home() {
             <p className="app-kicker">Por qué funciona</p>
             <div className="mt-5 grid gap-4">
               {TRUST_SIGNALS.map((signal) => (
-                <div key={signal.label} className="rounded-[20px] border border-[var(--line)] bg-white/70 p-4">
+                <div key={signal.label} className="rounded-[20px] border border-[var(--line)] bg-[var(--surface)] p-4">
                   <strong className="font-heading text-3xl text-[var(--text)]">{signal.value}</strong>
                   <p className="mt-1 text-sm leading-6 text-[var(--muted)]">{signal.label}</p>
                 </div>
@@ -187,13 +187,13 @@ export default async function Home() {
                   Estamos seleccionando los primeros perfiles publicados.
                 </h3>
                 <p className="app-copy mt-3 max-w-2xl text-sm">
-                  Si eres entrenador en Andalucía, puedes entrar como perfil fundador y aparecer antes de abrir campañas locales a clientes.
+                  Si eres entrenador en Andalucía, puedes publicar tu perfil y aparecer cuando abramos campañas locales a clientes.
                 </p>
                 <Link
                   href="/registro"
-                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-bold text-white transition-colors hover:opacity-95"
+                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-bold text-[var(--ink)] transition-colors hover:opacity-95"
                 >
-                  Crear perfil fundador
+                  Publicar perfil
                   <ArrowRight size={15} />
                 </Link>
               </div>
@@ -280,27 +280,27 @@ export default async function Home() {
       </section>
 
       <Reveal>
-        <section className="grid gap-6 rounded-[28px] bg-[var(--accent)] px-6 py-8 text-white sm:px-8 sm:py-10 lg:grid-cols-[1fr_auto] lg:items-center">
+        <section className="grid gap-6 rounded-[28px] bg-[var(--accent)] px-6 py-8 text-[var(--ink)] sm:px-8 sm:py-10 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/70">Para entrenadores</p>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--ink)]/60">Para entrenadores</p>
             <h2 className="font-heading mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-              Publica tu perfil fundador y entra antes de abrir tráfico local.
+              Publica tu perfil y empieza a aparecer en tu ciudad.
             </h2>
-            <p className="mt-4 max-w-2xl text-sm text-white/78">
+            <p className="mt-4 max-w-2xl text-sm text-[var(--ink)]/72">
               Crea una ficha pública, recibe mensajes desde el marketplace y deja listo el salto a Coach Studio cuando actives la parte profesional.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
             <Link
               href="/registro"
-              className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-[var(--accent)] transition-colors hover:opacity-95"
+              className="inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-bold text-[var(--accent)] transition-colors hover:opacity-95"
             >
               Crear cuenta
               <ArrowRight size={16} />
             </Link>
             <Link
               href="/coach-studio"
-              className="inline-flex items-center gap-2 rounded-full border border-white/30 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-full border border-[var(--ink)]/25 px-5 py-3 text-sm font-semibold text-[var(--ink)] transition-colors hover:bg-[var(--ink)]/8"
             >
               Ver Coach Studio
             </Link>

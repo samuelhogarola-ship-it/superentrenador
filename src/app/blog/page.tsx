@@ -8,7 +8,7 @@ import { siteConfig } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Blog",
   description:
-    "Guías para elegir entrenador personal, publicar perfiles fundadores y entender el marketplace de Super Entrenador.",
+    "Guías para elegir entrenador personal, publicar perfiles que convierten y entender el marketplace de Super Entrenador.",
   alternates: {
     canonical: "/blog",
   },

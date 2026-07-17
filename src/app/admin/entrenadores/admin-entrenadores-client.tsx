@@ -127,7 +127,7 @@ function TrainerReviewCard({
 }) {
   const statusColor =
     trainer.review_status === "approved"
-      ? "text-emerald-600 bg-emerald-500/10"
+      ? "text-[var(--accent)] bg-[var(--accent-soft)]"
       : trainer.review_status === "rejected"
         ? "text-red-600 bg-red-500/10"
         : "text-amber-600 bg-amber-500/10";
@@ -155,7 +155,7 @@ function TrainerReviewCard({
                 : "Pendiente"}
           </span>
           {trainer.is_published ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-xs font-semibold text-[var(--accent)]">
               <BadgeCheck size={12} />
               Publicado
             </span>
@@ -198,7 +198,7 @@ function TrainerReviewCard({
         <button
           onClick={onApprove}
           disabled={acting || trainer.review_status === "approved"}
-          className="inline-flex items-center justify-center gap-1.5 rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--ink)] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
         >
           <CheckCircle size={14} />
           Aprobar

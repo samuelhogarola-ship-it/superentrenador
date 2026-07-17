@@ -9,7 +9,7 @@ interface TrainerListItemProps {
 
 export function TrainerListItem({ trainer }: TrainerListItemProps) {
   return (
-    <article className="group flex flex-col gap-5 rounded-[24px] border border-[var(--line)] bg-[linear-gradient(180deg,#fff,#fcfaf5)] p-5 shadow-[var(--shadow-soft)] transition duration-200 hover:-translate-y-0.5 hover:border-[var(--line-strong)] hover:shadow-[var(--shadow)] sm:flex-row sm:gap-6 sm:p-6">
+    <article className="premium-card group flex flex-col gap-5 rounded-[24px] p-5 transition duration-200 hover:-translate-y-0.5 hover:border-[var(--line-strong)] hover:shadow-[var(--shadow)] sm:flex-row sm:gap-6 sm:p-6">
       <div className="shrink-0 self-start">
         <Avatar name={trainer.displayName} photoUrl={trainer.photoUrl} size="xl" />
       </div>
@@ -19,7 +19,7 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
           <h3 className="font-heading text-xl text-[var(--text)]">{trainer.displayName}</h3>
           <span
             className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${
-              trainer.verified ? "bg-emerald-500/10 text-emerald-700" : "bg-[var(--gold-soft)] text-[var(--gold)]"
+              trainer.verified ? "bg-[var(--accent-soft)] text-[var(--accent)]" : "bg-[var(--gold-soft)] text-[var(--gold)]"
             }`}
           >
             {trainer.verified ? <BadgeCheck size={13} /> : <ShieldCheck size={13} />}
@@ -48,10 +48,10 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
         </div>
 
         <div className="mt-4 flex flex-wrap gap-2 text-xs text-[var(--muted)]">
-          <span className="rounded-full border border-[var(--line)] bg-white/70 px-3 py-1.5">
+          <span className="rounded-full border border-[var(--line)] bg-[var(--surface)] px-3 py-1.5">
             {trainer.yearsExperience} años de experiencia
           </span>
-          <span className="rounded-full border border-[var(--line)] bg-white/70 px-3 py-1.5">
+          <span className="rounded-full border border-[var(--line)] bg-[var(--surface)] px-3 py-1.5">
             {trainer.modalities.join(" · ")}
           </span>
         </div>
@@ -66,7 +66,7 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
         </div>
         <Link
           href={`/entrenadores/${trainer.slug}`}
-          className="inline-flex items-center justify-center rounded-full border border-[var(--text)] bg-[var(--text)] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:border-[var(--accent)] hover:bg-[var(--accent)]"
+          className="inline-flex items-center justify-center rounded-full border border-[var(--accent)] bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:opacity-95"
         >
           Ver perfil
         </Link>

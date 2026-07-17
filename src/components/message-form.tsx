@@ -42,7 +42,7 @@ export function MessageForm({ trainerProfileId, trainerName, onSent }: MessageFo
 
   if (sent) {
     return (
-      <div className="rounded-2xl bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700">
+      <div className="rounded-2xl bg-[var(--accent-soft)] px-4 py-3 text-sm text-[var(--accent)]">
         Mensaje enviado a {trainerName}. Te responderá pronto.
       </div>
     );

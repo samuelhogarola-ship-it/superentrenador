@@ -25,10 +25,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const hasPublishedSupply = trainers.length > 0;
 
   return {
-    title: hasPublishedSupply ? "Entrenadores personales" : "Entrenadores fundadores",
+    title: "Entrenadores personales",
     description: hasPublishedSupply
       ? "Explora perfiles públicos de entrenadores personales por ciudad, especialidad y formato antes de desbloquear contacto y contratación."
-      : "Programa de entrenadores fundadores de Super Entrenador para publicar perfiles locales antes del lanzamiento abierto a clientes.",
+      : "Publica o explora perfiles locales de entrenadores personales antes de abrir el marketplace a más tráfico por ciudad.",
     alternates: {
       canonical: "/entrenadores",
     },
@@ -59,7 +59,7 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
           <h1 className="app-title mt-2 text-3xl text-[var(--text)] sm:text-5xl">
             {trainers.length > 0
               ? `${trainers.length} entrenador${trainers.length === 1 ? "" : "es"} para comparar con criterio`
-              : "Abrimos plazas para entrenadores fundadores"}
+              : "Estamos preparando los primeros perfiles por ciudad"}
           </h1>
           <p className="app-copy mt-3 max-w-2xl text-sm">
             {trainers.length > 0
@@ -78,7 +78,7 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
 
       <section className="grid gap-3 md:grid-cols-3">
         {["Contacto protegido", "Perfiles comparables", "SEO local por ciudad"].map((item) => (
-          <div key={item} className="rounded-[18px] border border-[var(--line)] bg-white/55 px-4 py-3 text-sm font-semibold text-[var(--text)]">
+          <div key={item} className="rounded-[18px] border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-sm font-semibold text-[var(--text)]">
             <span className="inline-flex items-center gap-2">
               <ShieldCheck size={15} className="text-[var(--accent)]" />
               {item}

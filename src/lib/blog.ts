@@ -58,22 +58,22 @@ export const blogPosts: BlogPost[] = [
     },
   },
   {
-    slug: "por-que-publicar-perfil-fundador",
-    title: "Por qué publicar tu perfil fundador antes de que llegue el tráfico",
+    slug: "como-publicar-perfil-entrenador-que-convierte",
+    title: "Cómo publicar un perfil de entrenador que convierte",
     excerpt:
-      "Para entrenadores: cómo entrar pronto ayuda a posicionar ciudad, especialidad y oferta antes de competir en un marketplace maduro.",
+      "Para entrenadores: cómo explicar especialidad, ciudad, precios y método para que un cliente entienda rápido si encajas.",
     category: "Captación",
     audience: "Entrenadores",
     publishedAt: "2026-07-16",
     readingMinutes: 4,
     hero:
-      "Los primeros perfiles de un marketplace no solo ocupan espacio: definen el estándar. Para un entrenador, entrar pronto puede ser la forma más inteligente de posicionarse antes de que el canal se llene.",
+      "Un perfil público no es una bio decorativa. Es una página de venta breve: tiene que explicar a quién ayudas, cómo trabajas y por qué merece la pena escribirte.",
     sections: [
       {
-        heading: "Llegar antes ayuda a ocupar intención local",
+        heading: "Empieza por ciudad, objetivo y especialidad",
         body: [
-          "La búsqueda de entrenador suele ser local: ciudad, barrio, modalidad y objetivo. Publicar pronto permite trabajar esa presencia antes de que haya decenas de perfiles compitiendo por la misma categoría.",
-          "No se trata de prometer leads inmediatos. Se trata de preparar una ficha pública seria, revisable y lista para campañas cuando se active la demanda.",
+          "La búsqueda de entrenador suele ser local: ciudad, barrio, modalidad y objetivo. Si esos datos no aparecen claros, el cliente no sabe si debe seguir leyendo.",
+          "No prometas resultados imposibles. Explica para qué tipo de persona eres una buena opción y qué problema concreto sabes resolver.",
         ],
       },
       {
@@ -84,15 +84,15 @@ export const blogPosts: BlogPost[] = [
         ],
       },
       {
-        heading: "La ventaja inicial es aprender el mensaje",
+        heading: "Ajusta el mensaje con datos reales",
         body: [
-          "Los perfiles fundadores permiten ajustar textos, categorías, ciudades y llamadas a la acción antes del lanzamiento abierto. Esa información vale mucho para convertir mejor después.",
+          "Un buen perfil se mejora con preguntas reales: qué dudas repiten los clientes, qué especialidad genera más interés y qué oferta se entiende más rápido.",
           "El objetivo no es llenar una ficha: es construir una presencia comercial que puedas mejorar con datos reales.",
         ],
       },
     ],
     cta: {
-      label: "Crear perfil fundador",
+      label: "Publicar perfil",
       href: "/registro",
     },
   },

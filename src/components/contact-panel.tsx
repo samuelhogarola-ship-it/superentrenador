@@ -95,15 +95,15 @@ export function ContactPanel({
 
       <div className="mt-6 grid gap-4 text-sm text-white/70">
         <span className="inline-flex items-center gap-3">
-          <Award size={16} className="text-emerald-300" />
+          <Award size={16} className="text-[var(--accent)]" />
           {yearsExperience} años de experiencia
         </span>
         <span className="inline-flex items-center gap-3">
-          <MapPin size={16} className="text-emerald-300" />
+          <MapPin size={16} className="text-[var(--accent)]" />
           {modalities.join(" · ")}
         </span>
         <span className="inline-flex items-center gap-3">
-          <Globe2 size={16} className="text-emerald-300" />
+          <Globe2 size={16} className="text-[var(--accent)]" />
           {languages.join(" · ")}
         </span>
       </div>

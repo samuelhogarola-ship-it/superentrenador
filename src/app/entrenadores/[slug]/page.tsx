@@ -85,7 +85,7 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
               <div className="mt-3 flex flex-wrap items-center gap-3">
                 <span
                   className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
-                    trainer.verified ? "bg-emerald-500/10 text-emerald-700" : "bg-[var(--gold-soft)] text-[var(--gold)]"
+                    trainer.verified ? "bg-[var(--accent-soft)] text-[var(--accent)]" : "bg-[var(--gold-soft)] text-[var(--gold)]"
                   }`}
                 >
                   {trainer.verified ? <BadgeCheck size={13} /> : <ShieldCheck size={13} />}
@@ -99,15 +99,15 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
           <p className="app-copy mt-4 max-w-3xl text-base">{trainer.longBio}</p>
 
           <div className="mt-7 grid gap-3 sm:grid-cols-3">
-            <div className="rounded-[18px] border border-[var(--line)] bg-white/70 p-4">
+            <div className="rounded-[18px] border border-[var(--line)] bg-[var(--surface)] p-4">
               <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--muted)]">Experiencia</p>
               <p className="mt-1 font-heading text-2xl text-[var(--text)]">{trainer.yearsExperience} años</p>
             </div>
-            <div className="rounded-[18px] border border-[var(--line)] bg-white/70 p-4">
+            <div className="rounded-[18px] border border-[var(--line)] bg-[var(--surface)] p-4">
               <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--muted)]">Desde</p>
               <p className="mt-1 font-heading text-2xl text-[var(--text)]">{trainer.priceFrom}€</p>
             </div>
-            <div className="rounded-[18px] border border-[var(--line)] bg-white/70 p-4">
+            <div className="rounded-[18px] border border-[var(--line)] bg-[var(--surface)] p-4">
               <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--muted)]">Formato</p>
               <p className="mt-1 text-sm font-semibold text-[var(--text)]">{trainer.modalities.join(" · ")}</p>
             </div>

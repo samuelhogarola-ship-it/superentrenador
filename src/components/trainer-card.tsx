@@ -10,7 +10,7 @@ interface TrainerCardProps {
 
 export function TrainerCard({ trainer, featured = false }: TrainerCardProps) {
   return (
-    <article className="group relative flex h-full flex-col rounded-[24px] border border-[var(--line)] bg-[linear-gradient(180deg,#fff,#fcfaf5)] p-6 shadow-[var(--shadow-soft)] transition duration-200 hover:-translate-y-1 hover:border-[var(--line-strong)] hover:shadow-[var(--shadow)]">
+    <article className="premium-card group relative flex h-full flex-col rounded-[24px] p-6 transition duration-200 hover:-translate-y-1 hover:border-[var(--line-strong)] hover:shadow-[var(--shadow)]">
       {featured ? (
         <span className="absolute -top-3 left-6 inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3 py-1 text-xs font-bold text-[var(--accent)] shadow-[var(--shadow-soft)]">
           Selección destacada
@@ -27,7 +27,7 @@ export function TrainerCard({ trainer, featured = false }: TrainerCardProps) {
             <h3 className="font-heading text-xl text-[var(--text)]">{trainer.displayName}</h3>
             <span
               className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${
-                trainer.verified ? "bg-emerald-500/10 text-emerald-700" : "bg-[var(--gold-soft)] text-[var(--gold)]"
+                trainer.verified ? "bg-[var(--accent-soft)] text-[var(--accent)]" : "bg-[var(--gold-soft)] text-[var(--gold)]"
               }`}
             >
               {trainer.verified ? <BadgeCheck size={13} /> : <ShieldCheck size={13} />}
@@ -57,10 +57,10 @@ export function TrainerCard({ trainer, featured = false }: TrainerCardProps) {
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-[var(--muted)]">
-        <span className="rounded-2xl border border-[var(--line)] bg-white/70 px-3 py-2">
+        <span className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2">
           {trainer.yearsExperience} años exp.
         </span>
-        <span className="rounded-2xl border border-[var(--line)] bg-white/70 px-3 py-2">
+        <span className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2">
           {trainer.modalities.slice(0, 2).join(" + ")}
         </span>
       </div>
@@ -74,7 +74,7 @@ export function TrainerCard({ trainer, featured = false }: TrainerCardProps) {
         </div>
         <Link
           href={`/entrenadores/${trainer.slug}`}
-          className="rounded-full border border-[var(--line-strong)] bg-[var(--text)] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent)]"
+          className="rounded-full border border-[var(--line-strong)] bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] transition-colors hover:opacity-95"
         >
           Ver perfil
         </Link>

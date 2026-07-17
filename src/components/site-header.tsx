@@ -12,7 +12,7 @@ import { signOut } from "@/lib/auth";
 const navItems = [
   { href: "/entrenadores", label: "Entrenadores", icon: UserRound },
   { href: "/andalucia", label: "Andalucía", icon: MapPinned },
-  { href: "/registro", label: "Fundadores", icon: Sparkles },
+  { href: "/registro", label: "Publicar perfil", icon: Sparkles },
 ];
 
 export function SiteHeader() {
@@ -42,7 +42,7 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-30 border-b border-[var(--line)] bg-[color:rgba(245,243,238,0.92)] backdrop-blur-md">
+      <header className="sticky top-0 z-30 border-b border-[var(--line)] bg-[color:rgba(8,9,15,0.86)] backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-4 md:px-6 lg:px-8">
           <BrandMark />
 
@@ -110,7 +110,7 @@ export function SiteHeader() {
             )}
             <Link
               href="/entrenadores"
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:opacity-92"
+              className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--ink)] transition-colors hover:opacity-92"
             >
               Buscar entrenador
               <ArrowRight size={15} />
@@ -121,7 +121,7 @@ export function SiteHeader() {
             {loggedIn ? (
               <Link
                 href="/mi-perfil"
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--ink)]"
               >
                 <LayoutDashboard size={15} />
                 Mi perfil
@@ -129,7 +129,7 @@ export function SiteHeader() {
             ) : (
               <Link
                 href="/entrenadores"
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--ink)]"
               >
                 Buscar
                 <ArrowRight size={15} />

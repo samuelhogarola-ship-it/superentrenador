@@ -432,7 +432,7 @@ export default function MiPerfilPage() {
           </button>
 
           {saved ? (
-            <span className="inline-flex items-center gap-2 text-sm font-medium text-emerald-600">
+            <span className="inline-flex items-center gap-2 text-sm font-medium text-[var(--accent)]">
               <CheckCircle size={16} />
               {reviewStatus === "approved" ? "Cambios guardados" : "Perfil enviado, pendiente de revisión"}
             </span>

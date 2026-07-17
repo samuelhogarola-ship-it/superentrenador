@@ -11,7 +11,7 @@ export function MarketplaceEmptyState({ cityName, resetHref }: MarketplaceEmptyS
 
   return (
     <section className="rounded-[20px] border border-[var(--line)] bg-[var(--surface)] p-6 text-center shadow-[var(--shadow-soft)] sm:p-8">
-      <p className="app-kicker">Plazas fundadoras</p>
+      <p className="app-kicker">Oferta en preparación</p>
       <h2 className="app-title mx-auto mt-2 max-w-xl text-2xl text-[var(--text)]">
         Estamos preparando la primera selección de entrenadores{locationCopy}.
       </h2>
@@ -31,7 +31,7 @@ export function MarketplaceEmptyState({ cityName, resetHref }: MarketplaceEmptyS
           className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-white transition-colors hover:opacity-95"
         >
           <UserPlus size={15} />
-          Crear perfil fundador
+          Publicar perfil
           <ArrowRight size={15} />
         </Link>
       </div>
