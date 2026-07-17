@@ -48,13 +48,13 @@ export default async function AndaluciaPage() {
           <SectionHeading
             eyebrow="Cobertura Andalucía"
             title="Entrenadores personales en Andalucía, ciudad por ciudad"
-            body="Estamos desplegando el marketplace por territorios con landings locales preparadas para SEO, captación y contacto protegido. Andalucía queda como primera región completa antes de escalar al resto de España."
+            body="Estamos desplegando el marketplace por territorios con páginas claras para comparar entrenadores, captar profesionales y contactar con más criterio. Andalucía queda como primera región completa antes de escalar al resto de España."
             titleAs="h1"
           />
           <aside className="premium-card rounded-[24px] p-5">
             <p className="app-kicker">Estado actual</p>
             <strong className="mt-4 block font-heading text-5xl text-[var(--text)]">{cities.length}</strong>
-            <p className="app-copy mt-2 text-sm">ciudades andaluzas activas para indexar, captar entrenadores y validar demanda.</p>
+            <p className="app-copy mt-2 text-sm">ciudades andaluzas preparadas para comparar perfiles, captar entrenadores y validar demanda.</p>
           </aside>
         </div>
       </section>

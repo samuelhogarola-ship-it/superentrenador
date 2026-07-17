@@ -112,14 +112,14 @@ export const blogPosts: BlogPost[] = [
         heading: "Una región completa crea más contexto",
         body: [
           "Andalucía permite combinar capitales, ciudades medianas y zonas de alta demanda como la Costa del Sol. Eso hace posible comparar patrones de búsqueda sin dispersar demasiado el producto.",
-          "La estrategia regional ayuda a construir landings locales, categorías y mensajes comerciales con una narrativa coherente.",
+          "La estrategia regional ayuda a construir páginas de ciudad, categorías y mensajes comerciales con una narrativa coherente.",
         ],
       },
       {
         heading: "Las ciudades vacías deben tratarse con cuidado",
         body: [
-          "Publicar páginas locales sin perfiles puede ser útil para captación, pero no siempre conviene indexarlas de inmediato. Si no hay oferta, el usuario no encuentra valor suficiente y Google tampoco.",
-          "Por eso las páginas de ciudad deben activarse para SEO cuando haya perfiles publicados o contenido local suficiente.",
+          "Publicar páginas de ciudad sin perfiles puede ser útil para preparar el mercado, pero no siempre aporta valor al usuario desde el primer día.",
+          "Por eso cada ciudad debe abrirse con una experiencia mínima: perfiles reales, filtros claros y una razón concreta para seguir navegando.",
         ],
       },
       {

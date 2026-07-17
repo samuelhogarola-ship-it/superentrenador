@@ -77,7 +77,7 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
       </section>
 
       <section className="grid gap-3 md:grid-cols-3">
-        {["Contacto protegido", "Perfiles comparables", "SEO local por ciudad"].map((item) => (
+        {["Contacto protegido", "Perfiles comparables", "Búsqueda por ciudad"].map((item) => (
           <div key={item} className="rounded-[18px] border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-sm font-semibold text-[var(--text)]">
             <span className="inline-flex items-center gap-2">
               <ShieldCheck size={15} className="text-[var(--accent)]" />

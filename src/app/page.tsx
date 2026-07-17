@@ -73,7 +73,7 @@ export default async function Home() {
               Entrenadores personales con presencia local desde el primer día.
             </h1>
             <p className="app-copy mt-6 max-w-2xl text-lg">
-              Estamos activando Andalucía con perfiles claros, contacto protegido y landings locales preparadas para captar demanda ciudad por ciudad.
+              Estamos activando Andalucía con perfiles claros, contacto protegido y búsquedas por ciudad pensadas para encontrar entrenador sin perder tiempo.
             </p>
 
             <div className="mt-8 max-w-4xl">
@@ -208,7 +208,7 @@ export default async function Home() {
             <SectionHeading
               eyebrow="Cobertura Andalucía"
               title="Andalucía queda lista como primera región comercial"
-              body="Capitales y plazas de alta demanda con landings locales para SEO, captación de entrenadores y validación de mercado antes de escalar al resto de España."
+              body="Capitales y zonas de alta demanda con páginas útiles para comparar entrenadores, captar profesionales y validar mercado antes de escalar al resto de España."
             />
             <Link
               href="/andalucia"

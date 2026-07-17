@@ -54,7 +54,7 @@ export const marketplaceCities: MarketplaceCity[] = [
     intro:
       "Perfiles de entrenadores personales en Granada para comparar fuerza, recomposición corporal, rendimiento y planes online o presenciales.",
     seoDescription:
-      "Marketplace de entrenadores personales en Granada con perfiles indexables, especialidades y contacto tras registro.",
+      "Marketplace de entrenadores personales en Granada con perfiles claros, especialidades visibles y contacto tras registro.",
   },
   {
     slug: "huelva",
@@ -74,7 +74,7 @@ export const marketplaceCities: MarketplaceCity[] = [
     country: "España",
     heroTitle: "Entrenadores personales en Jaén",
     intro:
-      "Landings locales para entrenadores personales en Jaén con estructura SEO y perfiles comparables para captar demanda cercana.",
+      "Encuentra entrenadores personales en Jaén con perfiles comparables por objetivo, modalidad, experiencia y precio.",
     seoDescription:
       "Encuentra entrenadores personales en Jaén para fuerza, salud, pérdida de grasa y entrenamiento online o presencial.",
   },
@@ -87,7 +87,7 @@ export const marketplaceCities: MarketplaceCity[] = [
     intro:
       "Compara entrenadores personales en Jerez por especialidad, experiencia y modalidad antes de iniciar una conversación.",
     seoDescription:
-      "Marketplace de entrenadores personales en Jerez con perfiles públicos, contacto protegido y estructura SEO local.",
+      "Marketplace de entrenadores personales en Jerez con perfiles públicos, contacto protegido y búsqueda por ciudad.",
   },
   {
     slug: "malaga",
@@ -96,7 +96,7 @@ export const marketplaceCities: MarketplaceCity[] = [
     country: "España",
     heroTitle: "Entrenadores personales en Málaga",
     intro:
-      "Perfiles públicos indexables para captar demanda local y conectar con entrenadores que trabajan presencialmente y online.",
+      "Compara perfiles públicos de entrenadores que trabajan presencialmente, online o con planes híbridos en Málaga.",
     seoDescription:
       "Compara entrenadores personales en Málaga por especialidad, experiencia y formato de servicio antes de desbloquear el contacto.",
   },
@@ -118,9 +118,9 @@ export const marketplaceCities: MarketplaceCity[] = [
     country: "España",
     heroTitle: "Entrenadores personales en Madrid",
     intro:
-      "Ciudad preparada para escalar el marketplace con perfiles indexables por barrio, objetivo y modalidad de entrenamiento.",
+      "Ciudad preparada para ampliar el marketplace con perfiles por barrio, objetivo y modalidad de entrenamiento.",
     seoDescription:
-      "Marketplace SEO de entrenadores personales en Madrid con perfiles públicos optimizados para buscadores y captación premium.",
+      "Marketplace de entrenadores personales en Madrid con perfiles públicos claros y experiencia de búsqueda premium.",
   },
   {
     slug: "sevilla",

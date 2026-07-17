@@ -6,6 +6,9 @@
   --surface: #141824;
   --panel: rgba(14, 17, 27, 0.88);
   --panel-strong: #101420;
+  --paper: #f7f5ef;
+  --paper-strong: #fffdfa;
+  --paper-muted: #6c6872;
   --text: #ededf5;
   --muted: rgba(237, 237, 245, 0.56);
   --ink: #07090e;
