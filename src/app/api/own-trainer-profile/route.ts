@@ -32,7 +32,7 @@ function cleanText(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function cleanStringArray(value: unknown, maxItems = 12) {
+function cleanStringArray(value: unknown, maxItems = 12, maxItemLength = 100) {
   if (!Array.isArray(value)) {
     return [];
   }
@@ -43,7 +43,7 @@ function cleanStringArray(value: unknown, maxItems = 12) {
   for (const item of value) {
     const text = cleanText(item);
 
-    if (!text || seen.has(text)) {
+    if (!text || text.length > maxItemLength || seen.has(text)) {
       continue;
     }
 
@@ -97,8 +97,8 @@ export async function POST(request: Request) {
   const photoUrl = cleanText(payload.photo_url);
   const contactInfo = cleanText(payload.contact_info);
   const specialties = cleanStringArray(payload.specialties);
-  const modalities = cleanStringArray(payload.modalities);
-  const languages = cleanStringArray(payload.languages);
+  const modalities = cleanStringArray(payload.modalities, 4);
+  const languages = cleanStringArray(payload.languages, 10);
   const yearsExperience = cleanNonNegativeNumber(payload.years_experience, 80);
   const priceFrom = cleanNonNegativeNumber(payload.price_from, 10000);
 
@@ -121,7 +121,8 @@ export async function POST(request: Request) {
     shortBio.length > MAX_TEXT_LENGTH.shortBio ||
     longBio.length > MAX_TEXT_LENGTH.longBio ||
     contactInfo.length > MAX_TEXT_LENGTH.contactInfo ||
-    photoUrl.length > MAX_TEXT_LENGTH.photoUrl
+    photoUrl.length > MAX_TEXT_LENGTH.photoUrl ||
+    (photoUrl && !photoUrl.startsWith("https://"))
   ) {
     return NextResponse.json({ ok: false, error: "Revisa los campos del perfil." }, { status: 400 });
   }
