@@ -38,13 +38,13 @@ const FLOW_STEPS = [
   },
   {
     icon: BadgeCheck,
-    title: "Compara señal útil",
-    body: "Experiencia, modalidad, precio de entrada y especialidad aparecen en el mismo lenguaje visual.",
+    title: "Compara perfiles",
+    body: "Revisa experiencia, modalidad, precio y especialidad con la misma información en cada perfil.",
   },
   {
     icon: ShieldCheck,
     title: "Contacta con control",
-    body: "El marketplace protege el contacto y empuja conversaciones más serias para usuarios y entrenadores.",
+    body: "Tu información de contacto permanece protegida mientras hablas con el entrenador desde la plataforma.",
   },
 ];
 
@@ -162,8 +162,8 @@ export default async function Home() {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <SectionHeading
               eyebrow="Perfiles destacados"
-              title="Perfiles que ya parecen una decisión seria"
-              body="Cada ficha publicada muestra señal comercial útil: especialidad, revisión editorial, precio de entrada y formato de trabajo."
+              title="Compara antes de contactar"
+              body="Cada perfil muestra especialidad, aprobación, precio inicial y modalidad de trabajo."
             />
             <Link
               href="/entrenadores"

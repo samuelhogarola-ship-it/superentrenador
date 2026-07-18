@@ -20,15 +20,15 @@ export function CookieConsent() {
   if (!visible) return null;
 
   return (
-    <aside className="fixed inset-x-4 bottom-24 z-50 mx-auto max-w-3xl rounded-[22px] border border-[var(--line-strong)] bg-white/95 p-4 shadow-[var(--shadow)] backdrop-blur md:bottom-6">
+    <aside aria-label="Aviso de cookies" className="fixed inset-x-3 bottom-24 z-50 mx-auto max-w-3xl rounded-[22px] border border-black/10 bg-white/95 p-4 text-[var(--ink)] shadow-[var(--shadow)] backdrop-blur md:bottom-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex gap-3">
           <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[var(--accent)]">
             <ShieldCheck size={17} />
           </span>
           <div>
-            <p className="text-sm font-bold text-[var(--text)]">Cookies técnicas</p>
-            <p className="app-copy mt-1 text-xs">
+            <p className="text-sm font-bold text-[var(--ink)]">Cookies técnicas</p>
+            <p className="mt-1 text-xs leading-5 text-[var(--paper-muted)]">
               Usamos lo necesario para sesión y preferencias. Sin analítica publicitaria en esta fase.{" "}
               <Link href="/cookies" className="font-semibold text-[var(--accent)] hover:underline">
                 Ver política

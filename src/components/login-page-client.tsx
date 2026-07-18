@@ -83,7 +83,7 @@ function LoginForm() {
       <div className="grid w-full gap-6 lg:grid-cols-[0.92fr_1.08fr]">
         <section className="rounded-[28px] bg-[var(--panel-strong)] p-8 sm:p-10">
           <p className="app-kicker">Acceso seguro</p>
-          <h1 className="app-title mt-4 text-4xl text-[var(--text)] sm:text-5xl">Habla con tu entrenador sin fricción.</h1>
+          <h1 className="app-title mt-4 text-4xl text-[var(--text)] sm:text-5xl">Tus entrenadores y mensajes, en un solo lugar.</h1>
           <p className="app-copy mt-4 max-w-md text-base">
             Accede a tus mensajes, desbloquea el contacto cuando corresponda y gestiona tu perfil desde una sola cuenta.
           </p>
@@ -96,8 +96,8 @@ function LoginForm() {
               <p className="app-copy mt-1 text-sm">Solo se muestra cuando el flujo del marketplace lo permite.</p>
             </div>
             <div className="rounded-[16px] border border-[var(--line)] bg-[var(--surface)] px-4 py-4 text-sm text-[var(--text)]">
-              <div className="font-semibold">Mismos datos, misma sesión</div>
-              <p className="app-copy mt-1 text-sm">Email, Google y callback de Supabase comparten el mismo destino seguro.</p>
+              <div className="font-semibold">Acceso sencillo</div>
+              <p className="app-copy mt-1 text-sm">Entra con un enlace por email, Google o tu contraseña.</p>
             </div>
           </div>
         </section>

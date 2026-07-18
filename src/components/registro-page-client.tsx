@@ -90,7 +90,7 @@ function RegistroForm() {
         <section className="rounded-[28px] bg-[var(--panel-strong)] p-8 sm:p-10">
           <p className="app-kicker">{isTrainer ? "Para entrenadores" : "Para clientes"}</p>
           <h1 className="app-title mt-4 text-4xl text-[var(--text)] sm:text-5xl">
-            {isTrainer ? "Publica tu perfil y capta demanda local." : "Contacta con entrenadores sin ruido."}
+            {isTrainer ? "Publica tu perfil y recibe nuevos clientes." : "Encuentra y contacta con tu entrenador."}
           </h1>
           <p className="app-copy mt-4 max-w-md text-base">
             {isTrainer
