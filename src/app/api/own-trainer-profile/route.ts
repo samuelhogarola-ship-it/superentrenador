@@ -32,7 +32,7 @@ function cleanText(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function cleanStringArray(value: unknown, maxItems = 12) {
+function cleanStringArray(value: unknown, maxItems = 12, maxItemLength = 100) {
   if (!Array.isArray(value)) {
     return [];
   }
@@ -43,7 +43,7 @@ function cleanStringArray(value: unknown, maxItems = 12) {
   for (const item of value) {
     const text = cleanText(item);
 
-    if (!text || seen.has(text)) {
+    if (!text || text.length > maxItemLength || seen.has(text)) {
       continue;
     }
 
@@ -96,9 +96,21 @@ export async function POST(request: Request) {
   const longBio = cleanText(payload.long_bio);
   const photoUrl = cleanText(payload.photo_url);
   const contactInfo = cleanText(payload.contact_info);
+  const specialties = cleanStringArray(payload.specialties);
+  const modalities = cleanStringArray(payload.modalities, 4);
+  const languages = cleanStringArray(payload.languages, 10);
+  const yearsExperience = cleanNonNegativeNumber(payload.years_experience, 80);
+  const priceFrom = cleanNonNegativeNumber(payload.price_from, 10000);
 
   if (!slug || !displayName || !citySlug || !headline || !shortBio || !longBio) {
     return NextResponse.json({ ok: false, error: "Faltan campos obligatorios." }, { status: 400 });
+  }
+
+  if (specialties.length === 0 || modalities.length === 0 || languages.length === 0 || priceFrom <= 0) {
+    return NextResponse.json(
+      { ok: false, error: "Añade especialidades, modalidad, idiomas y precio antes de enviar el perfil." },
+      { status: 400 }
+    );
   }
 
   if (
@@ -109,7 +121,8 @@ export async function POST(request: Request) {
     shortBio.length > MAX_TEXT_LENGTH.shortBio ||
     longBio.length > MAX_TEXT_LENGTH.longBio ||
     contactInfo.length > MAX_TEXT_LENGTH.contactInfo ||
-    photoUrl.length > MAX_TEXT_LENGTH.photoUrl
+    photoUrl.length > MAX_TEXT_LENGTH.photoUrl ||
+    (photoUrl && !photoUrl.startsWith("https://"))
   ) {
     return NextResponse.json({ ok: false, error: "Revisa los campos del perfil." }, { status: 400 });
   }
@@ -123,6 +136,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Debes iniciar sesión." }, { status: 401 });
   }
 
+  const { data: city } = await supabase
+    .from("cities")
+    .select("slug")
+    .eq("slug", citySlug)
+    .maybeSingle();
+
+  if (!city) {
+    return NextResponse.json(
+      { ok: false, error: "Esta ciudad aún no está activada en la base de datos." },
+      { status: 400 }
+    );
+  }
+
   const { data, error } = await supabase
     .from("trainer_profiles")
     .upsert(
@@ -134,11 +160,11 @@ export async function POST(request: Request) {
         headline,
         short_bio: shortBio,
         long_bio: longBio,
-        specialties: cleanStringArray(payload.specialties),
-        modalities: cleanStringArray(payload.modalities),
-        languages: cleanStringArray(payload.languages),
-        years_experience: cleanNonNegativeNumber(payload.years_experience, 80),
-        price_from: cleanNonNegativeNumber(payload.price_from, 10000),
+        specialties,
+        modalities,
+        languages,
+        years_experience: yearsExperience,
+        price_from: priceFrom,
         contact_info: contactInfo,
         photo_url: photoUrl || null,
         is_published: false,

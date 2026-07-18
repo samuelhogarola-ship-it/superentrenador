@@ -23,7 +23,7 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
             }`}
           >
             {trainer.verified ? <BadgeCheck size={13} /> : <ShieldCheck size={13} />}
-            {trainer.verified ? "Verificado" : "En revisión"}
+            {trainer.verified ? "Identidad verificada" : "Perfil aprobado"}
           </span>
         </div>
 
@@ -32,10 +32,14 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
           {trainer.city} · {trainer.region}
         </p>
 
-        <p className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--ink)]">
-          <Star size={14} className="fill-[var(--accent)] text-[var(--accent)]" />
-          {trainer.rating.toFixed(1)} · {trainer.reviewsCount} reseñas · Perfil revisado
-        </p>
+        {trainer.reviewsCount > 0 ? (
+          <p className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--ink)]">
+            <Star size={14} className="fill-[var(--accent)] text-[var(--accent)]" />
+            {trainer.rating.toFixed(1)} · {trainer.reviewsCount} reseñas
+          </p>
+        ) : (
+          <p className="mt-2 text-sm font-semibold text-[var(--paper-muted)]">Nuevo en Super Entrenador</p>
+        )}
 
         <p className="mt-2 line-clamp-2 text-sm font-medium leading-6 text-[var(--ink)]">{trainer.headline}</p>
 

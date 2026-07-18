@@ -1,5 +1,8 @@
 import type { NextConfig } from "next";
 
+const scriptSources = ["'self'", "'unsafe-inline'"];
+if (process.env.NODE_ENV === "development") scriptSources.push("'unsafe-eval'");
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   async redirects() {
@@ -24,7 +27,7 @@ const nextConfig: NextConfig = {
           "img-src 'self' data: blob: https:",
           "font-src 'self' data:",
           "style-src 'self' 'unsafe-inline'",
-          "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+          `script-src ${scriptSources.join(" ")}`,
           "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://accounts.google.com",
           "frame-src https://accounts.google.com",
           "upgrade-insecure-requests",

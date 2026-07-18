@@ -93,6 +93,7 @@ export type Database = {
       messages: {
         Row: {
           body: string
+          client_id: string
           created_at: string
           id: string
           read_at: string | null
@@ -102,6 +103,7 @@ export type Database = {
         }
         Insert: {
           body: string
+          client_id?: string
           created_at?: string
           id?: string
           read_at?: string | null
@@ -111,6 +113,7 @@ export type Database = {
         }
         Update: {
           body?: string
+          client_id?: string
           created_at?: string
           id?: string
           read_at?: string | null
@@ -272,6 +275,30 @@ export type Database = {
       }
     }
     Functions: {
+      get_admin_trainer_profiles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          slug: string
+          display_name: string
+          city_slug: string
+          city_name: string | null
+          city_region: string | null
+          headline: string
+          short_bio: string
+          long_bio: string
+          specialties: string[]
+          modalities: string[]
+          languages: string[]
+          years_experience: number
+          price_from: number
+          contact_info: string
+          photo_url: string | null
+          review_status: ReviewStatus
+          is_published: boolean
+          created_at: string
+        }[]
+      }
       get_own_trainer_profile: {
         Args: Record<PropertyKey, never>
         Returns: {

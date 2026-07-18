@@ -6,19 +6,13 @@ import { useEffect, useState } from "react";
 import { ArrowRight, CheckCircle, ExternalLink, Loader } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getTrainerProfile, signOut } from "@/lib/auth";
+import { marketplaceCities } from "@/lib/marketplace-data";
+import { MARKETPLACE_LANGUAGES, MARKETPLACE_MODALITIES, MARKETPLACE_SPECIALTIES } from "@/lib/marketplace-taxonomy";
 
-const FALLBACK_SPECIALTIES = [
-  "Hipertrofia", "Pérdida de grasa", "Seguimiento online", "Planes híbridos",
-  "Fuerza femenina", "Posparto", "Entrenamiento funcional", "Rendimiento",
-  "Preparación física", "Fuerza aplicada",
-];
-const FALLBACK_MODALITIES = ["Presencial", "Online", "Híbrido"];
-const FALLBACK_LANGUAGES = ["Alemán", "Español", "Francés", "Inglés", "Italiano", "Portugués"];
-
-function uniqueSorted(rows: Record<string, unknown>[], key: string): string[] {
-  const set = new Set<string>();
+function uniqueSorted(rows: Record<string, unknown>[], key: string, defaults: readonly string[]): string[] {
+  const set = new Set<string>(defaults);
   rows.forEach((r) => ((r[key] as string[]) ?? []).forEach((v) => set.add(v)));
-  return Array.from(set).sort();
+  return Array.from(set).sort((a, b) => a.localeCompare(b, "es"));
 }
 
 interface City {
@@ -39,10 +33,12 @@ function slugify(text: string) {
 export default function MiPerfilPage() {
   const router = useRouter();
   const [authLoading, setAuthLoading] = useState(true);
-  const [cities, setCities] = useState<City[]>([]);
-  const [allSpecialties, setAllSpecialties] = useState<string[]>(FALLBACK_SPECIALTIES);
-  const [allModalities, setAllModalities] = useState<string[]>(FALLBACK_MODALITIES);
-  const [allLanguages, setAllLanguages] = useState<string[]>(FALLBACK_LANGUAGES);
+  const [cities, setCities] = useState<City[]>(() =>
+    marketplaceCities.map(({ slug, name, region }) => ({ slug, name, region }))
+  );
+  const [allSpecialties, setAllSpecialties] = useState<string[]>([...MARKETPLACE_SPECIALTIES]);
+  const [allModalities, setAllModalities] = useState<string[]>([...MARKETPLACE_MODALITIES]);
+  const [allLanguages, setAllLanguages] = useState<string[]>([...MARKETPLACE_LANGUAGES]);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -83,16 +79,16 @@ export default function MiPerfilPage() {
         getTrainerProfile(),
       ]);
 
-      if (citiesRes.data) setCities(citiesRes.data as City[]);
+      if (citiesRes.data && citiesRes.data.length > 0) setCities(citiesRes.data as City[]);
 
-      const specs = uniqueSorted(specialtiesRes.data ?? [], "specialties");
-      if (specs.length > 0) setAllSpecialties(specs);
+      const specs = uniqueSorted(specialtiesRes.data ?? [], "specialties", MARKETPLACE_SPECIALTIES);
+      setAllSpecialties(specs);
 
-      const mods = uniqueSorted(modalitiesRes.data ?? [], "modalities");
-      if (mods.length > 0) setAllModalities(mods);
+      const mods = uniqueSorted(modalitiesRes.data ?? [], "modalities", MARKETPLACE_MODALITIES);
+      setAllModalities(mods);
 
-      const langs = uniqueSorted(languagesRes.data ?? [], "languages");
-      if (langs.length > 0) setAllLanguages(langs);
+      const langs = uniqueSorted(languagesRes.data ?? [], "languages", MARKETPLACE_LANGUAGES);
+      setAllLanguages(langs);
 
       if (existing) {
         setProfileSlug(existing.slug as string);
@@ -133,6 +129,23 @@ export default function MiPerfilPage() {
     event.preventDefault();
 
     setError(null);
+
+    const missingFields: string[] = [];
+    if (!form.displayName.trim()) missingFields.push("nombre");
+    if (!form.citySlug) missingFields.push("ciudad");
+    if (!form.headline.trim()) missingFields.push("titular");
+    if (!form.shortBio.trim()) missingFields.push("bio corta");
+    if (!form.longBio.trim()) missingFields.push("bio completa");
+    if (form.specialties.length === 0) missingFields.push("especialidades");
+    if (form.modalities.length === 0) missingFields.push("modalidades");
+    if (form.languages.length === 0) missingFields.push("idiomas");
+    if ((Number(form.priceFrom) || 0) <= 0) missingFields.push("precio desde");
+
+    if (missingFields.length > 0) {
+      setError(`Completa estos campos antes de enviar: ${missingFields.join(", ")}.`);
+      return;
+    }
+
     setSaving(true);
 
     const slug = profileSlug ?? `${slugify(form.displayName)}-entrenador-personal-${form.citySlug}`;
@@ -225,6 +238,30 @@ export default function MiPerfilPage() {
           <p className="mt-1 font-normal opacity-80">Tu perfil no cumple los requisitos. Asegúrate de usar tu nombre real (no nombre comercial) y vuelve a guardar.</p>
         </div>
       ) : null}
+
+      <section className="rounded-[26px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,253,250,0.98),rgba(247,245,239,0.94))] p-5 text-[var(--ink)] shadow-[0_20px_54px_rgba(0,0,0,0.20)]">
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--paper-muted)]">Checklist para publicar</p>
+        <div className="mt-4 grid gap-2 sm:grid-cols-3">
+          {[
+            { label: "Datos básicos", done: Boolean(form.displayName && form.citySlug && form.headline) },
+            { label: "Oferta clara", done: form.specialties.length > 0 && form.modalities.length > 0 && Number(form.priceFrom) > 0 },
+            { label: "Perfil revisable", done: Boolean(form.shortBio && form.longBio && form.languages.length > 0) },
+          ].map((item) => (
+            <span
+              key={item.label}
+              className={`inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-sm font-semibold ${
+                item.done ? "bg-[var(--accent-soft)] text-[var(--ink)]" : "bg-white/70 text-[var(--paper-muted)]"
+              }`}
+            >
+              <CheckCircle size={15} className={item.done ? "text-[var(--accent)]" : "text-[var(--paper-muted)]"} />
+              {item.label}
+            </span>
+          ))}
+        </div>
+        <p className="mt-3 text-sm leading-6 text-[var(--paper-muted)]">
+          Cuando guardes, tu ficha quedará pendiente de revisión. Al aprobarla, aparecerá en el marketplace y en su ciudad.
+        </p>
+      </section>
 
       <form onSubmit={handleSubmit} className="app-surface flex flex-col gap-8 rounded-[28px] p-6 sm:p-8">
         <fieldset className="flex flex-col gap-4">
@@ -362,6 +399,7 @@ export default function MiPerfilPage() {
               <button
                 key={s}
                 type="button"
+                aria-pressed={form.specialties.includes(s)}
                 onClick={() => toggleArray("specialties", s)}
                 className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                   form.specialties.includes(s)
@@ -383,6 +421,7 @@ export default function MiPerfilPage() {
                 <button
                   key={m}
                   type="button"
+                  aria-pressed={form.modalities.includes(m)}
                   onClick={() => toggleArray("modalities", m)}
                   className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                     form.modalities.includes(m)
@@ -403,6 +442,7 @@ export default function MiPerfilPage() {
                 <button
                   key={l}
                   type="button"
+                  aria-pressed={form.languages.includes(l)}
                   onClick={() => toggleArray("languages", l)}
                   className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                     form.languages.includes(l)
@@ -418,7 +458,7 @@ export default function MiPerfilPage() {
         </div>
 
         {error ? (
-          <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>
+          <p role="alert" className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p>
         ) : null}
 
         <div className="flex flex-wrap items-center gap-4 border-t border-[var(--line)] pt-6">

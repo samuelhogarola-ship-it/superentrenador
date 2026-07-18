@@ -38,13 +38,13 @@ const FLOW_STEPS = [
   },
   {
     icon: BadgeCheck,
-    title: "Compara señal útil",
-    body: "Experiencia, modalidad, precio de entrada y especialidad aparecen en el mismo lenguaje visual.",
+    title: "Compara perfiles",
+    body: "Revisa experiencia, modalidad, precio y especialidad con la misma información en cada perfil.",
   },
   {
     icon: ShieldCheck,
     title: "Contacta con control",
-    body: "El marketplace protege el contacto y empuja conversaciones más serias para usuarios y entrenadores.",
+    body: "Tu información de contacto permanece protegida mientras hablas con el entrenador desde la plataforma.",
   },
 ];
 
@@ -98,7 +98,7 @@ export default async function Home() {
                 <ArrowRight size={16} />
               </Link>
               <Link
-                href="/registro"
+                href="/registro?intent=trainer"
                 className="inline-flex items-center gap-2 rounded-full border border-[var(--line-strong)] bg-[var(--panel)] px-6 py-3 text-sm font-bold text-[var(--text)] backdrop-blur transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
               >
                 Soy entrenador
@@ -162,8 +162,8 @@ export default async function Home() {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <SectionHeading
               eyebrow="Perfiles destacados"
-              title="Perfiles que ya parecen una decisión seria"
-              body="Cada ficha publicada muestra señal comercial útil: especialidad, revisión editorial, precio de entrada y formato de trabajo."
+              title="Compara antes de contactar"
+              body="Cada perfil muestra especialidad, aprobación, precio inicial y modalidad de trabajo."
             />
             <Link
               href="/entrenadores"
@@ -192,7 +192,7 @@ export default async function Home() {
                   Si eres entrenador en Andalucía, puedes publicar tu perfil y aparecer cuando abramos campañas locales a clientes.
                 </p>
                 <Link
-                  href="/registro"
+                  href="/registro?intent=trainer"
                   className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-bold text-[var(--ink)] transition-colors hover:opacity-95"
                 >
                   Publicar perfil
@@ -294,7 +294,7 @@ export default async function Home() {
           </div>
           <div className="flex flex-wrap gap-3">
             <Link
-              href="/registro"
+              href="/registro?intent=trainer"
               className="inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-bold text-[var(--accent)] transition-colors hover:opacity-95"
             >
               Crear cuenta

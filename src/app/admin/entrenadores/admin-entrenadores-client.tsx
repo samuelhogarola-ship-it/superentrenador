@@ -14,15 +14,28 @@ export interface PendingTrainer {
   city_slug: string;
   headline: string;
   short_bio: string;
+  long_bio: string;
   specialties: string[];
+  modalities: string[];
+  languages: string[];
+  years_experience: number;
+  price_from: number;
+  contact_info: string | null;
   photo_url: string | null;
   review_status: ReviewStatus;
   is_published: boolean;
   created_at: string;
-  cities: { name: string; region: string } | null;
+  city_name: string | null;
+  city_region: string | null;
 }
 
-export function AdminEntrenadoresClient({ initialTrainers }: { initialTrainers: PendingTrainer[] }) {
+export function AdminEntrenadoresClient({
+  initialTrainers,
+  loadError = null,
+}: {
+  initialTrainers: PendingTrainer[];
+  loadError?: string | null;
+}) {
   const [trainers, setTrainers] = useState<PendingTrainer[]>(initialTrainers);
   const [acting, setActing] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -68,8 +81,10 @@ export function AdminEntrenadoresClient({ initialTrainers }: { initialTrainers: 
         <p className="app-copy mt-2 text-sm">
           {pending.length} pendiente{pending.length !== 1 ? "s" : ""} · {trainers.length} total
         </p>
-        {actionError ? (
-          <p className="mt-3 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">{actionError}</p>
+        {actionError || loadError ? (
+          <p role="alert" className="mt-3 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">
+            {actionError ?? loadError}
+          </p>
         ) : null}
       </div>
 
@@ -164,11 +179,24 @@ function TrainerReviewCard({
 
         <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-[var(--muted)]">
           <MapPin size={12} className="text-[var(--accent)]" />
-          {trainer.cities?.name ?? trainer.city_slug}
+          {trainer.city_name ?? trainer.city_slug}
         </p>
 
-        <p className="mt-1.5 text-sm text-[var(--text)]">{trainer.headline}</p>
+        <p className="mt-1.5 text-sm font-semibold text-[var(--text)]">{trainer.headline}</p>
         <p className="mt-1 line-clamp-2 text-xs text-[var(--muted)]">{trainer.short_bio}</p>
+        <p className="mt-1 line-clamp-3 text-xs leading-5 text-[var(--muted)]">{trainer.long_bio}</p>
+
+        <div className="mt-3 grid gap-2 text-xs text-[var(--muted)] sm:grid-cols-3">
+          <span className="rounded-2xl border border-[var(--line)] px-3 py-2">
+            {trainer.years_experience} años exp.
+          </span>
+          <span className="rounded-2xl border border-[var(--line)] px-3 py-2">
+            Desde {trainer.price_from}€/sesión
+          </span>
+          <span className="rounded-2xl border border-[var(--line)] px-3 py-2">
+            {trainer.languages?.join(" · ") || "Sin idiomas"}
+          </span>
+        </div>
 
         <div className="mt-2 flex flex-wrap gap-1.5">
           {trainer.specialties?.slice(0, 4).map((s) => (
@@ -181,6 +209,17 @@ function TrainerReviewCard({
           ))}
         </div>
 
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {trainer.modalities?.map((m) => (
+            <span
+              key={m}
+              className="rounded-full bg-[var(--accent-soft)] px-2.5 py-0.5 text-xs font-semibold text-[var(--accent)]"
+            >
+              {m}
+            </span>
+          ))}
+        </div>
+
         {trainer.photo_url ? (
           <p className="mt-2 text-xs text-[var(--muted)] truncate">
             Foto: <span className="text-[var(--text)]">{trainer.photo_url}</span>
@@ -188,6 +227,10 @@ function TrainerReviewCard({
         ) : (
           <p className="mt-2 text-xs text-amber-600">Sin foto de perfil</p>
         )}
+
+        <p className="mt-1 text-xs text-[var(--muted)]">
+          Contacto: <span className="text-[var(--text)]">{trainer.contact_info || "No indicado"}</span>
+        </p>
 
         <p className="mt-1 text-xs text-[var(--muted)]">
           Registrado: {new Date(trainer.created_at).toLocaleDateString("es-ES")}
@@ -211,14 +254,16 @@ function TrainerReviewCard({
           <XCircle size={14} />
           Rechazar
         </button>
-        <a
-          href={`/entrenadores/${trainer.slug}`}
-          target="_blank"
-          rel="noreferrer"
-          className="text-center text-xs text-[var(--muted)] hover:text-[var(--text)] pt-1"
-        >
-          Ver ficha →
-        </a>
+        {trainer.is_published ? (
+          <a
+            href={`/entrenadores/${trainer.slug}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-center text-xs text-[var(--muted)] hover:text-[var(--text)] pt-1"
+          >
+            Ver ficha →
+          </a>
+        ) : null}
       </div>
     </div>
   );

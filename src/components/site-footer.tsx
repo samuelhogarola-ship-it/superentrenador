@@ -23,7 +23,7 @@ const COLUMNS = [
   {
     title: "Entrenadores",
     links: [
-      { href: "/registro", label: "Crear perfil público" },
+      { href: "/registro?intent=trainer", label: "Crear perfil público" },
       { href: "/login", label: "Iniciar sesión" },
       { href: "/coach-studio", label: "Coach Studio" },
     ],

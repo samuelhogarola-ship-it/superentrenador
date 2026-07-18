@@ -109,7 +109,8 @@ export function FiltersBar({ specialties, modalities, cities, basePath, lockCity
             onChange={(event) => updateParam("sort", event.target.value)}
             className={selectClass}
           >
-            <option value="featured">Destacados</option>
+            <option value="featured">Recomendados</option>
+            <option value="rating">Mejor valorados</option>
             <option value="price-asc">Precio: menor a mayor</option>
             <option value="price-desc">Precio: mayor a menor</option>
           </select>
