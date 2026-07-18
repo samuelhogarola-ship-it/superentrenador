@@ -46,6 +46,7 @@ En `Authentication > URL Configuration`:
 - Redirect URLs:
   - `https://superentrenador.com/**`
   - `https://www.superentrenador.com/**`
+  - `https://coach-studio.superentrenador.com/**`
   - `http://localhost:3000/**`
   - `http://127.0.0.1:3000/**`
 

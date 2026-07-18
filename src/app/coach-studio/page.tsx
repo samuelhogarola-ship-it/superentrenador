@@ -123,14 +123,12 @@ function CoachStudioContent() {
           <div className="min-w-0 flex-1">
             <h2 className="font-heading text-lg text-[var(--text)]">Acceder a Coach Studio</h2>
             <p className="mt-0.5 text-sm text-[var(--muted)]">
-              Accede al entorno conectado cuando esté configurado para tu cuenta.
+              Crea clientes, genera rutinas editables y entrega planes profesionales en PDF.
             </p>
           </div>
           {coachStudioUrl ? (
             <a
               href={coachStudioUrl}
-              target="_blank"
-              rel="noreferrer"
               className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
             >
               Ir a Coach Studio
@@ -168,8 +166,7 @@ function CoachStudioContent() {
         <p className="app-kicker">Para entrenadores</p>
         <h1 className="app-title mt-2 text-3xl text-[var(--text)]">Coach Studio</h1>
         <p className="app-copy mx-auto mt-3 max-w-lg text-base">
-          Área profesional en acceso privado. Hoy priorizamos perfil público, mensajes y captación;
-          las herramientas avanzadas se activarán por fases.
+          Gestiona clientes, genera rutinas editables y entrega planes con tu marca desde un único panel.
         </p>
       </div>
 
@@ -192,14 +189,14 @@ function CoachStudioContent() {
 
         <div>
           <p className="font-heading text-4xl text-[var(--text)]">Acceso privado</p>
-          <p className="mt-1 text-xs text-[var(--muted)]">Activación manual mientras validamos el producto.</p>
+          <p className="mt-1 text-xs text-[var(--muted)]">Activa Coach Studio para trabajar con tus primeros clientes.</p>
         </div>
 
         <ul className="flex w-full flex-col gap-2 text-left">
           {[
             "Perfil público revisado",
             "Mensajes del marketplace",
-            "Preparado para herramientas avanzadas",
+            "Generador y editor de rutinas",
             "Acompañamiento de activación",
           ].map((item) => (
             <li key={item} className="flex items-center gap-2.5 text-sm text-[var(--text)]">
