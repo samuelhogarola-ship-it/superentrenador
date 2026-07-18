@@ -61,7 +61,7 @@ export async function GET() {
   const { data: messages, error } = await supabase
     .from("messages")
     .select("*")
-    .eq("sender_id", user.id)
+    .eq("client_id", user.id)
     .order("created_at", { ascending: true });
 
   if (error) {
@@ -96,13 +96,21 @@ export async function GET() {
 export async function POST(request: Request) {
   const payload = (await request.json().catch(() => null)) as {
     trainerProfileId?: string;
+    clientId?: string;
     body?: string;
   } | null;
 
   const trainerProfileId = payload?.trainerProfileId;
+  const clientId = payload?.clientId;
   const body = payload?.body?.trim();
 
-  if (!trainerProfileId || !UUID_PATTERN.test(trainerProfileId) || !body || body.length > MAX_MESSAGE_LENGTH) {
+  if (
+    !trainerProfileId ||
+    !UUID_PATTERN.test(trainerProfileId) ||
+    (clientId !== undefined && !UUID_PATTERN.test(clientId)) ||
+    !body ||
+    body.length > MAX_MESSAGE_LENGTH
+  ) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
 
@@ -128,6 +136,7 @@ export async function POST(request: Request) {
     sender_id: user.id,
     sender_name: user.user_metadata?.full_name ?? user.email ?? "Usuario",
     trainer_profile_id: trainerProfileId,
+    ...(clientId ? { client_id: clientId } : {}),
     body,
   });
 

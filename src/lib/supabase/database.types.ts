@@ -93,6 +93,7 @@ export type Database = {
       messages: {
         Row: {
           body: string
+          client_id: string
           created_at: string
           id: string
           read_at: string | null
@@ -102,6 +103,7 @@ export type Database = {
         }
         Insert: {
           body: string
+          client_id?: string
           created_at?: string
           id?: string
           read_at?: string | null
@@ -111,6 +113,7 @@ export type Database = {
         }
         Update: {
           body?: string
+          client_id?: string
           created_at?: string
           id?: string
           read_at?: string | null

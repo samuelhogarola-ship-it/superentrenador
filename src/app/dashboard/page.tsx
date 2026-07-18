@@ -24,6 +24,7 @@ export default async function DashboardPage() {
       .from("messages")
       .select("id", { count: "exact", head: true })
       .eq("trainer_profile_id", trainerProfile.id)
+      .neq("sender_id", user.id)
       .is("read_at", null);
 
     return <TrainerDashboard profile={trainerProfile} unreadMessages={unread ?? 0} />;

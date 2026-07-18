@@ -9,6 +9,7 @@ import { MessageForm } from "@/components/message-form";
 
 interface Message {
   id: string;
+  client_id: string;
   sender_id: string;
   sender_name: string;
   trainer_profile_id: string;
@@ -48,21 +49,21 @@ interface MessagesPayload {
 function buildThreadsAsPT(msgs: Message[], tp: TrainerProfile): Thread[] {
   const map = new Map<string, Message[]>();
   for (const m of msgs) {
-    if (!map.has(m.sender_id)) map.set(m.sender_id, []);
-    map.get(m.sender_id)!.push(m);
+    if (!map.has(m.client_id)) map.set(m.client_id, []);
+    map.get(m.client_id)!.push(m);
   }
   const result: Thread[] = [];
   for (const [senderId, threadMsgs] of map) {
     const sorted = [...threadMsgs].sort((a, b) => a.created_at.localeCompare(b.created_at));
     result.push({
       key: `${senderId}:${tp.id}`,
-      senderName: sorted[0].sender_name,
+      senderName: sorted.find((message) => message.sender_id === senderId)?.sender_name ?? "Cliente",
       senderId,
       trainerProfileId: tp.id,
       trainerDisplayName: tp.display_name,
       trainerSlug: tp.slug,
       latestMessage: sorted[sorted.length - 1],
-      unread: sorted.filter((m) => !m.read_at).length,
+      unread: sorted.filter((m) => m.sender_id === senderId && !m.read_at).length,
       messages: sorted,
     });
   }
@@ -139,7 +140,9 @@ export default function MensajesPage() {
 
   async function markThreadRead(thread: Thread) {
     if (!isTrainer || thread.unread === 0) return;
-    const unreadIds = thread.messages.filter((m) => !m.read_at).map((m) => m.id);
+    const unreadIds = thread.messages
+      .filter((m) => m.sender_id !== currentUserId && !m.read_at)
+      .map((m) => m.id);
     await fetch("/api/messages", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -233,25 +236,24 @@ export default function MensajesPage() {
                 })}
               </div>
 
-              {!isTrainer && (
-                <div className="border-t border-[var(--line)] pt-4">
-                  {replying ? (
-                    <MessageForm
-                      trainerProfileId={selectedThread.trainerProfileId}
-                      trainerName={selectedThread.trainerDisplayName}
-                      onSent={() => { setReplying(false); setReloadToken((n) => n + 1); }}
-                    />
-                  ) : (
-                    <button
-                      onClick={() => setReplying(true)}
-                      className="inline-flex items-center gap-2 rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
-                    >
-                      <SendHorizonal size={14} />
-                      Responder
-                    </button>
-                  )}
-                </div>
-              )}
+              <div className="border-t border-[var(--line)] pt-4">
+                {replying ? (
+                  <MessageForm
+                    trainerProfileId={selectedThread.trainerProfileId}
+                    trainerName={isTrainer ? selectedThread.senderName : selectedThread.trainerDisplayName}
+                    clientId={isTrainer ? selectedThread.senderId : undefined}
+                    onSent={() => { setReplying(false); setReloadToken((n) => n + 1); }}
+                  />
+                ) : (
+                  <button
+                    onClick={() => setReplying(true)}
+                    className="inline-flex items-center gap-2 rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                  >
+                    <SendHorizonal size={14} />
+                    Responder
+                  </button>
+                )}
+              </div>
             </div>
           ) : (
             <div className="app-surface flex items-center justify-center rounded-[20px] p-10 text-sm text-[var(--muted)]">

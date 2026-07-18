@@ -6,10 +6,11 @@ import { SendHorizonal } from "lucide-react";
 interface MessageFormProps {
   trainerProfileId: string;
   trainerName: string;
+  clientId?: string;
   onSent?: () => void;
 }
 
-export function MessageForm({ trainerProfileId, trainerName, onSent }: MessageFormProps) {
+export function MessageForm({ trainerProfileId, trainerName, clientId, onSent }: MessageFormProps) {
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -26,6 +27,7 @@ export function MessageForm({ trainerProfileId, trainerName, onSent }: MessageFo
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         trainerProfileId,
+        clientId,
         body: body.trim(),
       }),
     });
@@ -42,7 +44,7 @@ export function MessageForm({ trainerProfileId, trainerName, onSent }: MessageFo
 
   if (sent) {
     return (
-      <div className="rounded-2xl bg-[var(--accent-soft)] px-4 py-3 text-sm text-[var(--accent)]">
+      <div role="status" className="rounded-2xl bg-[var(--accent-soft)] px-4 py-3 text-sm text-[var(--accent)]">
         Mensaje enviado a {trainerName}. Te responderá pronto.
       </div>
     );
@@ -51,6 +53,7 @@ export function MessageForm({ trainerProfileId, trainerName, onSent }: MessageFo
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <textarea
+        aria-label={`Mensaje para ${trainerName}`}
         value={body}
         onChange={(e) => setBody(e.target.value)}
         placeholder={`Escribe un mensaje a ${trainerName}…`}
@@ -58,7 +61,7 @@ export function MessageForm({ trainerProfileId, trainerName, onSent }: MessageFo
         rows={4}
         className="w-full resize-none rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm text-[var(--text)] placeholder-[var(--muted)] focus:border-[var(--accent)] focus:outline-none"
       />
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p role="alert" className="text-xs text-red-600">{error}</p>}
       <button
         type="submit"
         disabled={sending || !body.trim()}
