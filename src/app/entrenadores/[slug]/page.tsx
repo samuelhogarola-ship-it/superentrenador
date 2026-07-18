@@ -89,12 +89,16 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
                   }`}
                 >
                   {trainer.verified ? <BadgeCheck size={13} /> : <ShieldCheck size={13} />}
-                  {trainer.verified ? "Verificado" : "En revisión editorial"}
+                  {trainer.verified ? "Identidad verificada" : "Perfil aprobado"}
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3 py-1 text-xs font-semibold text-[var(--text)]">
-                  <Star size={13} className="fill-[var(--accent)] text-[var(--accent)]" />
-                  {trainer.rating.toFixed(1)} · {trainer.reviewsCount} reseñas
-                </span>
+                {trainer.reviewsCount > 0 ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3 py-1 text-xs font-semibold text-[var(--text)]">
+                    <Star size={13} className="fill-[var(--accent)] text-[var(--accent)]" />
+                    {trainer.rating.toFixed(1)} · {trainer.reviewsCount} reseñas
+                  </span>
+                ) : (
+                  <span className="text-xs font-semibold text-[var(--muted)]">Nuevo en Super Entrenador</span>
+                )}
               </div>
             </div>
           </div>

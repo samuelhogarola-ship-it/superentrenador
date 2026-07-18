@@ -31,17 +31,21 @@ export function TrainerCard({ trainer, featured = false }: TrainerCardProps) {
               }`}
             >
               {trainer.verified ? <BadgeCheck size={13} /> : <ShieldCheck size={13} />}
-              {trainer.verified ? "Verificado" : "En revisión"}
+              {trainer.verified ? "Identidad verificada" : "Perfil aprobado"}
             </span>
           </div>
           <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-[var(--paper-muted)]">
             <MapPin size={13} className="text-[var(--accent)]" />
             {trainer.city} · {trainer.region}
           </p>
-          <p className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--ink)]">
-            <Star size={14} className="fill-[var(--accent)] text-[var(--accent)]" />
-            {trainer.rating.toFixed(1)} · {trainer.reviewsCount} reseñas
-          </p>
+          {trainer.reviewsCount > 0 ? (
+            <p className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--ink)]">
+              <Star size={14} className="fill-[var(--accent)] text-[var(--accent)]" />
+              {trainer.rating.toFixed(1)} · {trainer.reviewsCount} reseñas
+            </p>
+          ) : (
+            <p className="mt-3 text-sm font-semibold text-[var(--paper-muted)]">Nuevo en Super Entrenador</p>
+          )}
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 import { hasSupabaseEnv } from "@/lib/supabase/client";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { marketplaceCities, publicTrainerProfiles } from "@/lib/marketplace-data";
+import { MARKETPLACE_MODALITIES, MARKETPLACE_SPECIALTIES } from "@/lib/marketplace-taxonomy";
 import type { MarketplaceCity, PublicTrainerProfile } from "@/types/marketplace";
 
 export interface TrainerFilters {
@@ -117,6 +118,12 @@ function sortTrainers(trainers: PublicTrainerProfile[], sort: TrainerFilters["so
   if (sort === "price-desc") {
     return [...trainers].sort((a, b) => b.priceFrom - a.priceFrom);
   }
+  if (sort === "rating") {
+    return [...trainers].sort((a, b) => {
+      if (a.reviewsCount !== b.reviewsCount) return b.reviewsCount - a.reviewsCount;
+      return b.rating - a.rating;
+    });
+  }
   return [...trainers].sort((a, b) => {
     if (a.verified !== b.verified) return Number(b.verified) - Number(a.verified);
     return a.displayName.localeCompare(b.displayName, "es");
@@ -199,6 +206,8 @@ export async function listPublicTrainerProfiles(filters: TrainerFilters = {}): P
     query = query.order("price_from", { ascending: true });
   } else if (filters.sort === "price-desc") {
     query = query.order("price_from", { ascending: false });
+  } else if (filters.sort === "rating") {
+    query = query.order("reviews_count", { ascending: false }).order("rating", { ascending: false });
   } else {
     query = query.order("verified", { ascending: false }).order("created_at", { ascending: false });
   }
@@ -249,10 +258,10 @@ export async function getPublicTrainerProfileBySlug(slug: string): Promise<Publi
 
 /** Only fetches the `specialties` column — avoids loading full profiles. */
 export async function listAllSpecialties(): Promise<string[]> {
+  const set = new Set<string>(MARKETPLACE_SPECIALTIES);
   if (!hasSupabaseEnv()) {
-    const set = new Set<string>();
     getDemoTrainerProfiles().forEach((t) => t.specialties.forEach((s) => set.add(s)));
-    return Array.from(set).sort();
+    return Array.from(set).sort((a, b) => a.localeCompare(b, "es"));
   }
 
   const supabase = getSupabaseServerClient();
@@ -260,21 +269,20 @@ export async function listAllSpecialties(): Promise<string[]> {
     .from("trainer_profiles_public")
     .select("slug, specialties");
 
-  if (!data) return [];
+  if (!data) return Array.from(set);
 
-  const set = new Set<string>();
   (data as Pick<TrainerRow, "slug" | "specialties">[])
     .filter((row) => !isProductionDemoProfile(row))
     .forEach((row) => (row.specialties ?? []).forEach((s) => set.add(s)));
-  return Array.from(set).sort();
+  return Array.from(set).sort((a, b) => a.localeCompare(b, "es"));
 }
 
 /** Only fetches the `modalities` column — avoids loading full profiles. */
 export async function listAllModalities(): Promise<string[]> {
+  const set = new Set<string>(MARKETPLACE_MODALITIES);
   if (!hasSupabaseEnv()) {
-    const set = new Set<string>();
     getDemoTrainerProfiles().forEach((t) => t.modalities.forEach((m) => set.add(m)));
-    return Array.from(set).sort();
+    return Array.from(set).sort((a, b) => a.localeCompare(b, "es"));
   }
 
   const supabase = getSupabaseServerClient();
@@ -282,13 +290,12 @@ export async function listAllModalities(): Promise<string[]> {
     .from("trainer_profiles_public")
     .select("slug, modalities");
 
-  if (!data) return [];
+  if (!data) return Array.from(set);
 
-  const set = new Set<string>();
   (data as Pick<TrainerRow, "slug" | "modalities">[])
     .filter((row) => !isProductionDemoProfile(row))
     .forEach((row) => (row.modalities ?? []).forEach((m) => set.add(m)));
-  return Array.from(set).sort();
+  return Array.from(set).sort((a, b) => a.localeCompare(b, "es"));
 }
 
 /** Uses lightweight COUNT + aggregation queries — does not call listPublicTrainerProfiles. */
