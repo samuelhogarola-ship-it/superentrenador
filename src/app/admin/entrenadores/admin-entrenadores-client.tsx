@@ -25,10 +25,17 @@ export interface PendingTrainer {
   review_status: ReviewStatus;
   is_published: boolean;
   created_at: string;
-  cities: { name: string; region: string } | null;
+  city_name: string | null;
+  city_region: string | null;
 }
 
-export function AdminEntrenadoresClient({ initialTrainers }: { initialTrainers: PendingTrainer[] }) {
+export function AdminEntrenadoresClient({
+  initialTrainers,
+  loadError = null,
+}: {
+  initialTrainers: PendingTrainer[];
+  loadError?: string | null;
+}) {
   const [trainers, setTrainers] = useState<PendingTrainer[]>(initialTrainers);
   const [acting, setActing] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -74,8 +81,10 @@ export function AdminEntrenadoresClient({ initialTrainers }: { initialTrainers: 
         <p className="app-copy mt-2 text-sm">
           {pending.length} pendiente{pending.length !== 1 ? "s" : ""} · {trainers.length} total
         </p>
-        {actionError ? (
-          <p className="mt-3 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">{actionError}</p>
+        {actionError || loadError ? (
+          <p role="alert" className="mt-3 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">
+            {actionError ?? loadError}
+          </p>
         ) : null}
       </div>
 
@@ -170,7 +179,7 @@ function TrainerReviewCard({
 
         <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-[var(--muted)]">
           <MapPin size={12} className="text-[var(--accent)]" />
-          {trainer.cities?.name ?? trainer.city_slug}
+          {trainer.city_name ?? trainer.city_slug}
         </p>
 
         <p className="mt-1.5 text-sm font-semibold text-[var(--text)]">{trainer.headline}</p>

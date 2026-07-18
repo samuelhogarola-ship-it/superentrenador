@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { ArrowRight, Mail, ShieldCheck } from "lucide-react";
 import { getAuthErrorMessage, signIn, signInWithGoogle, signInWithMagicLink } from "@/lib/auth";
+import { getSafeInternalPath } from "@/lib/safe-navigation";
 
 export function LoginPageClient() {
   return (
@@ -25,17 +26,10 @@ function LoginFallback() {
   );
 }
 
-function getSafeRedirectTo(value: string | null) {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) {
-    return "/dashboard";
-  }
-  return value;
-}
-
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = getSafeRedirectTo(searchParams.get("redirectTo"));
+  const redirectTo = getSafeInternalPath(searchParams.get("redirectTo"));
   const registerIntent = redirectTo.startsWith("/entrenadores/") ? "client" : "trainer";
   const registerHref = `/registro?intent=${registerIntent}&redirectTo=${encodeURIComponent(redirectTo)}`;
   const callbackError = searchParams.get("error");

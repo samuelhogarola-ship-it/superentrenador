@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { ArrowRight, CheckCircle, Mail, Sparkles, UserRound, Dumbbell } from "lucide-react";
 import { getAuthErrorMessage, signInWithGoogle, signUpWithMagicLink, type AuthIntent } from "@/lib/auth";
+import { getSafeInternalPath } from "@/lib/safe-navigation";
 
 export function RegistroPageClient() {
   return (
@@ -25,13 +26,6 @@ function RegistroFallback() {
   );
 }
 
-function getSafeRedirectTo(value: string | null) {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) {
-    return "/dashboard";
-  }
-  return value;
-}
-
 function getInitialIntent(value: string | null, redirectTo: string): AuthIntent {
   if (value === "client" || value === "trainer") return value;
   return redirectTo.startsWith("/entrenadores/") ? "client" : "trainer";
@@ -39,7 +33,7 @@ function getInitialIntent(value: string | null, redirectTo: string): AuthIntent 
 
 function RegistroForm() {
   const searchParams = useSearchParams();
-  const redirectTo = getSafeRedirectTo(searchParams.get("redirectTo"));
+  const redirectTo = getSafeInternalPath(searchParams.get("redirectTo"));
   const [intent, setIntent] = useState<AuthIntent>(() => getInitialIntent(searchParams.get("intent"), redirectTo));
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);

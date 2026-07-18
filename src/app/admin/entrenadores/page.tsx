@@ -24,12 +24,12 @@ export default async function AdminEntrenadoresPage() {
     redirect("/dashboard");
   }
 
-  const { data } = await supabase
-    .from("trainer_profiles")
-    .select(
-      "id, slug, display_name, city_slug, headline, short_bio, long_bio, specialties, modalities, languages, years_experience, price_from, contact_info, photo_url, review_status, is_published, created_at, cities(name, region)"
-    )
-    .order("created_at", { ascending: false });
+  const { data, error } = await supabase.rpc("get_admin_trainer_profiles");
+
+  if (error) {
+    console.error("[admin/trainers] get_admin_trainer_profiles failed", error);
+    return <AdminEntrenadoresClient initialTrainers={[]} loadError="No se pudo cargar la revisión de perfiles." />;
+  }
 
   return <AdminEntrenadoresClient initialTrainers={(data ?? []) as PendingTrainer[]} />;
 }
