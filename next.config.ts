@@ -5,26 +5,6 @@ if (process.env.NODE_ENV === "development") scriptSources.push("'unsafe-eval'");
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  async rewrites() {
-    const coachStudioOrigin = process.env.COACH_STUDIO_ORIGIN;
-
-    if (!coachStudioOrigin) return [];
-
-    const destination = coachStudioOrigin.replace(/\/$/, "");
-
-    return {
-      beforeFiles: [
-        {
-          source: "/coach-studio",
-          destination: `${destination}/coach-studio`,
-        },
-        {
-          source: "/coach-studio/:path*",
-          destination: `${destination}/coach-studio/:path*`,
-        },
-      ],
-    };
-  },
   async redirects() {
     return [
       {

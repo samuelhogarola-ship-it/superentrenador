@@ -34,7 +34,6 @@ Usa `.env.example` como base:
 ```bash
 NEXT_PUBLIC_SITE_URL=https://superentrenador.com
 NEXT_PUBLIC_COACH_STUDIO_URL=/coach-studio/clientes
-COACH_STUDIO_ORIGIN=https://coach-studio-superentrenador.vercel.app
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
