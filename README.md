@@ -7,8 +7,7 @@ Base nueva del marketplace público de `superentrenador.com`, rehecha dentro del
 - `root`: nueva app `Next.js App Router`
 - `legacy-vite/`: proyecto anterior basado en `React + Vite`, preservado completo
 - `superentrenador.com`: marketplace público SEO
-- `app.superentrenador.com`: reservado para futura zona privada
-- `coach-studio.superentrenador.com`: app/PT tool separada futura o existente
+- `/coach-studio`: herramienta privada para entrenadores, servida dentro del dominio principal
 
 ## Stack
 
@@ -34,6 +33,8 @@ Usa `.env.example` como base:
 
 ```bash
 NEXT_PUBLIC_SITE_URL=https://superentrenador.com
+NEXT_PUBLIC_COACH_STUDIO_URL=/coach-studio/clientes
+COACH_STUDIO_ORIGIN=https://coach-studio-superentrenador.vercel.app
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
@@ -74,7 +75,7 @@ SUPABASE_SERVICE_ROLE_KEY=
 - sustituir mocks por consultas reales a Supabase
 - implementar auth con Supabase
 - definir desbloqueo premium y pagos
-- separar la zona privada real detrás de `app.superentrenador.com`
+- consolidar la zona privada real bajo `/coach-studio`
 - añadir páginas SEO por especialidad / ciudad / combinación
 
 ## Notas de deploy en Coolify
