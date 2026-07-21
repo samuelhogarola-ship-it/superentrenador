@@ -13,6 +13,7 @@
 - Supabase Auth esta implementado en app y configurado en repo, pero el push cloud devolvio `403` por falta de permisos de la cuenta actual.
 - Supabase CLI tambien devuelve `403` al listar migraciones remotas sin una cuenta con privilegios y pide `SUPABASE_DB_PASSWORD`; la migracion demo/produccion ya esta en repo pero pendiente de aplicar en cloud.
 - Magic link necesita SMTP propio para evitar el limite bajo del SMTP integrado de Supabase.
+- Coach Studio ya tiene editor configurable por lineas y vista alumno demo/local; para produccion falta aprobar y aplicar una politica segura de acceso por token en Supabase antes de exponer rutinas sin login.
 - La nueva base visual ya es más coherente, pero la hero aún no transmite suficiente autoridad de marca.
 - Falta el logo real de Super Entrenador.
 - Falta la capa legal reutilizable desde `core-general`.
