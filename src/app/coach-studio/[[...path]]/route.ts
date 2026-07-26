@@ -23,6 +23,15 @@ function getContentType(filePath: string) {
   return CONTENT_TYPES[extname(filePath)] ?? "application/octet-stream";
 }
 
+function getCacheControl(filePath: string) {
+  const extension = extname(filePath);
+  if (filePath.endsWith("sw.js") || extension === ".html" || extension === ".webmanifest") {
+    return "no-store, must-revalidate";
+  }
+
+  return "public, max-age=31536000, immutable";
+}
+
 function resolvePublicPath(pathSegments: string[]) {
   const requestedPath = pathSegments.length > 0 ? pathSegments.join("/") : "index.html";
   const safePath = normalize(requestedPath).replace(/^(\.\.(\/|\\|$))+/, "");
@@ -50,6 +59,7 @@ export async function GET(_request: Request, context: RouteContext) {
   if (file) {
     return new NextResponse(file, {
       headers: {
+        "Cache-Control": getCacheControl(filePath),
         "Content-Type": getContentType(filePath),
       },
     });
@@ -64,6 +74,7 @@ export async function GET(_request: Request, context: RouteContext) {
 
   return new NextResponse(indexFile, {
     headers: {
+      "Cache-Control": "no-store, must-revalidate",
       "Content-Type": "text/html; charset=utf-8",
     },
   });
