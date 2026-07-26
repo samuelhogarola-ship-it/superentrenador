@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
+import { coachStudioUrl } from "@/lib/coach-studio";
 
 const COLUMNS = [
   {
@@ -25,7 +26,7 @@ const COLUMNS = [
     links: [
       { href: "/registro?intent=trainer", label: "Crear perfil público" },
       { href: "/login", label: "Iniciar sesión" },
-      { href: "/coach-studio", label: "Coach Studio" },
+      { href: coachStudioUrl, label: "Coach Studio", external: true },
     ],
   },
   {
@@ -60,15 +61,27 @@ export function SiteFooter() {
               <div key={column.title}>
                 <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--muted)]">{column.title}</p>
                 <div className="mt-4 flex flex-col gap-2.5 text-sm">
-                  {column.links.map((link) => (
-                    <Link
-                      key={link.label}
-                      href={link.href}
-                      className="text-[var(--text)] transition-colors hover:text-[var(--accent)]"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
+                  {column.links.map((link) =>
+                    "external" in link && link.external ? (
+                      <a
+                        key={link.label}
+                        href={link.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[var(--text)] transition-colors hover:text-[var(--accent)]"
+                      >
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link
+                        key={link.label}
+                        href={link.href}
+                        className="text-[var(--text)] transition-colors hover:text-[var(--accent)]"
+                      >
+                        {link.label}
+                      </Link>
+                    ),
+                  )}
                 </div>
               </div>
             ))}

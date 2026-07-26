@@ -8,6 +8,7 @@ import { BrandMark } from "@/components/brand-mark";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { signOut } from "@/lib/auth";
+import { coachStudioUrl } from "@/lib/coach-studio";
 
 const navItems = [
   { href: "/entrenadores", label: "Entrenadores", icon: UserRound },
@@ -72,13 +73,15 @@ export function SiteHeader() {
           <div className="hidden items-center gap-3 md:flex">
             {loggedIn ? (
               <>
-                <Link
-                  href="/coach-studio"
+                <a
+                  href={coachStudioUrl}
+                  target="_blank"
+                  rel="noreferrer"
                   className="inline-flex items-center gap-2 rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)]"
                 >
                   <Sparkles size={15} />
                   Coach Studio
-                </Link>
+                </a>
                 <Link
                   href="/mi-perfil"
                   className="inline-flex items-center gap-2 rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)]"

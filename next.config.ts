@@ -41,27 +41,6 @@ const nextConfig: NextConfig = {
 
     return [
       {
-        source: "/coach-studio/sw.js",
-        headers: [
-          ...securityHeaders,
-          { key: "Cache-Control", value: "no-store, must-revalidate" },
-        ],
-      },
-      {
-        source: "/coach-studio/:path*.html",
-        headers: [
-          ...securityHeaders,
-          { key: "Cache-Control", value: "no-store, must-revalidate" },
-        ],
-      },
-      {
-        source: "/coach-studio/manifest.webmanifest",
-        headers: [
-          ...securityHeaders,
-          { key: "Cache-Control", value: "no-store, must-revalidate" },
-        ],
-      },
-      {
         source: "/:path*",
         headers: securityHeaders,
       },

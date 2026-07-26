@@ -11,6 +11,7 @@ import { listBlogPosts } from "@/lib/blog";
 import { isAndaluciaCity, sortCitiesByName } from "@/lib/coverage";
 import { marketplaceWebsiteJsonLd, trainerCollectionJsonLd } from "@/lib/marketplace-seo";
 import { siteConfig } from "@/lib/site";
+import { coachStudioUrl } from "@/lib/coach-studio";
 import {
   getMarketplaceStats,
   listAllSpecialties,
@@ -300,12 +301,14 @@ export default async function Home() {
               Crear cuenta
               <ArrowRight size={16} />
             </Link>
-            <Link
-              href="/coach-studio"
+            <a
+              href={coachStudioUrl}
+              target="_blank"
+              rel="noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-[var(--ink)]/25 px-5 py-3 text-sm font-semibold text-[var(--ink)] transition-colors hover:bg-[var(--ink)]/8"
             >
               Ver Coach Studio
-            </Link>
+            </a>
           </div>
         </section>
       </Reveal>
