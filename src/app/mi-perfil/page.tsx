@@ -228,7 +228,7 @@ export default function MiPerfilPage() {
       </div>
 
       {reviewStatus === "pending" && profileSlug ? (
-        <div className="rounded-[20px] border border-amber-500/30 bg-amber-500/10 px-5 py-4 text-sm text-amber-700">
+        <div className="rounded-[20px] border border-[rgba(225,25,49,0.28)] bg-[rgba(225,25,49,0.08)] px-5 py-4 text-sm text-[var(--accent)]">
           <p className="font-semibold">Perfil pendiente de revisión</p>
           <p className="mt-1 font-normal opacity-80">Tu perfil está en cola de aprobación. Lo revisaremos y aparecerá en el marketplace en breve.</p>
         </div>

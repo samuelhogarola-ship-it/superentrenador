@@ -166,7 +166,7 @@ function LoginForm() {
           </form>
 
           {callbackError ? (
-            <p className="mt-4 rounded-2xl bg-amber-50 px-4 py-3 text-sm text-amber-700">
+            <p className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
               No se pudo completar el acceso desde el enlace. Inténtalo de nuevo.
             </p>
           ) : null}

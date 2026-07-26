@@ -145,7 +145,7 @@ function TrainerReviewCard({
       ? "text-[var(--accent)] bg-[var(--accent-soft)]"
       : trainer.review_status === "rejected"
         ? "text-red-600 bg-red-500/10"
-        : "text-amber-600 bg-amber-500/10";
+        : "text-[var(--accent)] bg-[var(--accent-soft)]";
 
   const StatusIcon =
     trainer.review_status === "approved"
@@ -225,7 +225,7 @@ function TrainerReviewCard({
             Foto: <span className="text-[var(--text)]">{trainer.photo_url}</span>
           </p>
         ) : (
-          <p className="mt-2 text-xs text-amber-600">Sin foto de perfil</p>
+          <p className="mt-2 text-xs text-[var(--accent)]">Sin foto de perfil</p>
         )}
 
         <p className="mt-1 text-xs text-[var(--muted)]">

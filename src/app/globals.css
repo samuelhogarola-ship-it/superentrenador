@@ -6,21 +6,21 @@
   --surface: #141824;
   --panel: rgba(14, 17, 27, 0.88);
   --panel-strong: #101420;
-  --paper: #f7f5ef;
-  --paper-strong: #fffdfa;
+  --paper: #f7f9fc;
+  --paper-strong: #ffffff;
   --paper-muted: #6c6872;
   --text: #ededf5;
   --muted: rgba(237, 237, 245, 0.56);
   --ink: #07090e;
-  --accent: #f0a000;
-  --accent-strong: #ffc229;
+  --accent: #e11931;
+  --accent-strong: #ff3b52;
   --accent-2: #0094ff;
-  --accent-hot: #ff3b16;
-  --accent-soft: rgba(240, 160, 0, 0.15);
+  --accent-hot: #e11931;
+  --accent-soft: rgba(225, 25, 49, 0.14);
   --blue-soft: rgba(0, 148, 255, 0.14);
-  --hot-soft: rgba(255, 59, 22, 0.11);
-  --gold: #f0a000;
-  --gold-soft: rgba(240, 160, 0, 0.15);
+  --hot-soft: rgba(225, 25, 49, 0.11);
+  --gold: #0094ff;
+  --gold-soft: rgba(0, 148, 255, 0.14);
   --line: rgba(237, 237, 245, 0.08);
   --line-strong: rgba(237, 237, 245, 0.16);
   --shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
@@ -48,8 +48,8 @@ body {
   overflow-x: hidden;
   background:
     radial-gradient(ellipse at 8% 6%, rgba(0, 148, 255, 0.16), transparent 34%),
-    radial-gradient(ellipse at 88% 18%, rgba(255, 59, 22, 0.12), transparent 32%),
-    radial-gradient(ellipse at 78% 84%, rgba(240, 160, 0, 0.10), transparent 34%),
+    radial-gradient(ellipse at 88% 18%, rgba(225, 25, 49, 0.12), transparent 32%),
+    radial-gradient(ellipse at 78% 84%, rgba(0, 148, 255, 0.08), transparent 34%),
     linear-gradient(180deg, #08090f 0%, #0b0d16 100%);
   color: var(--text);
   font-family: var(--font-plus-jakarta), "Segoe UI", sans-serif;
@@ -61,7 +61,7 @@ a {
 }
 
 ::selection {
-  background: rgba(240, 160, 0, 0.30);
+  background: rgba(225, 25, 49, 0.28);
   color: var(--text);
 }
 
@@ -146,8 +146,8 @@ button {
   border: 1px solid var(--line);
   background:
     radial-gradient(circle at 14% 8%, rgba(0, 148, 255, 0.16), transparent 22rem),
-    radial-gradient(circle at 86% 12%, rgba(255, 59, 22, 0.11), transparent 24rem),
-    radial-gradient(circle at 72% 82%, rgba(240, 160, 0, 0.12), transparent 20rem),
+    radial-gradient(circle at 86% 12%, rgba(225, 25, 49, 0.12), transparent 24rem),
+    radial-gradient(circle at 72% 82%, rgba(0, 148, 255, 0.09), transparent 20rem),
     linear-gradient(135deg, rgba(20, 24, 36, 0.96), rgba(10, 12, 20, 0.9));
   box-shadow: var(--shadow);
 }
@@ -207,10 +207,10 @@ button {
 }
 
 .brand-entrenador {
-  background: linear-gradient(180deg, #ffe58a 0%, #f0a000 45%, #9a5c00 100%);
+  background: linear-gradient(180deg, #ff7584 0%, #e11931 48%, #8f0b1d 100%);
   -webkit-background-clip: text;
   background-clip: text;
-  text-shadow: 0 1px 20px rgba(240, 160, 0, 0.20);
+  text-shadow: 0 1px 20px rgba(225, 25, 49, 0.18);
   -webkit-text-fill-color: transparent;
 }
 
@@ -223,7 +223,7 @@ button {
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #f0a000 0%, #ededf5 43%, #0094ff 100%);
+  background: linear-gradient(135deg, #e11931 0%, #ededf5 43%, #0094ff 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

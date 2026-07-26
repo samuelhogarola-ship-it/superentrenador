@@ -58,7 +58,7 @@ function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile
       ? { label: "Publicado", icon: BadgeCheck, cls: "text-[var(--accent)] bg-[var(--accent-soft)]" }
       : status === "rejected"
         ? { label: "Rechazado", icon: XCircle, cls: "text-red-600 bg-red-500/10" }
-        : { label: "Pendiente de revisión", icon: Clock, cls: "text-amber-600 bg-amber-500/10" };
+        : { label: "Pendiente de revisión", icon: Clock, cls: "text-[var(--accent)] bg-[var(--accent-soft)]" };
 
   const StatusIcon = statusBadge.icon;
 
