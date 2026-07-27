@@ -5,7 +5,8 @@ import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 export type AuthIntent = "client" | "trainer";
 
 function getAuthCallbackUrl(redirectPath: string) {
-  return `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirectPath)}`;
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin;
+  return `${origin}/auth/callback?next=${encodeURIComponent(redirectPath)}`;
 }
 
 export function getAuthErrorMessage(message: string) {
