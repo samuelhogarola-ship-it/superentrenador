@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, BookOpen, CheckCircle2, MapPin, ShieldCheck, Sparkles, Target } from "lucide-react";
+import { ArrowRight, BadgeCheck, BookOpen, CheckCircle2, MapPin, Search, ShieldCheck, Star, Target } from "lucide-react";
 import { CategoryGrid } from "@/components/category-grid";
 import { HeroSearchBar } from "@/components/hero-search-bar";
 import { JsonLd } from "@/components/json-ld";
@@ -19,15 +19,23 @@ import {
 } from "@/lib/repositories/trainers";
 
 const HERO_POINTS = [
-  "Presencial, online o híbrido.",
-  "Precio y experiencia visibles.",
-  "Contacto protegido al dar el primer paso.",
+  "Compara precio, reseñas y modalidad.",
+  "Elige presencial, online o híbrido.",
+  "Contacta solo cuando tengas una lista corta.",
+];
+
+const POPULAR_SEARCHES = [
+  { label: "Pérdida de grasa", href: "/entrenadores?specialty=P%C3%A9rdida%20de%20grasa" },
+  { label: "Hipertrofia", href: "/entrenadores?specialty=Hipertrofia" },
+  { label: "Online", href: "/entrenadores?modality=Online" },
+  { label: "Málaga", href: "/entrenadores?city=malaga" },
+  { label: "Madrid", href: "/entrenadores?city=madrid" },
 ];
 
 const TRUST_SIGNALS = [
-  { value: "Precio", label: "visible antes de escribir" },
-  { value: "Objetivo", label: "fuerza, grasa, salud u online" },
-  { value: "Ciudad", label: "búsqueda local sin perder tiempo" },
+  { value: "1", label: "busca por objetivo y ciudad" },
+  { value: "2", label: "compara perfiles equivalentes" },
+  { value: "3", label: "desbloquea contacto protegido" },
 ];
 
 const FLOW_STEPS = [
@@ -62,22 +70,35 @@ export default async function Home() {
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-14 px-4 py-8 md:px-6 md:py-10 lg:px-8">
       <JsonLd data={marketplaceWebsiteJsonLd()} />
       <JsonLd data={trainerCollectionJsonLd(featuredTrainers, siteConfig.url, "Entrenadores personales destacados")} />
-      <section className="premium-hero rounded-[32px] p-6 sm:p-8 lg:p-10">
-        <div className="relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+      <section className="premium-hero rounded-[32px] p-5 sm:p-7 lg:p-9">
+        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-end">
           <div>
             <p className="app-kicker inline-flex items-center gap-2">
-              <Sparkles size={13} />
-              Entrenadores personales
+              <Search size={13} />
+              Marketplace de entrenadores personales
             </p>
             <h1 className="app-title mt-4 max-w-4xl text-4xl leading-[0.98] sm:text-6xl lg:text-7xl">
-              Encuentra entrenador personal cerca de ti.
+              Encuentra entrenador personal por objetivo y ciudad.
             </h1>
             <p className="app-copy mt-6 max-w-2xl text-lg">
-              Busca por objetivo y ciudad, compara precio, experiencia y modalidad, y contacta cuando tengas claro quién encaja contigo.
+              Busca como en un marketplace serio: objetivo, zona, modalidad, precio de entrada y señales de confianza antes de escribir a nadie.
             </p>
 
             <div className="mt-8 max-w-4xl">
               <HeroSearchBar specialties={specialties} cities={cities} />
+            </div>
+
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--muted)]">Búsquedas rápidas</span>
+              {POPULAR_SEARCHES.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="rounded-full border border-[var(--line-strong)] bg-[var(--panel)] px-3 py-1.5 text-xs font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                >
+                  {item.label}
+                </Link>
+              ))}
             </div>
 
             <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--muted)]">
@@ -106,15 +127,26 @@ export default async function Home() {
             </div>
           </div>
 
-          <aside className="premium-card rounded-[28px] p-5">
-            <p className="app-kicker">Por qué funciona</p>
+          <aside className="premium-card rounded-[28px] p-5" aria-label="Resumen del marketplace">
+            <p className="app-kicker inline-flex items-center gap-2">
+              <Star size={13} />
+              Cómo se decide mejor
+            </p>
             <div className="mt-5 grid gap-4">
               {TRUST_SIGNALS.map((signal) => (
-                <div key={signal.label} className="rounded-[20px] border border-[var(--line)] bg-[var(--surface)] p-4">
-                  <strong className="font-heading text-3xl text-[var(--text)]">{signal.value}</strong>
-                  <p className="mt-1 text-sm leading-6 text-[var(--muted)]">{signal.label}</p>
+                <div key={signal.label} className="grid grid-cols-[48px_1fr] items-center gap-3 rounded-[20px] border border-[var(--line)] bg-[var(--surface)] p-4">
+                  <strong className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--accent-soft)] font-heading text-xl text-[var(--accent)]">
+                    {signal.value}
+                  </strong>
+                  <p className="text-sm font-semibold leading-6 text-[var(--text)]">{signal.label}</p>
                 </div>
               ))}
+            </div>
+            <div className="mt-5 rounded-[20px] border border-[var(--line)] bg-[var(--panel)] p-4">
+              <p className="text-sm font-semibold text-[var(--text)]">Objetivo del marketplace</p>
+              <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                Menos conversación fría, más comparación útil antes de contactar.
+              </p>
             </div>
           </aside>
         </div>
@@ -134,7 +166,7 @@ export default async function Home() {
           <SectionHeading
             eyebrow="Accesos rápidos"
             title="Empieza por el resultado que quieres conseguir"
-            body="El marketplace no te obliga a navegar como una red social: filtra por intención y llega antes a una lista corta."
+            body="Atajos tipo marketplace: categorías claras, enlazables y pensadas para convertir búsquedas reales en perfiles comparables."
           />
         </Reveal>
         <CategoryGrid specialties={specialties} />
@@ -162,8 +194,8 @@ export default async function Home() {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <SectionHeading
               eyebrow="Perfiles destacados"
-              title="Compara antes de contactar"
-              body="Cada perfil muestra especialidad, aprobación, precio inicial y modalidad de trabajo."
+              title="Perfiles comparables, no fichas sueltas"
+              body="Precio inicial, experiencia, reseñas, modalidad y especialidades visibles antes de decidir a quién escribir."
             />
             <Link
               href="/entrenadores"
@@ -209,8 +241,8 @@ export default async function Home() {
           <div className="flex flex-wrap items-end justify-between gap-4">
             <SectionHeading
               eyebrow="Cobertura Andalucía"
-              title="Entrenadores personales en Andalucía, ciudad por ciudad"
-              body="Capitales y zonas de alta demanda con páginas útiles para comparar entrenadores, captar profesionales y validar mercado antes de escalar al resto de España."
+              title="Entrenadores personales ciudad por ciudad"
+              body="Páginas locales para captar demanda real: empieza por Andalucía y capitales clave, sin perder la estructura para escalar al resto de España."
             />
             <Link
               href="/andalucia"

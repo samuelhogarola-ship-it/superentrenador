@@ -182,7 +182,7 @@ button {
 .app-title {
   font-family: var(--font-sora), "Segoe UI", sans-serif;
   font-weight: 700;
-  letter-spacing: -0.045em;
+  letter-spacing: 0;
 }
 
 .app-copy {

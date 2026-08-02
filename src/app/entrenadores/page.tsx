@@ -49,6 +49,12 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
     listAllModalities(),
     listMarketplaceCities(),
   ]);
+  const selectedCity = cities.find((city) => city.slug === params.city);
+  const activeFilters = [
+    params.specialty ? `Objetivo: ${params.specialty}` : null,
+    selectedCity ? `Ciudad: ${selectedCity.name}` : null,
+    params.modality ? `Modalidad: ${params.modality}` : null,
+  ].filter(Boolean);
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8 lg:px-8">
@@ -58,7 +64,7 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
           <p className="app-kicker">Marketplace</p>
           <h1 className="app-title mt-2 text-3xl text-[var(--text)] sm:text-5xl">
             {trainers.length > 0
-              ? `${trainers.length} entrenador${trainers.length === 1 ? "" : "es"} para comparar con criterio`
+              ? `${trainers.length} entrenador${trainers.length === 1 ? "" : "es"} para comparar`
               : "Encuentra entrenador personal por ciudad y objetivo"}
           </h1>
           <p className="app-copy mt-3 max-w-2xl text-sm">
@@ -66,6 +72,18 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
               ? "Filtra por especialidad, ciudad o modalidad y revisa perfiles con precio, experiencia y formato antes de desbloquear el contacto."
               : "Estamos ampliando la oferta ciudad por ciudad. Filtra para explorar la cobertura o publica tu perfil si eres entrenador."}
           </p>
+          {activeFilters.length > 0 ? (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {activeFilters.map((filter) => (
+                <span
+                  key={filter}
+                  className="rounded-full border border-[var(--line-strong)] bg-[var(--panel)] px-3 py-1.5 text-xs font-semibold text-[var(--text)]"
+                >
+                  {filter}
+                </span>
+              ))}
+            </div>
+          ) : null}
         </div>
         <Link
           href="/registro?intent=trainer"
@@ -87,9 +105,22 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
         ))}
       </section>
 
-      <Suspense fallback={null}>
-        <FiltersBar specialties={specialties} modalities={modalities} cities={cities} basePath="/entrenadores" />
-      </Suspense>
+      <section className="sticky top-20 z-20">
+        <Suspense fallback={null}>
+          <FiltersBar specialties={specialties} modalities={modalities} cities={cities} basePath="/entrenadores" />
+        </Suspense>
+      </section>
+
+      <section className="flex flex-wrap items-center justify-between gap-3 text-sm text-[var(--muted)]">
+        <p>
+          {trainers.length > 0
+            ? "Perfiles ordenados para comparar antes de contactar."
+            : "No hay perfiles publicados con estos filtros todavía."}
+        </p>
+        <Link href="/registro?intent=trainer" className="font-semibold text-[var(--accent)] hover:text-[var(--accent-strong)]">
+          ¿Falta tu ciudad? Publica tu perfil
+        </Link>
+      </section>
 
       <div className="grid gap-4">
         {trainers.map((trainer, index) => (

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BadgeCheck, MapPin, MessageCircle, ShieldCheck, Star } from "lucide-react";
+import { BadgeCheck, CalendarCheck2, Clock3, MapPin, MessageCircle, ShieldCheck, Star, Video } from "lucide-react";
 import { Avatar } from "@/components/avatar";
 import type { PublicTrainerProfile } from "@/types/marketplace";
 
@@ -8,6 +8,9 @@ interface TrainerListItemProps {
 }
 
 export function TrainerListItem({ trainer }: TrainerListItemProps) {
+  const hasOnline = trainer.modalities.includes("Online");
+  const responseLabel = trainer.verified ? "Responde en el día" : "Perfil revisado";
+
   return (
     <article className="group flex flex-col gap-5 rounded-[28px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,253,250,0.98),rgba(247,245,239,0.94))] p-5 text-[var(--ink)] shadow-[0_24px_64px_rgba(0,0,0,0.22)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_34px_86px_rgba(0,0,0,0.32)] sm:flex-row sm:gap-6 sm:p-6">
       <div className="shrink-0 self-start">
@@ -62,6 +65,21 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
             {trainer.modalities.join(" · ")}
           </span>
         </div>
+
+        <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-[var(--ink)]">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-white/75 px-3 py-1.5">
+            <Clock3 size={13} className="text-[var(--accent)]" />
+            {responseLabel}
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-white/75 px-3 py-1.5">
+            <Video size={13} className="text-[var(--accent-2)]" />
+            {hasOnline ? "Online disponible" : "Trabajo presencial"}
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-white/75 px-3 py-1.5">
+            <CalendarCheck2 size={13} className="text-[var(--accent)]" />
+            Primera consulta
+          </span>
+        </div>
       </div>
 
       <div className="flex shrink-0 flex-row items-center justify-between gap-3 border-t border-black/10 pt-4 sm:flex-col sm:items-end sm:justify-center sm:border-l sm:pl-6 sm:pt-0">
@@ -75,7 +93,7 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
           href={`/entrenadores/${trainer.slug}`}
           className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-bold text-[var(--accent)] transition-transform hover:-translate-y-0.5"
         >
-          Contactar
+          Ver perfil
           <MessageCircle size={15} />
         </Link>
       </div>
