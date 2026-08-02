@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BadgeCheck, MapPin, MessageCircle, ShieldCheck, Star } from "lucide-react";
+import { BadgeCheck, Clock3, MapPin, MessageCircle, ShieldCheck, Star, Video } from "lucide-react";
 import { Avatar } from "@/components/avatar";
 import type { PublicTrainerProfile } from "@/types/marketplace";
 
@@ -9,6 +9,9 @@ interface TrainerCardProps {
 }
 
 export function TrainerCard({ trainer, featured = false }: TrainerCardProps) {
+  const hasOnline = trainer.modalities.includes("Online");
+  const responseLabel = trainer.verified ? "Responde en el día" : "Perfil revisado";
+
   return (
     <article className="group relative flex h-full flex-col rounded-[28px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,253,250,0.98),rgba(247,245,239,0.94))] p-6 text-[var(--ink)] shadow-[0_24px_64px_rgba(0,0,0,0.22)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_34px_86px_rgba(0,0,0,0.32)]">
       {featured ? (
@@ -72,6 +75,17 @@ export function TrainerCard({ trainer, featured = false }: TrainerCardProps) {
         </span>
       </div>
 
+      <div className="mt-3 grid gap-2 text-xs font-semibold text-[var(--ink)]">
+        <span className="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-white/75 px-3 py-2">
+          <Clock3 size={13} className="text-[var(--accent)]" />
+          {responseLabel}
+        </span>
+        <span className="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-white/75 px-3 py-2">
+          <Video size={13} className="text-[var(--accent-2)]" />
+          {hasOnline ? "Puede trabajar online" : "Entrenamiento local"}
+        </span>
+      </div>
+
       <div className="mt-6 flex items-end justify-between gap-4 border-t border-black/10 pt-5">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--paper-muted)]">Desde</p>
@@ -83,7 +97,7 @@ export function TrainerCard({ trainer, featured = false }: TrainerCardProps) {
           href={`/entrenadores/${trainer.slug}`}
           className="inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-bold text-[var(--accent)] transition-transform hover:-translate-y-0.5"
         >
-          Contactar
+          Ver perfil
           <MessageCircle size={15} />
         </Link>
       </div>
