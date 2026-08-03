@@ -85,7 +85,7 @@ function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile
             { label: "Mensajes", href: "/dashboard/mensajes", active: false },
             { label: "Mis anuncios", href: "/mis-anuncios", active: false },
             { label: "Mi cuenta", href: "/mi-perfil", active: false },
-            { label: "Premium", href: "/dashboard", active: false },
+            { label: "Premium", href: "/premium", active: false },
           ].map((item) => (
             <Link key={item.label} href={item.href} className={`whitespace-nowrap border-b-4 px-4 py-5 text-sm font-bold sm:px-6 ${item.active ? "border-[#ff6868] text-white" : "border-transparent text-white/60 hover:text-white"}`}>
               {item.label}

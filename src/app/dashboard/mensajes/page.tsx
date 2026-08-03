@@ -177,7 +177,7 @@ export default function MensajesPage() {
             { label: "Mensajes", href: "/dashboard/mensajes" },
             { label: "Mis anuncios", href: "/mis-anuncios" },
             { label: "Mi cuenta", href: "/mi-perfil" },
-            { label: "Premium", href: "/dashboard" },
+            { label: "Premium", href: "/premium" },
           ].map((item) => (
             <Link key={item.label} href={item.href} className={`whitespace-nowrap border-b-4 px-4 py-5 text-sm font-bold sm:px-6 ${item.label === "Mensajes" ? "border-[#ff6868] text-white" : "border-transparent text-white/60 hover:text-white"}`}>
               {item.label}

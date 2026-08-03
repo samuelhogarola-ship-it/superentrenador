@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, CheckCircle, ExternalLink, Loader } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getTrainerProfile, signOut } from "@/lib/auth";
+import { PhotoUpload } from "@/components/photo-upload";
 import { COMMERCIAL_NAME_ERROR, isCommercialTrainerName } from "@/lib/profile-validation";
 import { marketplaceCities } from "@/lib/marketplace-data";
 import { MARKETPLACE_LANGUAGES, MARKETPLACE_MODALITIES, MARKETPLACE_SPECIALTIES } from "@/lib/marketplace-taxonomy";
@@ -44,6 +45,7 @@ export default function MiPerfilPage() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [profileSlug, setProfileSlug] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const [reviewStatus, setReviewStatus] = useState<string | null>(null);
 
@@ -71,6 +73,8 @@ export default function MiPerfilPage() {
         router.replace("/login");
         return;
       }
+
+      setUserId(user.id);
 
       const [citiesRes, specialtiesRes, modalitiesRes, languagesRes, existing] = await Promise.all([
         supabase.from("cities").select("slug, name, region").order("name"),
@@ -342,19 +346,16 @@ export default function MiPerfilPage() {
             </label>
           </div>
 
-          <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--text)]">
-            Foto de perfil (URL pública)
-            <input
-              type="url"
-              value={form.photoUrl}
-              onChange={(e) => setForm((p) => ({ ...p, photoUrl: e.target.value }))}
-              placeholder="https://…/tu-foto.jpg"
-              className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
-            />
-            <span className="text-xs font-normal text-[var(--muted)]">
-              Usa una URL de imagen directa (Google Drive no funciona). Prueba con LinkedIn, Instagram o sube la foto a Imgur/Cloudinary.
-            </span>
-          </label>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-sm font-medium text-[var(--text)]">Foto de perfil</span>
+            {userId ? (
+              <PhotoUpload
+                value={form.photoUrl}
+                onChange={(url) => setForm((p) => ({ ...p, photoUrl: url }))}
+                userId={userId}
+              />
+            ) : null}
+          </div>
 
           <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--text)]">
             Contacto directo (visible solo para usuarios registrados)
