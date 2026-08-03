@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import { Upload, X } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
@@ -46,9 +47,12 @@ export function PhotoUpload({ value, onChange, userId }: PhotoUploadProps) {
     <div className="flex flex-col gap-3">
       {value ? (
         <div className="relative inline-block w-fit">
-          <img
+          <Image
             src={value}
             alt="Foto de perfil"
+            width={96}
+            height={96}
+            unoptimized={!value.includes("supabase.co")}
             className="h-24 w-24 rounded-full object-cover ring-2 ring-[var(--line)]"
           />
           <button

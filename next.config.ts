@@ -5,6 +5,12 @@ if (process.env.NODE_ENV === "development") scriptSources.push("'unsafe-eval'");
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "*.supabase.co" },
+      { protocol: "https", hostname: "*.supabase.in" },
+    ],
+  },
   async redirects() {
     return [
       {
