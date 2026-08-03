@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { MessageSquare, SendHorizonal } from "lucide-react";
+import Link from "next/link";
 import { MessageForm } from "@/components/message-form";
 
 interface Message {
@@ -168,14 +169,32 @@ export default function MensajesPage() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-8 md:px-6 lg:px-8">
-      <div>
-        <p className="app-kicker">Mensajes</p>
-        <h1 className="app-title mt-1 text-3xl text-[var(--text)]">Bandeja de entrada</h1>
-      </div>
+    <main className="flex w-full flex-1 flex-col bg-white text-[#17171b]">
+      <nav className="bg-[#202020] px-4 text-white sm:px-6 lg:px-8" aria-label="Panel del entrenador">
+        <div className="mx-auto flex max-w-7xl gap-1 overflow-x-auto">
+          {[
+            { label: "Panel de control", href: "/dashboard" },
+            { label: "Mensajes", href: "/dashboard/mensajes" },
+            { label: "Mis anuncios", href: "/mis-anuncios" },
+            { label: "Mi cuenta", href: "/mi-perfil" },
+            { label: "Premium", href: "/dashboard" },
+          ].map((item) => (
+            <Link key={item.label} href={item.href} className={`whitespace-nowrap border-b-4 px-4 py-5 text-sm font-bold sm:px-6 ${item.label === "Mensajes" ? "border-[#ff6868] text-white" : "border-transparent text-white/60 hover:text-white"}`}>
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </nav>
+
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8 md:px-6 lg:px-8">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#ff6868]">Comunicación</p>
+          <h1 className="mt-1 font-heading text-3xl font-bold text-[#17171b]">Mensajes</h1>
+          <p className="mt-2 text-sm text-[#68686f]">Gestiona tus conversaciones con clientes y entrenadores.</p>
+        </div>
 
       {threads.length === 0 ? (
-        <div className="app-surface rounded-[20px] px-6 py-10 text-center text-sm text-[var(--muted)]">
+        <div className="rounded-[24px] border border-black/10 bg-white px-6 py-16 text-center text-sm text-[#68686f] shadow-sm">
           <MessageSquare size={32} className="mx-auto mb-3 opacity-30" />
           No tienes mensajes todavía.
         </div>
@@ -186,10 +205,10 @@ export default function MensajesPage() {
               <button
                 key={thread.key}
                 onClick={() => { setSelectedKey(thread.key); markThreadRead(thread); setReplying(false); }}
-                className={`app-surface flex flex-col gap-1 rounded-[20px] p-4 text-left transition-colors hover:border-[var(--line-strong)] ${selectedKey === thread.key ? "border-[var(--accent)]" : ""}`}
+                className={`flex flex-col gap-1 rounded-[20px] border bg-white p-4 text-left shadow-sm transition-colors hover:border-[#ff6868] ${selectedKey === thread.key ? "border-[#ff6868] ring-2 ring-[#ff6868]/10" : "border-black/10"}`}
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="truncate text-sm font-semibold text-[var(--text)]">
+                  <span className="truncate text-sm font-semibold text-[#17171b]">
                     {isTrainer ? thread.senderName : thread.trainerDisplayName}
                   </span>
                   {thread.unread > 0 && (
@@ -198,8 +217,8 @@ export default function MensajesPage() {
                     </span>
                   )}
                 </div>
-                <p className="truncate text-xs text-[var(--muted)]">{thread.latestMessage.body}</p>
-                <p className="text-[10px] text-[var(--muted)]">
+                <p className="truncate text-xs text-[#68686f]">{thread.latestMessage.body}</p>
+                <p className="text-[10px] text-[#68686f]">
                   {formatDistanceToNow(new Date(thread.latestMessage.created_at), { locale: es, addSuffix: true })}
                 </p>
               </button>
@@ -207,9 +226,9 @@ export default function MensajesPage() {
           </div>
 
           {selectedThread ? (
-            <div className="app-surface flex flex-col gap-4 rounded-[20px] p-5">
-              <div className="border-b border-[var(--line)] pb-4">
-                <p className="font-semibold text-[var(--text)]">
+            <div className="flex min-h-[420px] flex-col gap-4 rounded-[24px] border border-black/10 bg-white p-5 shadow-sm">
+              <div className="border-b border-black/10 pb-4">
+                <p className="font-semibold text-[#17171b]">
                   {isTrainer ? selectedThread.senderName : selectedThread.trainerDisplayName}
                 </p>
               </div>
@@ -223,7 +242,7 @@ export default function MensajesPage() {
                         className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${
                           isMine
                             ? "bg-[var(--accent)] text-[var(--ink)]"
-                            : "bg-[var(--bg-soft)] text-[var(--text)]"
+                            : "bg-[#f3f3f3] text-[#17171b]"
                         }`}
                       >
                         <p>{msg.body}</p>
@@ -236,7 +255,7 @@ export default function MensajesPage() {
                 })}
               </div>
 
-              <div className="border-t border-[var(--line)] pt-4">
+              <div className="border-t border-black/10 pt-4">
                 {replying ? (
                   <MessageForm
                     trainerProfileId={selectedThread.trainerProfileId}
@@ -247,7 +266,7 @@ export default function MensajesPage() {
                 ) : (
                   <button
                     onClick={() => setReplying(true)}
-                    className="inline-flex items-center gap-2 rounded-full border border-[var(--line)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                    className="inline-flex items-center gap-2 rounded-full border border-black/10 px-4 py-2 text-sm font-semibold text-[#17171b] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
                   >
                     <SendHorizonal size={14} />
                     Responder
@@ -256,12 +275,13 @@ export default function MensajesPage() {
               </div>
             </div>
           ) : (
-            <div className="app-surface flex items-center justify-center rounded-[20px] p-10 text-sm text-[var(--muted)]">
+            <div className="flex items-center justify-center rounded-[24px] border border-black/10 bg-white p-10 text-sm text-[#68686f] shadow-sm">
               Selecciona una conversación
             </div>
           )}
         </div>
       )}
+      </div>
     </main>
   );
 }

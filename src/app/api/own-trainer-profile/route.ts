@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
+import { COMMERCIAL_NAME_ERROR, isCommercialTrainerName } from "@/lib/profile-validation";
 
 interface OwnTrainerProfilePayload {
   slug?: string;
@@ -104,6 +105,10 @@ export async function POST(request: Request) {
 
   if (!slug || !displayName || !citySlug || !headline || !shortBio || !longBio) {
     return NextResponse.json({ ok: false, error: "Faltan campos obligatorios." }, { status: 400 });
+  }
+
+  if (isCommercialTrainerName(displayName)) {
+    return NextResponse.json({ ok: false, error: COMMERCIAL_NAME_ERROR }, { status: 400 });
   }
 
   if (specialties.length === 0 || modalities.length === 0 || languages.length === 0 || priceFrom <= 0) {

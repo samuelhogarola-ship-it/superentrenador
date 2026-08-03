@@ -15,6 +15,7 @@ export interface PublicTrainerProfile {
   citySlug: string;
   city: string;
   region: string;
+  category?: string;
   headline: string;
   shortBio: string;
   longBio: string;
@@ -24,6 +25,7 @@ export interface PublicTrainerProfile {
   rating: number;
   reviewsCount: number;
   priceFrom: number;
+  priceUnit?: "hora" | "sesión";
   modalities: string[];
   languages: string[];
   hiddenContactHint: string;

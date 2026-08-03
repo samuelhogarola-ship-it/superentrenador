@@ -10,6 +10,7 @@ import { TrainerListItem } from "@/components/trainer-list-item";
 import { cityCollectionJsonLd } from "@/lib/marketplace-seo";
 import {
   getMarketplaceCity,
+  listAllCategories,
   listAllModalities,
   listAllSpecialties,
   listMarketplaceCities,
@@ -18,7 +19,7 @@ import {
 
 interface CityPageProps {
   params: Promise<{ city: string }>;
-  searchParams: Promise<{ specialty?: string; modality?: string; sort?: string }>;
+  searchParams: Promise<{ category?: string; specialty?: string; modality?: string; sort?: string }>;
 }
 
 export async function generateStaticParams() {
@@ -58,12 +59,14 @@ export default async function CityPage({ params, searchParams }: CityPageProps) 
     notFound();
   }
 
-  const [trainers, specialties, modalities, cities] = await Promise.all([
+  const [trainers, categories, specialties, modalities, cities] = await Promise.all([
     listTrainerProfilesByCity(currentCity.slug, {
+      category: search.category,
       specialty: search.specialty,
       modality: search.modality,
       sort: search.sort as "featured" | "rating" | "price-asc" | "price-desc" | undefined,
     }),
+    listAllCategories(),
     listAllSpecialties(),
     listAllModalities(),
     listMarketplaceCities(),
@@ -83,6 +86,7 @@ export default async function CityPage({ params, searchParams }: CityPageProps) 
 
       <Suspense fallback={null}>
         <FiltersBar
+          categories={categories}
           specialties={specialties}
           modalities={modalities}
           cities={cities}

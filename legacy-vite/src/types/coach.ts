@@ -49,6 +49,8 @@ export interface RoutineExerciseBlock {
   restSeconds: number;
   rir: string;
   note: string;
+  videoUrl?: string;
+  mediaUrl?: string;
 }
 
 export interface RoutineDay {

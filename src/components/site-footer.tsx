@@ -47,7 +47,7 @@ export function SiteFooter() {
           <div>
             <BrandMark />
             <p className="app-copy mt-5 max-w-sm text-sm">
-              Encuentra entrenadores personales con perfiles claros, especialidades visibles y contacto protegido
+              Encuentra entrenadores de distintas disciplinas con perfiles claros, especialidades visibles y contacto protegido
               hasta que decidas avanzar.
             </p>
             <span className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--accent)]">

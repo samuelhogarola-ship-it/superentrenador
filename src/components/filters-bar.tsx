@@ -6,6 +6,7 @@ import { ChevronDown, RotateCcw, SlidersHorizontal } from "lucide-react";
 import type { MarketplaceCity } from "@/types/marketplace";
 
 interface FiltersBarProps {
+  categories: string[];
   specialties: string[];
   modalities: string[];
   cities: MarketplaceCity[];
@@ -13,7 +14,7 @@ interface FiltersBarProps {
   lockCity?: boolean;
 }
 
-export function FiltersBar({ specialties, modalities, cities, basePath, lockCity = false }: FiltersBarProps) {
+export function FiltersBar({ categories, specialties, modalities, cities, basePath, lockCity = false }: FiltersBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const hasActiveFilters = searchParams.toString().length > 0;
@@ -47,6 +48,23 @@ export function FiltersBar({ specialties, modalities, cities, basePath, lockCity
         <span className="hidden items-center gap-2 px-2 text-sm font-bold text-[var(--paper-muted)] sm:inline-flex">
           <SlidersHorizontal size={15} />
           Filtrar
+        </span>
+
+        <span className={`${selectWrapClass} col-span-2 sm:col-span-1`}>
+          <select
+            aria-label="Filtrar por categoría"
+            defaultValue={searchParams.get("category") ?? ""}
+            onChange={(event) => updateParam("category", event.target.value)}
+            className={selectClass}
+          >
+            <option value="">Todas las categorías</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+          <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[var(--paper-muted)]" />
         </span>
 
         <span className={`${selectWrapClass} col-span-2 sm:col-span-1`}>

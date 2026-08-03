@@ -12,11 +12,11 @@
   --text: #ededf5;
   --muted: rgba(237, 237, 245, 0.56);
   --ink: #07090e;
-  --accent: #e11931;
-  --accent-strong: #ff3b52;
+  --accent: #f5a623;
+  --accent-strong: #ffc24b;
   --accent-2: #0094ff;
   --accent-hot: #e11931;
-  --accent-soft: rgba(225, 25, 49, 0.14);
+  --accent-soft: rgba(245, 166, 35, 0.16);
   --blue-soft: rgba(0, 148, 255, 0.14);
   --hot-soft: rgba(225, 25, 49, 0.11);
   --gold: #0094ff;
@@ -112,6 +112,15 @@ button {
   }
 }
 
+@keyframes category-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -152,6 +161,100 @@ button {
   box-shadow: var(--shadow);
 }
 
+.marketplace-hero {
+  position: relative;
+  overflow: hidden;
+  background: #ffe9e8;
+  color: var(--ink);
+}
+
+.profile-page-shell > * {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+}
+
+.marketplace-hero-inner {
+  min-height: 570px;
+}
+
+.marketplace-hero-title {
+  background: linear-gradient(180deg, #d9f2ff 0%, #9bd5ff 48%, #5e9bd8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 4px 20px rgba(86, 157, 215, 0.14);
+}
+
+.marketplace-hero-points {
+  display: grid;
+  gap: 0.55rem;
+  color: #27272d;
+  font-weight: 700;
+}
+
+.marketplace-hero-points span::before {
+  content: "✓";
+  display: inline-block;
+  margin-right: 0.55rem;
+  color: #ff6868;
+  font-weight: 900;
+}
+
+.marketplace-hero-proof {
+  border-radius: 999px;
+  background: white;
+  padding: 1rem 1.5rem;
+  color: #24242a;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 14px 34px rgba(123, 65, 71, 0.1);
+}
+
+.hero-featured-list {
+  border: 1px solid rgba(23, 23, 27, 0.08);
+  border-radius: 2rem;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 1.5rem;
+  box-shadow: 0 24px 55px rgba(123, 65, 71, 0.14);
+}
+
+.hero-featured-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid #ededed;
+  border-radius: 1.25rem;
+  background: #fff;
+  padding: 0.75rem;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.hero-featured-row:hover {
+  border-color: #ffaaa5;
+  transform: translateY(-2px);
+}
+
+.hero-featured-initial {
+  display: flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #eef4f8;
+  color: #486b80;
+  font-family: var(--font-sora), sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+@media (max-width: 767px) {
+  .marketplace-hero-inner { min-height: 0; }
+}
+
 .premium-hero::before {
   position: absolute;
   inset: 0;
@@ -182,12 +285,92 @@ button {
 .app-title {
   font-family: var(--font-sora), "Segoe UI", sans-serif;
   font-weight: 700;
-  letter-spacing: -0.045em;
+  letter-spacing: 0;
 }
 
 .app-copy {
   color: var(--muted);
   line-height: 1.65;
+}
+
+.category-marquee {
+  width: 100vw;
+  max-width: 100vw;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+}
+
+.category-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 0.75rem;
+  animation: category-marquee 270s linear infinite;
+}
+
+.category-marquee:hover .category-marquee-track {
+  animation-play-state: paused;
+}
+
+.category-pill {
+  display: inline-flex;
+  min-height: 3.5rem;
+  align-items: center;
+  gap: 0.65rem;
+  white-space: nowrap;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(20, 24, 36, 0.74);
+  padding: 0.75rem 1.15rem;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.category-pill svg {
+  color: var(--accent);
+}
+
+.category-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+  transform: translateY(-2px);
+}
+
+.personal-subcategories {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  color: rgba(23, 23, 27, 0.62);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.personal-subcategories a {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.68);
+  padding: 0.45rem 0.8rem;
+  color: #17171b;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.personal-subcategories a:hover {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+.trainer-card-cover {
+  background:
+    radial-gradient(circle at 80% 20%, rgba(255, 194, 75, 0.72), transparent 30%),
+    linear-gradient(135deg, #d9eaff 0%, #8bbfe8 48%, #315a83 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .category-marquee-track {
+    animation: none;
+  }
 }
 
 .brand-on-accent {
@@ -207,10 +390,10 @@ button {
 }
 
 .brand-entrenador {
-  background: linear-gradient(180deg, #ff7584 0%, #e11931 48%, #8f0b1d 100%);
+  background: linear-gradient(180deg, #ffe08a 0%, #ffc24b 48%, #d98a00 100%);
   -webkit-background-clip: text;
   background-clip: text;
-  text-shadow: 0 1px 20px rgba(225, 25, 49, 0.18);
+  text-shadow: 0 1px 20px rgba(245, 166, 35, 0.2);
   -webkit-text-fill-color: transparent;
 }
 

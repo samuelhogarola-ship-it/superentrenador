@@ -19,7 +19,7 @@ const sora = Sora({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "Super Entrenador | Marketplace de entrenadores personales",
+    default: "Super Entrenador | Marketplace de entrenadores",
     template: "%s | Super Entrenador",
   },
   description: siteConfig.description,

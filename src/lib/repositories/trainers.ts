@@ -1,10 +1,12 @@
 import { hasSupabaseEnv } from "@/lib/supabase/client";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { marketplaceCities, publicTrainerProfiles } from "@/lib/marketplace-data";
-import { MARKETPLACE_MODALITIES, MARKETPLACE_SPECIALTIES } from "@/lib/marketplace-taxonomy";
+import { MARKETPLACE_CATEGORIES, MARKETPLACE_MODALITIES, MARKETPLACE_SPECIALTIES } from "@/lib/marketplace-taxonomy";
 import type { MarketplaceCity, PublicTrainerProfile } from "@/types/marketplace";
 
 export interface TrainerFilters {
+  q?: string;
+  category?: string;
   specialty?: string;
   citySlug?: string;
   modality?: string;
@@ -133,6 +135,23 @@ function sortTrainers(trainers: PublicTrainerProfile[], sort: TrainerFilters["so
 function filterStaticTrainers(filters: TrainerFilters) {
   let trainers = getDemoTrainerProfiles();
 
+  if (filters.q) {
+    const query = filters.q.trim().toLocaleLowerCase("es");
+    trainers = trainers.filter((trainer) => [
+      trainer.displayName,
+      trainer.city,
+      trainer.category ?? "",
+      trainer.headline,
+      trainer.shortBio,
+      ...trainer.specialties,
+    ].join(" ").toLocaleLowerCase("es").includes(query));
+  }
+
+  if (filters.category) {
+    trainers = trainers.filter(
+      (trainer) => trainer.category === filters.category || trainer.specialties.includes(filters.category!),
+    );
+  }
   if (filters.specialty) {
     trainers = trainers.filter((trainer) => trainer.specialties.includes(filters.specialty!));
   }
@@ -192,6 +211,9 @@ export async function listPublicTrainerProfiles(filters: TrainerFilters = {}): P
     .from("trainer_profiles_public")
     .select(PUBLIC_VIEW_COLUMNS);
 
+  if (filters.category) {
+    query = query.contains("specialties", [filters.category]);
+  }
   if (filters.specialty) {
     query = query.contains("specialties", [filters.specialty]);
   }
@@ -219,7 +241,22 @@ export async function listPublicTrainerProfiles(filters: TrainerFilters = {}): P
     return [];
   }
 
-  return (data as unknown as TrainerRow[]).filter((row) => !isProductionDemoProfile(row)).map(mapTrainer);
+  const profiles = (data as unknown as TrainerRow[]).filter((row) => !isProductionDemoProfile(row)).map(mapTrainer);
+  if (!filters.q) return profiles;
+
+  const queryText = filters.q.trim().toLocaleLowerCase("es");
+  return profiles.filter((trainer) => [
+    trainer.displayName,
+    trainer.city,
+    trainer.headline,
+    trainer.shortBio,
+    ...trainer.specialties,
+  ].join(" ").toLocaleLowerCase("es").includes(queryText));
+}
+
+export async function listAllCategories(): Promise<string[]> {
+  const set = new Set<string>(MARKETPLACE_CATEGORIES);
+  return Array.from(set);
 }
 
 export async function listFeaturedTrainerProfiles(): Promise<PublicTrainerProfile[]> {
@@ -244,6 +281,10 @@ export async function getPublicTrainerProfileBySlug(slug: string): Promise<Publi
     .maybeSingle();
 
   if (error || !data) {
+    const draftProfile = publicTrainerProfiles.find(
+      (profile) => profile.slug === slug && profile.reviewStatus === "draft",
+    );
+    if (draftProfile) return draftProfile;
     console.error("[supabase] getPublicTrainerProfileBySlug failed", error);
     return null;
   }

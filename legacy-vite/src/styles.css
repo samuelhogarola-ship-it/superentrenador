@@ -1198,8 +1198,23 @@ textarea {
   gap: 18px;
 }
 
+.routine-builder-stack,
+.routine-builder-layout,
+.routine-block-list,
+.exercise-library-list,
+.routine-meta-grid,
+.routine-day-meta {
+  display: grid;
+  gap: 18px;
+}
+
 .routine-columns {
   grid-template-columns: 1.18fr 0.82fr;
+}
+
+.routine-builder-layout {
+  grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.7fr);
+  align-items: start;
 }
 
 .routine-library {
@@ -1226,6 +1241,109 @@ textarea {
 .assign-client-list {
   display: grid;
   gap: 12px;
+}
+
+.routine-draft-panel,
+.routine-builder-sidebar {
+  align-self: start;
+}
+
+.routine-meta-grid,
+.routine-day-meta,
+.routine-block-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.routine-notes-field,
+.upload-field {
+  display: grid;
+  gap: 10px;
+}
+
+.routine-day-tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.routine-day-tabs button {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 700;
+}
+
+.routine-day-tabs button.is-active {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+
+.routine-dropzone {
+  display: grid;
+  gap: 8px;
+  padding: 20px 22px;
+  border-radius: 24px;
+  border: 1px dashed rgba(13, 107, 105, 0.4);
+  background: linear-gradient(180deg, rgba(13, 107, 105, 0.06), rgba(255, 255, 255, 0.9));
+}
+
+.routine-dropzone strong {
+  font-size: 1.15rem;
+}
+
+.routine-dropzone span,
+.exercise-library-card p {
+  color: var(--ink-soft);
+}
+
+.routine-block-card,
+.exercise-library-card,
+.custom-exercise-card {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.routine-block-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.routine-block-head small,
+.exercise-library-card small {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--terracotta);
+  font-weight: 700;
+}
+
+.routine-media-preview {
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  max-height: 220px;
+}
+
+.routine-media-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.exercise-library-card {
+  cursor: grab;
+}
+
+.exercise-library-card:active {
+  cursor: grabbing;
 }
 
 .checkbox-row {
@@ -1487,6 +1605,154 @@ textarea {
   align-items: start;
 }
 
+.admin-control-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-control-strip article {
+  padding: 18px 20px;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  gap: 6px;
+}
+
+.admin-control-strip span,
+.admin-control-strip small,
+.panel-access-card p,
+.panel-access-foot small,
+.admin-user-main small,
+.admin-user-meta small,
+.admin-user-meta span {
+  color: var(--ink-soft);
+}
+
+.admin-control-strip strong {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.panel-access-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.panel-access-card {
+  min-height: 260px;
+  padding: 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(22, 33, 58, 0.08);
+  background: rgba(255, 255, 255, 0.78);
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 14px;
+}
+
+.panel-access-head,
+.panel-access-foot,
+.admin-user-row,
+.admin-user-main,
+.admin-user-meta {
+  display: flex;
+  align-items: center;
+}
+
+.panel-access-head,
+.panel-access-foot,
+.admin-user-row {
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.panel-access-head {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+.panel-access-card h3 {
+  margin: 0;
+  font-size: 1.08rem;
+}
+
+.panel-access-card p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.panel-badge {
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-weight: 800;
+}
+
+.panel-badge-marketplace {
+  background: var(--teal-soft);
+  color: var(--teal);
+}
+
+.panel-badge-coach-studio {
+  background: var(--terracotta-soft);
+  color: var(--terracotta);
+}
+
+.admin-user-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.admin-user-row {
+  min-height: 76px;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(22, 33, 58, 0.08);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.admin-user-main {
+  min-width: 0;
+  gap: 12px;
+}
+
+.admin-user-main div {
+  min-width: 0;
+}
+
+.admin-user-main strong,
+.admin-user-main small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.admin-user-icon {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gold-soft);
+  color: var(--gold);
+}
+
+.admin-user-meta {
+  min-width: 122px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  text-align: right;
+}
+
 .verification-review {
   padding: 22px;
   border-radius: 22px;
@@ -1515,6 +1781,7 @@ textarea {
   .dashboard-two-columns,
   .client-management-layout,
   .routine-columns,
+  .routine-builder-layout,
   .progress-layout,
   .admin-grid {
     grid-template-columns: 1fr;
@@ -1533,6 +1800,7 @@ textarea {
   }
 
   .metric-grid,
+  .panel-access-grid,
   .pricing-grid,
   .profile-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1554,6 +1822,12 @@ textarea {
   .table-header,
   .table-row {
     grid-template-columns: minmax(180px, 2fr) 170px 1fr 1fr;
+  }
+
+  .routine-meta-grid,
+  .routine-day-meta,
+  .routine-block-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -1580,6 +1854,8 @@ textarea {
 
   .hero-proof,
   .metric-grid,
+  .admin-control-strip,
+  .panel-access-grid,
   .pricing-grid,
   .field-grid,
   .nutrition-grid,
@@ -1614,6 +1890,18 @@ textarea {
 
   .workflow-grid {
     gap: 20px;
+  }
+
+  .admin-user-row,
+  .panel-access-foot {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-user-meta {
+    min-width: 0;
+    align-items: flex-start;
+    text-align: left;
   }
 
   .workflow-bridge {

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, CheckCircle, ExternalLink, Loader } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getTrainerProfile, signOut } from "@/lib/auth";
+import { COMMERCIAL_NAME_ERROR, isCommercialTrainerName } from "@/lib/profile-validation";
 import { marketplaceCities } from "@/lib/marketplace-data";
 import { MARKETPLACE_LANGUAGES, MARKETPLACE_MODALITIES, MARKETPLACE_SPECIALTIES } from "@/lib/marketplace-taxonomy";
 
@@ -132,6 +133,10 @@ export default function MiPerfilPage() {
 
     const missingFields: string[] = [];
     if (!form.displayName.trim()) missingFields.push("nombre");
+    if (isCommercialTrainerName(form.displayName)) {
+      setError(COMMERCIAL_NAME_ERROR);
+      return;
+    }
     if (!form.citySlug) missingFields.push("ciudad");
     if (!form.headline.trim()) missingFields.push("titular");
     if (!form.shortBio.trim()) missingFields.push("bio corta");
@@ -273,9 +278,11 @@ export default function MiPerfilPage() {
               value={form.displayName}
               onChange={(e) => setForm((p) => ({ ...p, displayName: e.target.value }))}
               required
+              autoComplete="name"
               placeholder="Ej. Sorvali García"
               className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
             />
+            <span className="text-xs font-normal text-[var(--muted)]">Introduce tu nombre real. No se permiten nombres de gimnasios, clubes, estudios o marcas.</span>
           </label>
 
           <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--text)]">
