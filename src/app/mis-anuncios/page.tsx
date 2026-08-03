@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Eye, MessageSquare, PenLine, Plus, Search, Share2, Trash2 } from "lucide-react";
+import { Eye, MessageSquare, PenLine, Plus, Search } from "lucide-react";
 import { redirect } from "next/navigation";
 import { Avatar } from "@/components/avatar";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
 import { marketplaceCities } from "@/lib/marketplace-data";
+import { AdSidebarActions } from "./ad-sidebar-actions";
 
 export const dynamic = "force-dynamic";
 
@@ -148,8 +149,7 @@ export default async function MisAnunciosPage() {
               <p className="mt-6 flex items-center justify-between border-t border-[#ededed] pt-5 text-sm"><span>Tarifa horaria</span><strong className="text-2xl">{trainerProfile.price_from > 0 ? `${trainerProfile.price_from}€` : "—"}</strong></p>
               <div className="mt-6 grid gap-2">
                 <Link href={`/entrenadores/${trainerProfile.slug}`} className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f5f5f5] px-4 py-3 text-sm font-bold"><Eye size={16} /> Vista pública</Link>
-                <button type="button" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f5f5f5] px-4 py-3 text-sm font-bold text-[#555]"><Share2 size={16} /> Compartir anuncio</button>
-                <button type="button" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f5f5f5] px-4 py-3 text-sm font-bold text-[#555]"><Trash2 size={16} /> Eliminar anuncio</button>
+                <AdSidebarActions trainerId={trainerProfile.id} trainerSlug={trainerProfile.slug} />
               </div>
             </>
           ) : <p className="text-sm leading-6 text-[#666]">Tu resumen aparecerá aquí cuando publiques tu primer anuncio.</p>}
