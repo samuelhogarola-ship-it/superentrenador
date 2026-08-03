@@ -1,12 +1,20 @@
 import { PropsWithChildren, createContext, useContext, useState } from "react";
 import { platformSeed } from "../../data/platformSeed";
-import { TrainerProfile, TrainerSubscription, VerificationRequest } from "../../types";
+import {
+  ActivePlatformUser,
+  AdminPanelAccess,
+  TrainerProfile,
+  TrainerSubscription,
+  VerificationRequest
+} from "../../types";
 
 interface AdminState {
   trainer: TrainerProfile;
   subscription: TrainerSubscription;
   leads: typeof platformSeed.leads;
   verificationRequests: typeof platformSeed.verificationRequests;
+  activeUsers: ActivePlatformUser[];
+  panelAccesses: AdminPanelAccess[];
 }
 
 interface AdminStateContextValue {

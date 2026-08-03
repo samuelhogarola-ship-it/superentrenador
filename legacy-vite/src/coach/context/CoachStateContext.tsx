@@ -39,7 +39,9 @@ interface CoachStateContextValue {
   inviteClientToApp: (clientId: string) => void;
   acceptClientConnection: (userId: string) => void;
   addProgressEntry: (input: NewProgressInput) => void;
+  createRoutineTemplate: () => RoutineTemplate;
   duplicateRoutine: (routineId: string) => void;
+  updateRoutineTemplate: (routine: RoutineTemplate) => void;
   assignRoutineToClients: (routineId: string, clientIds: string[]) => void;
   assignNutritionToClient: (nutritionId: string, clientId: string) => void;
   updateSubscriptionPlan: (plan: SubscriptionPlan) => void;
@@ -72,6 +74,28 @@ function buildActivityFromExport(type: PDFExport["type"]) {
   if (type === "routine") return "Se generó un PDF de rutina";
   if (type === "nutrition") return "Se generó un PDF de nutrición";
   return "Se generó un PDF de seguimiento";
+}
+
+function buildEmptyRoutineTemplate(trainerId: string): RoutineTemplate {
+  return {
+    id: createId("routine"),
+    trainerId,
+    title: "Nueva rutina",
+    goal: "Objetivo por definir",
+    daysPerWeek: 4,
+    level: "Intermedio",
+    notes: "Rutina editable para personalizar por alumno.",
+    status: "draft",
+    assignmentsCount: 0,
+    days: Array.from({ length: 4 }, (_, index) => ({
+      id: createId("day"),
+      dayLabel: `Día ${index + 1}`,
+      focus: index === 0 ? "Fuerza tren inferior" : "Bloque por definir",
+      durationMinutes: "60 min",
+      level: "Intermedio",
+      blocks: []
+    }))
+  };
 }
 
 export function CoachStateProvider({ children }: PropsWithChildren) {
@@ -247,6 +271,17 @@ export function CoachStateProvider({ children }: PropsWithChildren) {
     }));
   };
 
+  const createRoutineTemplate = () => {
+    const routine = buildEmptyRoutineTemplate(state.trainer.id);
+
+    setState((current) => ({
+      ...current,
+      routines: [routine, ...current.routines]
+    }));
+
+    return routine;
+  };
+
   const duplicateRoutine = (routineId: string) => {
     setState((current) => {
       const source = current.routines.find((routine) => routine.id === routineId);
@@ -269,6 +304,13 @@ export function CoachStateProvider({ children }: PropsWithChildren) {
         routines: [copy, ...current.routines]
       };
     });
+  };
+
+  const updateRoutineTemplate = (routine: RoutineTemplate) => {
+    setState((current) => ({
+      ...current,
+      routines: current.routines.map((entry) => (entry.id === routine.id ? routine : entry))
+    }));
   };
 
   const assignRoutineToClients = (routineId: string, clientIds: string[]) => {
@@ -397,15 +439,17 @@ export function CoachStateProvider({ children }: PropsWithChildren) {
   return (
     <CoachStateContext.Provider
       value={{
-        state,
-        addClient,
-        inviteClientToApp,
-        acceptClientConnection,
-        addProgressEntry,
-        duplicateRoutine,
-        assignRoutineToClients,
-        assignNutritionToClient,
-        updateSubscriptionPlan,
+      state,
+      addClient,
+      inviteClientToApp,
+      acceptClientConnection,
+      addProgressEntry,
+      createRoutineTemplate,
+      duplicateRoutine,
+      updateRoutineTemplate,
+      assignRoutineToClients,
+      assignNutritionToClient,
+      updateSubscriptionPlan,
         completeClientWorkout,
         generateExport,
         resetDemo

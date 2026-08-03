@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Sora } from "next/font/google";
 import "./globals.css";
 import { CookieConsent } from "@/components/cookie-consent";
+import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { siteConfig } from "@/lib/site";
@@ -19,7 +20,7 @@ const sora = Sora({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "Super Entrenador | Marketplace de entrenadores personales",
+    default: "Super Entrenador | Marketplace de entrenadores",
     template: "%s | Super Entrenador",
   },
   description: siteConfig.description,
@@ -56,6 +57,7 @@ export default function RootLayout({
           <SiteHeader />
           {children}
           <SiteFooter />
+          <MobileBottomNav />
           <CookieConsent />
         </div>
       </body>

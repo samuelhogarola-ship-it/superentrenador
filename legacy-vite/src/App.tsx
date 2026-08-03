@@ -6,9 +6,9 @@ import { MarketplaceRoutes } from "./routes/MarketplaceRoutes";
 export default function App() {
   return (
     <Routes>
-      <MarketplaceRoutes />
-      <CoachRoutes />
-      <AdminRoutes />
+      {MarketplaceRoutes()}
+      {CoachRoutes()}
+      {AdminRoutes()}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

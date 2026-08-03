@@ -82,18 +82,18 @@ export function ContactPanel({
   }, [trainerSlug]);
 
   return (
-    <div className="rounded-[28px] border border-[var(--line)] bg-[var(--text)] p-6 text-white shadow-[var(--shadow)]">
-      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-white/55">Desde</p>
-      <p className="font-heading text-4xl text-[var(--text)]">
-        <span className="text-white">{priceFrom}€</span>
-        <span className="text-base font-medium text-white/55"> /sesión</span>
+    <div className="rounded-[28px] border border-black/10 bg-white p-6 text-[#17171b] shadow-[0_16px_40px_rgba(0,0,0,0.08)]">
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#77777d]">Tarifa horaria</p>
+      <p className="font-heading text-4xl text-[#17171b]">
+        <span>{priceFrom}€</span>
+        <span className="text-base font-medium text-[#77777d]"> /hora</span>
       </p>
-      <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs font-semibold text-white/78">
+      <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-black/10 bg-[#f7f7f7] px-3 py-1.5 text-xs font-semibold text-[#55555b]">
         <ShieldCheck size={13} />
         Contacto protegido por registro
       </p>
 
-      <div className="mt-6 grid gap-4 text-sm text-white/70">
+      <div className="mt-6 grid gap-4 text-sm text-[#68686f]">
         <span className="inline-flex items-center gap-3">
           <Award size={16} className="text-[var(--accent)]" />
           {yearsExperience} años de experiencia
@@ -108,16 +108,16 @@ export function ContactPanel({
         </span>
       </div>
 
-      <div className="mt-6 rounded-[22px] border border-white/10 bg-white p-5 text-[var(--text)]">
+      <div className="mt-6 rounded-[22px] border border-black/10 bg-white p-5 text-[#17171b]">
         {!checked ? null : loggedIn && currentUser ? (
           <>
             {contactInfo ? (
               <>
                 <p className="app-kicker">Contacto directo</p>
-                <p className="mt-2 text-sm text-[var(--muted)]">
+                <p className="mt-2 text-sm text-[#68686f]">
                   Puedes contactar directamente con {trainerName}:
                 </p>
-                <div className="mt-4 flex items-center gap-3 rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3">
+                <div className="mt-4 flex items-center gap-3 rounded-2xl border border-black/10 bg-[#f7f7f7] px-4 py-3">
                   <Phone size={16} className="shrink-0 text-[var(--accent)]" />
                   <span className="text-sm font-semibold text-[var(--text)]">{contactInfo}</span>
                 </div>
@@ -125,7 +125,7 @@ export function ContactPanel({
             ) : (
               <>
                 <p className="app-kicker">Contacto</p>
-                <p className="mt-2 text-sm text-[var(--muted)]">
+                <p className="mt-2 text-sm text-[#68686f]">
                   Envía un mensaje directo a {trainerName}.
                 </p>
               </>
@@ -140,7 +140,7 @@ export function ContactPanel({
               ) : (
                 <button
                   onClick={() => setShowMessageForm(true)}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[var(--line)] px-4 py-2.5 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-black/10 px-4 py-2.5 text-sm font-semibold text-[#17171b] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
                 >
                   <MessageSquare size={15} />
                   Enviar mensaje
@@ -151,7 +151,7 @@ export function ContactPanel({
         ) : (
           <>
             <p className="app-kicker">Contacto protegido</p>
-            <p className="mt-3 text-sm leading-7 text-[var(--text)]">
+            <p className="mt-3 text-sm leading-7 text-[#55555b]">
               {hiddenContactHint} Te pediremos una cuenta para ordenar el primer mensaje y evitar conversaciones sin intención.
             </p>
             <div className="mt-5 grid gap-3">
@@ -164,7 +164,7 @@ export function ContactPanel({
               </Link>
               <Link
                 href={registerHref}
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--line)] px-4 py-3 text-sm font-semibold text-[var(--text)]"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-black/10 px-4 py-3 text-sm font-semibold text-[#17171b]"
               >
                 <LockKeyhole size={16} />
                 Crear cuenta para contactar

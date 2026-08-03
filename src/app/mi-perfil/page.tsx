@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { ArrowRight, CheckCircle, ExternalLink, Loader } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { getTrainerProfile, signOut } from "@/lib/auth";
+import { PhotoUpload } from "@/components/photo-upload";
+import { COMMERCIAL_NAME_ERROR, isCommercialTrainerName } from "@/lib/profile-validation";
 import { marketplaceCities } from "@/lib/marketplace-data";
 import { MARKETPLACE_LANGUAGES, MARKETPLACE_MODALITIES, MARKETPLACE_SPECIALTIES } from "@/lib/marketplace-taxonomy";
 
@@ -43,6 +45,7 @@ export default function MiPerfilPage() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [profileSlug, setProfileSlug] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const [reviewStatus, setReviewStatus] = useState<string | null>(null);
 
@@ -70,6 +73,8 @@ export default function MiPerfilPage() {
         router.replace("/login");
         return;
       }
+
+      setUserId(user.id);
 
       const [citiesRes, specialtiesRes, modalitiesRes, languagesRes, existing] = await Promise.all([
         supabase.from("cities").select("slug, name, region").order("name"),
@@ -132,6 +137,10 @@ export default function MiPerfilPage() {
 
     const missingFields: string[] = [];
     if (!form.displayName.trim()) missingFields.push("nombre");
+    if (isCommercialTrainerName(form.displayName)) {
+      setError(COMMERCIAL_NAME_ERROR);
+      return;
+    }
     if (!form.citySlug) missingFields.push("ciudad");
     if (!form.headline.trim()) missingFields.push("titular");
     if (!form.shortBio.trim()) missingFields.push("bio corta");
@@ -228,7 +237,7 @@ export default function MiPerfilPage() {
       </div>
 
       {reviewStatus === "pending" && profileSlug ? (
-        <div className="rounded-[20px] border border-amber-500/30 bg-amber-500/10 px-5 py-4 text-sm text-amber-700">
+        <div className="rounded-[20px] border border-[rgba(225,25,49,0.28)] bg-[rgba(225,25,49,0.08)] px-5 py-4 text-sm text-[var(--accent)]">
           <p className="font-semibold">Perfil pendiente de revisión</p>
           <p className="mt-1 font-normal opacity-80">Tu perfil está en cola de aprobación. Lo revisaremos y aparecerá en el marketplace en breve.</p>
         </div>
@@ -273,9 +282,11 @@ export default function MiPerfilPage() {
               value={form.displayName}
               onChange={(e) => setForm((p) => ({ ...p, displayName: e.target.value }))}
               required
+              autoComplete="name"
               placeholder="Ej. Sorvali García"
               className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
             />
+            <span className="text-xs font-normal text-[var(--muted)]">Introduce tu nombre real. No se permiten nombres de gimnasios, clubes, estudios o marcas.</span>
           </label>
 
           <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--text)]">
@@ -335,19 +346,16 @@ export default function MiPerfilPage() {
             </label>
           </div>
 
-          <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--text)]">
-            Foto de perfil (URL pública)
-            <input
-              type="url"
-              value={form.photoUrl}
-              onChange={(e) => setForm((p) => ({ ...p, photoUrl: e.target.value }))}
-              placeholder="https://…/tu-foto.jpg"
-              className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
-            />
-            <span className="text-xs font-normal text-[var(--muted)]">
-              Usa una URL de imagen directa (Google Drive no funciona). Prueba con LinkedIn, Instagram o sube la foto a Imgur/Cloudinary.
-            </span>
-          </label>
+          <div className="flex flex-col gap-1.5">
+            <span className="text-sm font-medium text-[var(--text)]">Foto de perfil</span>
+            {userId ? (
+              <PhotoUpload
+                value={form.photoUrl}
+                onChange={(url) => setForm((p) => ({ ...p, photoUrl: url }))}
+                userId={userId}
+              />
+            ) : null}
+          </div>
 
           <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--text)]">
             Contacto directo (visible solo para usuarios registrados)

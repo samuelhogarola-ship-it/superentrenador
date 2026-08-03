@@ -1,314 +1,185 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, BookOpen, CheckCircle2, MapPin, ShieldCheck, Sparkles, Target } from "lucide-react";
-import { CategoryGrid } from "@/components/category-grid";
-import { HeroSearchBar } from "@/components/hero-search-bar";
-import { JsonLd } from "@/components/json-ld";
-import { Reveal } from "@/components/reveal";
-import { SectionHeading } from "@/components/section-heading";
-import { StatsBar } from "@/components/stats-bar";
-import { TrainerCard } from "@/components/trainer-card";
-import { listBlogPosts } from "@/lib/blog";
-import { isAndaluciaCity, sortCitiesByName } from "@/lib/coverage";
-import { marketplaceWebsiteJsonLd, trainerCollectionJsonLd } from "@/lib/marketplace-seo";
-import { siteConfig } from "@/lib/site";
 import {
-  getMarketplaceStats,
-  listAllSpecialties,
-  listFeaturedTrainerProfiles,
-  listMarketplaceCities,
-} from "@/lib/repositories/trainers";
+  Accessibility,
+  Bike,
+  CircleDot,
+  Dumbbell,
+  HandFist,
+  Footprints,
+  Goal,
+  Mountain,
+  MapPin,
+  PersonStanding,
+  Search,
+  Star,
+  Trophy,
+  Volleyball,
+  Waves,
+} from "lucide-react";
+import { JsonLd } from "@/components/json-ld";
+import { HeroSearchBar } from "@/components/hero-search-bar";
+import { TrainerCard } from "@/components/trainer-card";
+import { marketplaceWebsiteJsonLd } from "@/lib/marketplace-seo";
+import { listAllCategories, listFeaturedTrainerProfiles, listMarketplaceCities } from "@/lib/repositories/trainers";
+import { publicTrainerProfiles } from "@/lib/marketplace-data";
+import { MARKETPLACE_CATEGORIES, PERSONAL_TRAINER_SERVICES, PERSONAL_TRAINER_SUBCATEGORIES } from "@/lib/marketplace-taxonomy";
 
-const HERO_POINTS = [
-  "Presencial, online o híbrido.",
-  "Precio y experiencia visibles.",
-  "Contacto protegido al dar el primer paso.",
+const CATEGORY_ICONS = [
+  { label: "Entrenador personal", icon: Dumbbell },
+  { label: "Fútbol", icon: Trophy },
+  { label: "Tenis", icon: CircleDot },
+  { label: "Pádel", icon: CircleDot },
+  { label: "Baloncesto", icon: Volleyball },
+  { label: "Natación", icon: Waves },
+  { label: "Ciclismo", icon: Bike },
+  { label: "Atletismo", icon: Footprints },
+  { label: "Boxeo", icon: HandFist },
+  { label: "Pilates", icon: PersonStanding },
+  { label: "Yoga", icon: PersonStanding },
+  { label: "Escalada", icon: Mountain },
+  { label: "Golf", icon: Goal },
+  { label: "Voleibol", icon: Volleyball },
+  { label: "Gimnasia", icon: Accessibility },
 ];
 
-const TRUST_SIGNALS = [
-  { value: "Precio", label: "visible antes de escribir" },
-  { value: "Objetivo", label: "fuerza, grasa, salud u online" },
-  { value: "Ciudad", label: "búsqueda local sin perder tiempo" },
-];
-
-const FLOW_STEPS = [
-  {
-    icon: Target,
-    title: "Define el objetivo",
-    body: "Fuerza, pérdida de grasa, posparto, rendimiento o seguimiento online. El filtro empieza por intención real.",
-  },
-  {
-    icon: BadgeCheck,
-    title: "Compara perfiles",
-    body: "Revisa experiencia, modalidad, precio y especialidad con la misma información en cada perfil.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Contacta con control",
-    body: "Tu información de contacto permanece protegida mientras hablas con el entrenador desde la plataforma.",
-  },
-];
-
-export default async function Home() {
-  const [featuredTrainers, cities, specialties, stats] = await Promise.all([
-    listFeaturedTrainerProfiles(),
-    listMarketplaceCities(),
-    listAllSpecialties(),
-    getMarketplaceStats(),
-  ]);
-  const andaluciaCities = sortCitiesByName(cities.filter(isAndaluciaCity));
-  const latestPosts = listBlogPosts().slice(0, 3);
+function CategoryMarquee() {
+  const items = [...MARKETPLACE_CATEGORIES, ...MARKETPLACE_CATEGORIES];
 
   return (
-    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-14 px-4 py-8 md:px-6 md:py-10 lg:px-8">
-      <JsonLd data={marketplaceWebsiteJsonLd()} />
-      <JsonLd data={trainerCollectionJsonLd(featuredTrainers, siteConfig.url, "Entrenadores personales destacados")} />
-      <section className="premium-hero rounded-[32px] p-6 sm:p-8 lg:p-10">
-        <div className="relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
-          <div>
-            <p className="app-kicker inline-flex items-center gap-2">
-              <Sparkles size={13} />
-              Entrenadores personales
-            </p>
-            <h1 className="app-title mt-4 max-w-4xl text-4xl leading-[0.98] sm:text-6xl lg:text-7xl">
-              Encuentra entrenador personal cerca de ti.
-            </h1>
-            <p className="app-copy mt-6 max-w-2xl text-lg">
-              Busca por objetivo y ciudad, compara precio, experiencia y modalidad, y contacta cuando tengas claro quién encaja contigo.
-            </p>
-
-            <div className="mt-8 max-w-4xl">
-              <HeroSearchBar specialties={specialties} cities={cities} />
-            </div>
-
-            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--muted)]">
-              {HERO_POINTS.map((item) => (
-                <span key={item} className="inline-flex items-center gap-2">
-                  <CheckCircle2 size={15} className="text-[var(--accent)]" />
-                  {item}
-                </span>
-              ))}
-            </div>
-
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link
-                href="/entrenadores"
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-bold text-[var(--ink)] shadow-[0_18px_36px_rgba(245,166,35,0.18)] transition-transform hover:-translate-y-0.5"
-              >
-                Buscar entrenador
-                <ArrowRight size={16} />
-              </Link>
-              <Link
-                href="/registro?intent=trainer"
-                className="inline-flex items-center gap-2 rounded-full border border-[var(--line-strong)] bg-[var(--panel)] px-6 py-3 text-sm font-bold text-[var(--text)] backdrop-blur transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
-              >
-                Soy entrenador
-              </Link>
-            </div>
-          </div>
-
-          <aside className="premium-card rounded-[28px] p-5">
-            <p className="app-kicker">Por qué funciona</p>
-            <div className="mt-5 grid gap-4">
-              {TRUST_SIGNALS.map((signal) => (
-                <div key={signal.label} className="rounded-[20px] border border-[var(--line)] bg-[var(--surface)] p-4">
-                  <strong className="font-heading text-3xl text-[var(--text)]">{signal.value}</strong>
-                  <p className="mt-1 text-sm leading-6 text-[var(--muted)]">{signal.label}</p>
-                </div>
-              ))}
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section>
-        <StatsBar
-          totalTrainers={stats.totalTrainers}
-          totalCities={stats.totalCities}
-          totalReviews={stats.totalReviews}
-          avgRating={stats.avgRating}
-        />
-      </section>
-
-      <section className="flex flex-col gap-6">
-        <Reveal>
-          <SectionHeading
-            eyebrow="Accesos rápidos"
-            title="Empieza por el resultado que quieres conseguir"
-            body="El marketplace no te obliga a navegar como una red social: filtra por intención y llega antes a una lista corta."
-          />
-        </Reveal>
-        <CategoryGrid specialties={specialties} />
-      </section>
-
-      <section className="grid gap-4 lg:grid-cols-3">
-        {FLOW_STEPS.map((step, index) => {
-          const Icon = step.icon;
+    <div className="category-marquee mt-16" aria-label="Categorías de entrenadores">
+      <div className="category-marquee-track">
+        {items.map((label, index) => {
+          const Icon = CATEGORY_ICONS[index % MARKETPLACE_CATEGORIES.length].icon;
           return (
-            <Reveal key={step.title} delay={index * 80}>
-              <article className="premium-card h-full rounded-[24px] p-6">
-                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--accent-soft)] text-[var(--accent)]">
-                  <Icon size={19} />
-                </span>
-                <h2 className="app-title mt-5 text-2xl text-[var(--text)]">{step.title}</h2>
-                <p className="app-copy mt-3 text-sm">{step.body}</p>
-              </article>
-            </Reveal>
+            <Link
+              key={`${label}-${index}`}
+              href={`/entrenadores?category=${encodeURIComponent(label)}`}
+              className="category-pill"
+              tabIndex={index >= MARKETPLACE_CATEGORIES.length ? -1 : undefined}
+            >
+              <Icon size={20} strokeWidth={1.8} />
+              <span>{label}</span>
+            </Link>
           );
         })}
-      </section>
+      </div>
+    </div>
+  );
+}
 
-      <section className="flex flex-col gap-6">
-        <Reveal>
+function PersonalSubcategories() {
+  return (
+    <div className="personal-subcategories mx-auto mt-5 max-w-7xl">
+      <span>Entrenador personal:</span>
+      {PERSONAL_TRAINER_SUBCATEGORIES.map((subcategory) => (
+        <Link
+          key={subcategory}
+          href={`/entrenadores?category=${encodeURIComponent("Entrenador personal")}&specialty=${encodeURIComponent(subcategory)}`}
+        >
+          {subcategory}
+        </Link>
+      ))}
+      {PERSONAL_TRAINER_SERVICES.map((service) => (
+        <Link
+          key={service}
+          href={`/entrenadores?category=${encodeURIComponent("Entrenador personal")}&specialty=${encodeURIComponent(service)}`}
+        >
+          {service}
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+function HeroFeaturedList({ trainers }: { trainers: typeof publicTrainerProfiles }) {
+  return (
+    <div className="hero-featured-list" aria-label="Entrenadores destacados">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#ff6868]">Selección local</p>
+          <h2 className="mt-1 font-heading text-2xl font-bold text-[#17171b]">Entrenadores destacados</h2>
+        </div>
+        <Star size={22} className="fill-[#ffb72d] text-[#ffb72d]" />
+      </div>
+      <div className="mt-5 grid gap-3">
+        {trainers.slice(0, 3).map((trainer) => (
+          <Link key={trainer.id} href={`/entrenadores/${trainer.slug}`} className="hero-featured-row">
+            <span className="hero-featured-initial">{trainer.displayName.slice(0, 1)}</span>
+            <span className="min-w-0 flex-1">
+              <strong className="block truncate text-base text-[#17171b]">{trainer.displayName}</strong>
+              <span className="mt-0.5 flex items-center gap-1 text-sm text-[#68686d]">
+                <MapPin size={13} />
+                {trainer.city} · {trainer.category ?? "Entrenador"}
+              </span>
+            </span>
+            {trainer.reviewsCount > 0 ? <span className="shrink-0 text-sm font-bold text-[#17171b]">★ {trainer.rating.toFixed(1)}</span> : null}
+          </Link>
+        ))}
+      </div>
+      <Link href="/entrenadores" className="mt-5 block text-center text-sm font-bold text-[#ff6868] hover:text-[#17171b]">Ver todos los perfiles</Link>
+    </div>
+  );
+}
+
+export default async function Home() {
+  const [featuredTrainers, categories, cities] = await Promise.all([
+    listFeaturedTrainerProfiles(),
+    listAllCategories(),
+    listMarketplaceCities(),
+  ]);
+  const trainersToShow = featuredTrainers.length > 0
+    ? [publicTrainerProfiles[0], ...featuredTrainers.filter((trainer) => trainer.slug !== publicTrainerProfiles[0].slug)].slice(0, 3)
+    : publicTrainerProfiles.slice(0, 6);
+
+  return (
+    <main className="flex flex-1 flex-col">
+      <JsonLd data={marketplaceWebsiteJsonLd()} />
+      <section className="marketplace-hero px-5 py-12 sm:px-8 lg:px-12">
+        <div className="marketplace-hero-inner mx-auto grid w-full max-w-7xl items-center gap-10 lg:grid-cols-[1fr_0.85fr]">
+          <div className="relative z-10">
+          <p className="app-kicker inline-flex items-center gap-2">
+            <Search size={13} />
+            Marketplace de entrenadores
+          </p>
+          <h1 className="app-title marketplace-hero-title mt-5 max-w-3xl text-4xl leading-[0.98] sm:text-6xl">
+            Encuentra tu entrenador ideal
+          </h1>
+          <p className="marketplace-hero-points mt-6 max-w-xl text-base sm:text-lg">
+            <span>Encuentra un entrenador a tu medida</span>
+            <span>Entrenamiento para todos los niveles</span>
+            <span>Presencial y online en tu ciudad</span>
+          </p>
+          <div className="mt-8 max-w-3xl">
+            <HeroSearchBar categories={categories} cities={cities} />
+          </div>
+          </div>
+          <HeroFeaturedList trainers={trainersToShow} />
+        </div>
+        <CategoryMarquee />
+        <PersonalSubcategories />
+        <div className="marketplace-hero-proof mx-auto mt-8 max-w-7xl">★ Valoraciones reales de particulares y perfiles comparables antes de contactar</div>
+      </section>
+      <section className="bg-white px-5 py-16 text-[var(--ink)] sm:px-8 lg:px-12">
+        <div className="mx-auto max-w-7xl">
           <div className="flex flex-wrap items-end justify-between gap-4">
-            <SectionHeading
-              eyebrow="Perfiles destacados"
-              title="Compara antes de contactar"
-              body="Cada perfil muestra especialidad, aprobación, precio inicial y modalidad de trabajo."
-            />
+            <div>
+              <p className="app-kicker text-[var(--accent)]">Perfiles destacados</p>
+              <h2 className="app-title mt-2 text-3xl sm:text-4xl">Encuentra tu entrenador</h2>
+            </div>
             <Link
               href="/entrenadores"
-              className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-5 py-2.5 text-sm font-semibold text-[var(--text)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
+              className="font-semibold text-[var(--accent)] transition-colors hover:text-[var(--accent-strong)]"
             >
               Ver todos
-              <ArrowRight size={15} />
             </Link>
           </div>
-        </Reveal>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {featuredTrainers.length > 0 ? (
-            featuredTrainers.map((trainer, index) => (
-              <Reveal key={trainer.id} delay={index * 80}>
-                <TrainerCard trainer={trainer} featured={index === 0} />
-              </Reveal>
-            ))
-          ) : (
-            <Reveal>
-              <div className="premium-card rounded-[24px] p-6 md:col-span-2 lg:col-span-3">
-                <p className="app-kicker">Oferta inicial</p>
-                <h3 className="app-title mt-3 text-2xl text-[var(--text)]">
-                  Estamos seleccionando los primeros perfiles publicados.
-                </h3>
-                <p className="app-copy mt-3 max-w-2xl text-sm">
-                  Si eres entrenador en Andalucía, puedes publicar tu perfil y aparecer cuando abramos campañas locales a clientes.
-                </p>
-                <Link
-                  href="/registro?intent=trainer"
-                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-5 py-3 text-sm font-bold text-[var(--ink)] transition-colors hover:opacity-95"
-                >
-                  Publicar perfil
-                  <ArrowRight size={15} />
-                </Link>
-              </div>
-            </Reveal>
-          )}
+          <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {trainersToShow.map((trainer) => (
+              <TrainerCard key={trainer.id} trainer={trainer} />
+            ))}
+          </div>
         </div>
       </section>
-
-      <section className="flex flex-col gap-6">
-        <Reveal>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <SectionHeading
-              eyebrow="Cobertura Andalucía"
-              title="Entrenadores personales en Andalucía, ciudad por ciudad"
-              body="Capitales y zonas de alta demanda con páginas útiles para comparar entrenadores, captar profesionales y validar mercado antes de escalar al resto de España."
-            />
-            <Link
-              href="/andalucia"
-              className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-5 py-2.5 text-sm font-semibold text-[var(--text)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
-            >
-              Ver Andalucía
-              <ArrowRight size={15} />
-            </Link>
-          </div>
-        </Reveal>
-        <div className="grid gap-4 md:grid-cols-3">
-          {andaluciaCities.slice(0, 6).map((city, index) => (
-            <Reveal key={city.slug} delay={index * 80}>
-              <Link
-                href={`/ciudades/${city.slug}`}
-                className="group block rounded-[20px] border border-[var(--line)] bg-[var(--surface)] p-6 shadow-[var(--shadow-soft)] transition-colors hover:border-[var(--accent)]"
-              >
-                <p className="app-kicker inline-flex items-center gap-1.5">
-                  <MapPin size={12} />
-                  {city.region}
-                </p>
-                <h3 className="app-title mt-3 text-2xl text-[var(--text)]">{city.name}</h3>
-                <p className="app-copy mt-4 text-sm">{city.intro}</p>
-                <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[var(--accent)]">
-                  Ver entrenadores
-                  <ArrowRight size={14} />
-                </span>
-              </Link>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-6">
-        <Reveal>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <SectionHeading
-              eyebrow="Blog"
-              title="Guías para decidir mejor antes de contactar"
-              body="Contenido práctico para clientes que comparan entrenadores y profesionales que quieren publicar una ficha más fuerte desde el lanzamiento."
-            />
-            <Link
-              href="/blog"
-              className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-5 py-2.5 text-sm font-semibold text-[var(--text)] hover:border-[var(--accent)] hover:text-[var(--accent)]"
-            >
-              Ver blog
-              <BookOpen size={15} />
-            </Link>
-          </div>
-        </Reveal>
-        <div className="grid gap-4 md:grid-cols-3">
-          {latestPosts.map((post, index) => (
-            <Reveal key={post.slug} delay={index * 80}>
-              <Link
-                href={`/blog/${post.slug}`}
-                className="group flex h-full flex-col rounded-[22px] border border-[var(--line)] bg-[var(--surface)] p-6 shadow-[var(--shadow-soft)] transition duration-200 hover:-translate-y-0.5 hover:border-[var(--line-strong)]"
-              >
-                <p className="app-kicker">{post.category}</p>
-                <h3 className="app-title mt-3 text-2xl text-[var(--text)]">{post.title}</h3>
-                <p className="app-copy mt-3 flex-1 text-sm">{post.excerpt}</p>
-                <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[var(--accent)]">
-                  Leer guía
-                  <ArrowRight size={14} />
-                </span>
-              </Link>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      <Reveal>
-        <section className="grid gap-6 rounded-[28px] bg-[var(--accent)] px-6 py-8 text-[var(--ink)] sm:px-8 sm:py-10 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--ink)]/60">Para entrenadores</p>
-            <h2 className="font-heading mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-              Publica tu perfil y empieza a aparecer en tu ciudad.
-            </h2>
-            <p className="mt-4 max-w-2xl text-sm text-[var(--ink)]/72">
-              Crea una ficha pública, recibe mensajes desde el marketplace y deja listo el salto a Coach Studio cuando actives la parte profesional.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/registro?intent=trainer"
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-bold text-[var(--accent)] transition-colors hover:opacity-95"
-            >
-              Crear cuenta
-              <ArrowRight size={16} />
-            </Link>
-            <Link
-              href="/coach-studio"
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--ink)]/25 px-5 py-3 text-sm font-semibold text-[var(--ink)] transition-colors hover:bg-[var(--ink)]/8"
-            >
-              Ver Coach Studio
-            </Link>
-          </div>
-        </section>
-      </Reveal>
     </main>
   );
 }

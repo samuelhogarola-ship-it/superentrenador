@@ -6,6 +6,7 @@ import { ChevronDown, RotateCcw, SlidersHorizontal } from "lucide-react";
 import type { MarketplaceCity } from "@/types/marketplace";
 
 interface FiltersBarProps {
+  categories: string[];
   specialties: string[];
   modalities: string[];
   cities: MarketplaceCity[];
@@ -13,12 +14,12 @@ interface FiltersBarProps {
   lockCity?: boolean;
 }
 
-export function FiltersBar({ specialties, modalities, cities, basePath, lockCity = false }: FiltersBarProps) {
+export function FiltersBar({ categories, specialties, modalities, cities, basePath, lockCity = false }: FiltersBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const hasActiveFilters = searchParams.toString().length > 0;
   const paperClass =
-    "rounded-[26px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,253,250,0.98),rgba(247,245,239,0.94))] p-3 text-[var(--ink)] shadow-[0_24px_64px_rgba(0,0,0,0.24)] sm:p-4";
+    "rounded-[26px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,249,252,0.94))] p-3 text-[var(--ink)] shadow-[0_24px_64px_rgba(0,0,0,0.24)] sm:p-4";
 
   function updateParam(key: string, value: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -34,7 +35,7 @@ export function FiltersBar({ specialties, modalities, cities, basePath, lockCity
     "min-h-[50px] w-full appearance-none border-0 bg-transparent px-4 pr-10 text-sm font-semibold text-[var(--ink)] outline-none sm:min-w-[190px]";
 
   const selectWrapClass =
-    "relative rounded-[18px] border border-black/10 bg-white/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_12px_30px_rgba(7,9,14,0.06)] transition focus-within:-translate-y-0.5 focus-within:border-[rgba(240,160,0,0.55)] focus-within:shadow-[0_0_0_4px_rgba(240,160,0,0.14),0_18px_42px_rgba(7,9,14,0.10)]";
+    "relative rounded-[18px] border border-black/10 bg-white/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_12px_30px_rgba(7,9,14,0.06)] transition focus-within:-translate-y-0.5 focus-within:border-[rgba(225,25,49,0.50)] focus-within:shadow-[0_0_0_4px_rgba(225,25,49,0.12),0_18px_42px_rgba(7,9,14,0.10)]";
 
   return (
     <div className={paperClass}>
@@ -47,6 +48,23 @@ export function FiltersBar({ specialties, modalities, cities, basePath, lockCity
         <span className="hidden items-center gap-2 px-2 text-sm font-bold text-[var(--paper-muted)] sm:inline-flex">
           <SlidersHorizontal size={15} />
           Filtrar
+        </span>
+
+        <span className={`${selectWrapClass} col-span-2 sm:col-span-1`}>
+          <select
+            aria-label="Filtrar por categoría"
+            defaultValue={searchParams.get("category") ?? ""}
+            onChange={(event) => updateParam("category", event.target.value)}
+            className={selectClass}
+          >
+            <option value="">Todas las categorías</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+          <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[var(--paper-muted)]" />
         </span>
 
         <span className={`${selectWrapClass} col-span-2 sm:col-span-1`}>
