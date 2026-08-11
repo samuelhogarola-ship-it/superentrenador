@@ -22,24 +22,29 @@ export function MessageForm({ trainerProfileId, trainerName, clientId, onSent }:
     setSending(true);
     setError(null);
 
-    const response = await fetch("/api/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        trainerProfileId,
-        clientId,
-        body: body.trim(),
-      }),
-    });
+    try {
+      const response = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          trainerProfileId,
+          clientId,
+          body: body.trim(),
+        }),
+      });
 
-    if (!response.ok) {
-      setError("No se pudo enviar el mensaje. Inténtalo de nuevo.");
-    } else {
-      setSent(true);
-      setBody("");
-      onSent?.();
+      if (!response.ok) {
+        setError("No se pudo enviar el mensaje. Inténtalo de nuevo.");
+      } else {
+        setSent(true);
+        setBody("");
+        onSent?.();
+      }
+    } catch {
+      setError("No se pudo enviar el mensaje. Comprueba tu conexión e inténtalo de nuevo.");
+    } finally {
+      setSending(false);
     }
-    setSending(false);
   }
 
   if (sent) {

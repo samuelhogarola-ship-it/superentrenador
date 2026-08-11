@@ -43,7 +43,14 @@ export function AdminEntrenadoresClient({
   async function handleApprove(id: string) {
     setActing(id);
     setActionError(null);
-    const result = await updateTrainerReviewStatus(id, "approved");
+    let result;
+    try {
+      result = await updateTrainerReviewStatus(id, "approved");
+    } catch {
+      setActionError("No se pudo completar la acción. Inténtalo de nuevo.");
+      setActing(null);
+      return;
+    }
     if (!result.ok) {
       setActionError(result.error);
       setActing(null);
@@ -58,7 +65,14 @@ export function AdminEntrenadoresClient({
   async function handleReject(id: string) {
     setActing(id);
     setActionError(null);
-    const result = await updateTrainerReviewStatus(id, "rejected");
+    let result;
+    try {
+      result = await updateTrainerReviewStatus(id, "rejected");
+    } catch {
+      setActionError("No se pudo completar la acción. Inténtalo de nuevo.");
+      setActing(null);
+      return;
+    }
     if (!result.ok) {
       setActionError(result.error);
       setActing(null);
@@ -220,11 +234,7 @@ function TrainerReviewCard({
           ))}
         </div>
 
-        {trainer.photo_url ? (
-          <p className="mt-2 text-xs text-[var(--muted)] truncate">
-            Foto: <span className="text-[var(--text)]">{trainer.photo_url}</span>
-          </p>
-        ) : (
+        {!trainer.photo_url && (
           <p className="mt-2 text-xs text-[var(--accent)]">Sin foto de perfil</p>
         )}
 

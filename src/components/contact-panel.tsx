@@ -18,11 +18,16 @@ interface ContactPanelProps {
 }
 
 async function fetchContactInfo(trainerSlug: string) {
-  const response = await fetch(`/api/trainer-contact?slug=${encodeURIComponent(trainerSlug)}`);
-  if (!response.ok) return "";
+  try {
+    const response = await fetch(`/api/trainer-contact?slug=${encodeURIComponent(trainerSlug)}`);
+    if (response.status === 429) return { contactInfo: "", rateLimited: true };
+    if (!response.ok) return { contactInfo: "", rateLimited: false };
 
-  const payload = (await response.json()) as { contactInfo?: string };
-  return payload.contactInfo ?? "";
+    const payload = (await response.json()) as { contactInfo?: string };
+    return { contactInfo: payload.contactInfo ?? "", rateLimited: false };
+  } catch {
+    return { contactInfo: "", rateLimited: false };
+  }
 }
 
 export function ContactPanel({
@@ -38,6 +43,7 @@ export function ContactPanel({
   const [loggedIn, setLoggedIn] = useState(false);
   const [checked, setChecked] = useState(false);
   const [contactInfo, setContactInfo] = useState<string | null>(null);
+  const [contactRateLimited, setContactRateLimited] = useState(false);
   const [currentUser, setCurrentUser] = useState<{ id: string; name: string } | null>(null);
   const [showMessageForm, setShowMessageForm] = useState(false);
   const profilePath = `/entrenadores/${trainerSlug}`;
@@ -57,24 +63,32 @@ export function ContactPanel({
           id: user.id,
           name: user.user_metadata?.full_name ?? user.email ?? "Usuario",
         });
-        setContactInfo(await fetchContactInfo(trainerSlug));
+        const { contactInfo, rateLimited } = await fetchContactInfo(trainerSlug);
+        setContactInfo(contactInfo);
+        setContactRateLimited(rateLimited);
       }
     }
 
-    checkAndFetch();
+    checkAndFetch().catch((error) => console.error("[contact-panel] failed to check session", error));
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       const isLoggedIn = Boolean(session);
       setLoggedIn(isLoggedIn);
       if (!isLoggedIn) {
         setContactInfo(null);
+        setContactRateLimited(false);
         setCurrentUser(null);
       } else if (session?.user) {
         setCurrentUser({
           id: session.user.id,
           name: session.user.user_metadata?.full_name ?? session.user.email ?? "Usuario",
         });
-        fetchContactInfo(trainerSlug).then(setContactInfo);
+        fetchContactInfo(trainerSlug)
+          .then(({ contactInfo, rateLimited }) => {
+            setContactInfo(contactInfo);
+            setContactRateLimited(rateLimited);
+          })
+          .catch((error) => console.error("[contact-panel] failed to fetch contact info", error));
       }
     });
 
@@ -126,7 +140,9 @@ export function ContactPanel({
               <>
                 <p className="app-kicker">Contacto</p>
                 <p className="mt-2 text-sm text-[#68686f]">
-                  Envía un mensaje directo a {trainerName}.
+                  {contactRateLimited
+                    ? "Has consultado el contacto demasiadas veces seguidas. Espera unos minutos o envía un mensaje directo."
+                    : `Envía un mensaje directo a ${trainerName}.`}
                 </p>
               </>
             )}

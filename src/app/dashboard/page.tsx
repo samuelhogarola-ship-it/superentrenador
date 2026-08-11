@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Dashboard | Super Entrenador",
+  robots: { index: false, follow: false },
 };
 
 export default async function DashboardPage() {
@@ -66,6 +67,11 @@ interface TrainerProfile {
 
 function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile; unreadMessages: number }) {
   const status = profile.review_status;
+  const profileIncomplete =
+    !profile.photo_url ||
+    !profile.specialties?.length ||
+    !profile.modalities?.length ||
+    !profile.price_from;
 
   const statusBadge =
     status === "approved"
@@ -94,9 +100,11 @@ function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile
         </div>
       </nav>
 
-      <div className="bg-[#ffc94d] px-4 py-5 text-center text-sm font-bold text-[#5b4300] sm:py-6">
-        <span className="inline-flex items-center gap-3"><Star size={22} className="fill-[#ffae00] text-[#ffae00]" /> Completa tu perfil para conseguir más visibilidad <Link href="/mi-perfil" className="rounded-full bg-white/70 px-3 py-1 hover:bg-white">Completar</Link></span>
-      </div>
+      {profileIncomplete && (
+        <div className="bg-[#ffc94d] px-4 py-5 text-center text-sm font-bold text-[#5b4300] sm:py-6">
+          <span className="inline-flex items-center gap-3"><Star size={22} className="fill-[#ffae00] text-[#ffae00]" /> Completa tu perfil para conseguir más visibilidad <Link href="/mi-perfil" className="rounded-full bg-white/70 px-3 py-1 hover:bg-white">Completar</Link></span>
+        </div>
+      )}
 
       <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[300px_minmax(0,1fr)] lg:px-8 lg:py-8">
         <aside className="h-fit rounded-[22px] border border-[#e4e4e4] bg-white p-6 text-center shadow-sm lg:sticky lg:top-6">
@@ -108,7 +116,7 @@ function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile
             <p className="mt-2 text-sm text-[#55bf88]">Correo electrónico</p>
             <p className="text-sm text-[#55bf88]">Perfil de entrenador</p>
           </div>
-          <MetricRow label="Clases realizadas" value="0 h" />
+          <MetricRow label="Clases realizadas (próximamente)" value="—" />
           <MetricRow label="Comentarios" value={`${profile.reviews_count ?? 0}`} />
           {profile.rating ? <MetricRow label="Valoración" value={`${profile.rating.toFixed(1)} ★`} /> : null}
           {profile.price_from ? <MetricRow label="Tarifa horaria" value={`${profile.price_from}€`} /> : null}

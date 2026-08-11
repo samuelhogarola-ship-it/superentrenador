@@ -11,6 +11,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Mis anuncios | Super Entrenador",
+  robots: { index: false, follow: false },
 };
 
 interface AdProfile {
@@ -98,8 +99,8 @@ export default async function MisAnunciosPage() {
                   </span>
                 </div>
                 <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                  <StatCard icon={Search} label="Apariciones en búsquedas" value="0" />
-                  <StatCard icon={Eye} label="Visitas al anuncio" value="0" />
+                  <StatCard icon={Search} label="Apariciones en búsquedas (próximamente)" value="—" />
+                  <StatCard icon={Eye} label="Visitas al anuncio (próximamente)" value="—" />
                   <StatCard icon={MessageSquare} label="Nuevos contactos" value={String(messageCount ?? 0)} />
                 </div>
               </section>
