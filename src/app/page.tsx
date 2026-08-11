@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   Accessibility,
@@ -23,6 +24,22 @@ import { marketplaceWebsiteJsonLd } from "@/lib/marketplace-seo";
 import { listAllCategories, listFeaturedTrainerProfiles, listMarketplaceCities } from "@/lib/repositories/trainers";
 import { publicTrainerProfiles } from "@/lib/marketplace-data";
 import { MARKETPLACE_CATEGORIES, PERSONAL_TRAINER_SERVICES, PERSONAL_TRAINER_SUBCATEGORIES } from "@/lib/marketplace-taxonomy";
+import { siteConfig } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "Super Entrenador | Marketplace de entrenadores personales",
+  description: siteConfig.description,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    title: "Super Entrenador | Marketplace de entrenadores personales",
+    description: siteConfig.description,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+  },
+};
 
 const CATEGORY_ICONS = [
   { label: "Entrenador personal", icon: Dumbbell },

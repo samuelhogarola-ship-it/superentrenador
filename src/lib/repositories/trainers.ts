@@ -2,6 +2,7 @@ import { hasSupabaseEnv } from "@/lib/supabase/client";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { marketplaceCities, publicTrainerProfiles } from "@/lib/marketplace-data";
 import { MARKETPLACE_CATEGORIES, MARKETPLACE_MODALITIES, MARKETPLACE_SPECIALTIES } from "@/lib/marketplace-taxonomy";
+import type { ReviewStatus } from "@/lib/supabase/database.types";
 import type { MarketplaceCity, PublicTrainerProfile } from "@/types/marketplace";
 
 export interface TrainerFilters {
@@ -45,7 +46,7 @@ interface TrainerRow {
   languages: string[];
   hidden_contact_hint: string;
   photo_url: string | null;
-  review_status: string;
+  review_status: ReviewStatus;
 }
 
 // Columns to fetch from trainer_profiles_public view (no nested selects needed).
@@ -212,7 +213,14 @@ export async function listPublicTrainerProfiles(filters: TrainerFilters = {}): P
     .select(PUBLIC_VIEW_COLUMNS);
 
   if (filters.category) {
-    query = query.contains("specialties", [filters.category]);
+    // `category` (sport/discipline, e.g. "Fútbol") is a different taxonomy from
+    // `specialties` (e.g. "Fuerza") and has no dedicated column on the profile —
+    // match it against specialties and free-text bio fields instead of a column
+    // that can never contain it.
+    const term = filters.category.replace(/[%,()]/g, " ").trim();
+    query = query.or(
+      `specialties.cs.{${filters.category}},headline.ilike.%${term}%,short_bio.ilike.%${term}%,long_bio.ilike.%${term}%`,
+    );
   }
   if (filters.specialty) {
     query = query.contains("specialties", [filters.specialty]);
@@ -281,10 +289,12 @@ export async function getPublicTrainerProfileBySlug(slug: string): Promise<Publi
     .maybeSingle();
 
   if (error || !data) {
-    const draftProfile = publicTrainerProfiles.find(
-      (profile) => profile.slug === slug && profile.reviewStatus === "draft",
-    );
-    if (draftProfile) return draftProfile;
+    if (isMarketplaceDemoMode()) {
+      const draftProfile = publicTrainerProfiles.find(
+        (profile) => profile.slug === slug && profile.reviewStatus === "draft",
+      );
+      if (draftProfile) return draftProfile;
+    }
     console.error("[supabase] getPublicTrainerProfileBySlug failed", error);
     return null;
   }

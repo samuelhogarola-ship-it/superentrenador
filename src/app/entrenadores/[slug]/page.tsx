@@ -6,7 +6,7 @@ import { Avatar } from "@/components/avatar";
 import { ContactPanel } from "@/components/contact-panel";
 import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
-import { trainerProfileJsonLd } from "@/lib/marketplace-seo";
+import { trainerBreadcrumbJsonLd, trainerProfileJsonLd } from "@/lib/marketplace-seo";
 import { getPublicTrainerProfileBySlug, listPublicTrainerProfiles } from "@/lib/repositories/trainers";
 import { siteConfig } from "@/lib/site";
 
@@ -58,6 +58,7 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
   return (
     <main className="profile-page-shell flex w-full flex-1 flex-col gap-6 bg-white px-4 py-6 text-[#17171b] md:px-6 md:py-8 lg:px-8">
       <JsonLd data={trainerProfileJsonLd(trainer)} />
+      <JsonLd data={trainerBreadcrumbJsonLd(trainer)} />
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-[var(--muted)]">
         <Link href="/entrenadores" className="hover:text-[var(--text)]">
           Entrenadores
@@ -79,9 +80,9 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
                 <MapPin size={12} />
                 {trainer.city} · {trainer.region}
               </p>
-              <h2 className="app-title mt-2 text-3xl text-[#17171b] sm:text-4xl lg:text-5xl">
+              <h1 className="app-title mt-2 text-3xl text-[#17171b] sm:text-4xl lg:text-5xl">
                 {trainer.displayName}
-              </h2>
+              </h1>
               <div className="mt-3 flex flex-wrap items-center gap-3">
                 <span
                   className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
@@ -108,7 +109,7 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
             {trainer.specialties.map((specialty) => <span key={specialty} className="rounded-full border border-black/10 bg-[#f7f7f7] px-3 py-1.5 text-sm font-semibold text-[#55555b]">{specialty}</span>)}
           </div>
 
-          <h1 className="app-title mt-8 max-w-3xl text-2xl leading-tight text-[#17171b] sm:text-3xl">{trainer.headline}</h1>
+          <h2 className="app-title mt-8 max-w-3xl text-2xl leading-tight text-[#17171b] sm:text-3xl">{trainer.headline}</h2>
 
           <div className="mt-7 rounded-[22px] bg-[#fafafa] p-5">
             <h2 className="text-lg font-bold text-[#17171b]">Lugar de las clases</h2>

@@ -37,9 +37,9 @@ const PLANS = [
     period: "mes",
     description: "Para entrenadores que quieren destacar.",
     highlight: true,
-    cta: "Empezar gratis 14 días",
-    ctaHref: "/registro?plan=pro",
-    badge: "Más popular",
+    cta: "Solicitar acceso Pro",
+    ctaHref: "mailto:samuel.hogarola@gmail.com?subject=Plan Pro",
+    badge: "Acceso anticipado",
     features: [
       "Todo lo del plan Gratuito",
       "Posición destacada en resultados",
@@ -170,16 +170,16 @@ export default function PremiumPage() {
       </section>
 
       <section className="rounded-[28px] bg-[#17171b] px-7 py-10 text-center text-white sm:px-10">
-        <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#ff6868]">Empieza hoy</p>
-        <h2 className="mt-3 font-heading text-3xl font-bold">14 días gratis, sin tarjeta</h2>
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#ff6868]">Acceso anticipado</p>
+        <h2 className="mt-3 font-heading text-3xl font-bold">Escríbenos y lo activamos a mano</h2>
         <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-white/70">
-          Activa el plan Pro y comprueba si tu perfil recibe más contactos. Cancela cuando quieras.
+          El cobro automático de Premium todavía no está disponible. Cuéntanos tu caso y activamos el plan Pro en tu perfil manualmente.
         </p>
         <Link
-          href="/registro?plan=pro"
+          href="mailto:samuel.hogarola@gmail.com?subject=Plan Pro"
           className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#ff6868] px-7 py-3.5 text-sm font-bold text-white hover:bg-[#ef5c5c]"
         >
-          Probar Pro 14 días gratis
+          Solicitar acceso Pro
         </Link>
       </section>
     </main>
