@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "*.supabase.co" },
       { protocol: "https", hostname: "*.supabase.in" },
     ],
+    // Next.js defaults the optimizer's response to `Content-Disposition:
+    // attachment` (an XSS guard aimed at SVGs). We don't allow SVG through
+    // the optimizer, and on self-hosted deploys (no Vercel image CDN in
+    // front) that default makes every next/image render blank — browsers
+    // treat the response as a download instead of decoding it inline.
+    contentDispositionType: "inline",
   },
   async redirects() {
     return [
