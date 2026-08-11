@@ -11,6 +11,32 @@ interface PhotoUploadProps {
   userId: string;
 }
 
+// Signature bytes for the formats the storage bucket accepts — catches a file
+// whose extension/declared type doesn't match its real content (e.g. an SVG
+// or HTML file renamed to .jpg), independent of the client-supplied MIME type.
+const IMAGE_SIGNATURES: { ext: string; bytes: number[] }[] = [
+  { ext: "jpg", bytes: [0xff, 0xd8, 0xff] },
+  { ext: "png", bytes: [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a] },
+  { ext: "gif", bytes: [0x47, 0x49, 0x46, 0x38] },
+];
+
+async function detectRealImageExtension(file: File): Promise<string | null> {
+  const header = new Uint8Array(await file.slice(0, 12).arrayBuffer());
+
+  const matched = IMAGE_SIGNATURES.find((signature) =>
+    signature.bytes.every((byte, index) => header[index] === byte),
+  );
+  if (matched) return matched.ext;
+
+  // WebP: "RIFF"...."WEBP" — signature bytes aren't contiguous from offset 0.
+  const isWebp =
+    header[0] === 0x52 && header[1] === 0x49 && header[2] === 0x46 && header[3] === 0x46 &&
+    header[8] === 0x57 && header[9] === 0x45 && header[10] === 0x42 && header[11] === 0x50;
+  if (isWebp) return "webp";
+
+  return null;
+}
+
 export function PhotoUpload({ value, onChange, userId }: PhotoUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -24,13 +50,20 @@ export function PhotoUpload({ value, onChange, userId }: PhotoUploadProps) {
     setUploading(true);
     setUploadError(null);
 
+    const realExt = await detectRealImageExtension(file);
+    if (!realExt) {
+      setUploadError("El archivo no parece ser una imagen JPEG, PNG, WebP o GIF válida.");
+      setUploading(false);
+      return;
+    }
+
     const supabase = getSupabaseBrowserClient();
-    const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
-    const path = `${userId}/profile.${ext}`;
+    const path = `${userId}/profile.${realExt}`;
+    const contentType = realExt === "jpg" ? "image/jpeg" : `image/${realExt}`;
 
     const { error } = await supabase.storage
       .from("trainer-photos")
-      .upload(path, file, { upsert: true, contentType: file.type });
+      .upload(path, file, { upsert: true, contentType });
 
     if (error) {
       setUploadError("No se pudo subir la foto. Intenta de nuevo.");

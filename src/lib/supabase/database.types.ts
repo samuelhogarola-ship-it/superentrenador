@@ -164,6 +164,7 @@ export type Database = {
           specialties: string[]
           stripe_customer_id: string | null
           subscription_status: SubscriptionStatus
+          updated_at: string
           user_id: string | null
           verified: boolean
           years_experience: number
@@ -193,6 +194,7 @@ export type Database = {
           specialties?: string[]
           stripe_customer_id?: string | null
           subscription_status?: SubscriptionStatus
+          updated_at?: string
           user_id?: string | null
           verified?: boolean
           years_experience?: number
@@ -222,6 +224,7 @@ export type Database = {
           specialties?: string[]
           stripe_customer_id?: string | null
           subscription_status?: SubscriptionStatus
+          updated_at?: string
           user_id?: string | null
           verified?: boolean
           years_experience?: number
@@ -260,6 +263,7 @@ export type Database = {
           short_bio: string | null
           slug: string | null
           specialties: string[] | null
+          updated_at: string | null
           verified: boolean | null
           years_experience: number | null
         }
@@ -275,6 +279,18 @@ export type Database = {
       }
     }
     Functions: {
+      check_rate_limit: {
+        Args: {
+          p_key: string
+          p_limit: number
+          p_window_seconds: number
+        }
+        Returns: {
+          allowed: boolean
+          remaining: number
+          reset_at: string
+        }[]
+      }
       get_admin_trainer_profiles: {
         Args: Record<PropertyKey, never>
         Returns: {

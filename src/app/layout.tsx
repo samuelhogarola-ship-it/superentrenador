@@ -42,6 +42,11 @@ export const metadata: Metadata = {
     url: siteConfig.url,
     siteName: siteConfig.name,
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Super Entrenador",
+    description: siteConfig.description,
+  },
 };
 
 export default function RootLayout({

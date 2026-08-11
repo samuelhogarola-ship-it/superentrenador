@@ -34,4 +34,6 @@ export interface PublicTrainerProfile {
   photoUrl: string | null;
   /** "draft" only ever occurs on static demo data — real DB rows are constrained to ReviewStatus. */
   reviewStatus: ReviewStatus | "draft";
+  /** ISO timestamp — undefined for static demo data, which has no real modification history. */
+  updatedAt?: string;
 }
