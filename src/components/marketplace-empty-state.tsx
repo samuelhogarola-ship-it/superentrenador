@@ -10,32 +10,32 @@ export function MarketplaceEmptyState({ cityName, resetHref }: MarketplaceEmptyS
   const locationCopy = cityName ? ` de ${cityName}` : "";
 
   return (
-    <section className="rounded-[28px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,253,250,0.98),rgba(247,245,239,0.94))] p-6 text-center text-[var(--ink)] shadow-[0_24px_64px_rgba(0,0,0,0.22)] sm:p-8">
-      <p className="app-kicker">Estamos ampliando la oferta</p>
-      <h2 className="app-title mx-auto mt-2 max-w-xl text-3xl text-[var(--ink)]">
+    <section className="border border-[#111214] bg-white p-8 text-center text-[#111214] sm:p-12">
+      <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--accent)]">Estamos ampliando la oferta</p>
+      <h2 className="mx-auto mt-3 max-w-xl font-heading text-3xl font-bold text-[#111214]">
         Aún no hay entrenadores disponibles{locationCopy} con estos filtros.
       </h2>
-      <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-[var(--paper-muted)]">
+      <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-[#5b5b63]">
         Prueba otra ciudad o limpia los filtros. Si eres entrenador, publica tu perfil para que nuevos clientes puedan encontrarte.
       </p>
-      <div className="mt-6 flex flex-wrap justify-center gap-3">
+      <div className="mt-7 flex flex-wrap justify-center gap-3">
         <Link
           href={resetHref}
-          className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/75 px-5 py-3 text-sm font-bold text-[var(--ink)] transition-colors hover:border-[var(--accent)]"
+          className="inline-flex items-center gap-2 border border-[#111214]/15 bg-white px-5 py-3 text-sm font-bold text-[#111214] transition-colors hover:border-[#111214]"
         >
           <RotateCcw size={15} />
           Limpiar filtros
         </Link>
         <Link
           href="/andalucia"
-          className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/75 px-5 py-3 text-sm font-bold text-[var(--ink)] transition-colors hover:border-[var(--accent)]"
+          className="inline-flex items-center gap-2 border border-[#111214]/15 bg-white px-5 py-3 text-sm font-bold text-[#111214] transition-colors hover:border-[#111214]"
         >
           <MapPinned size={15} />
           Ver ciudades
         </Link>
         <Link
           href="/registro?intent=trainer"
-          className="inline-flex items-center gap-2 rounded-full bg-[var(--ink)] px-5 py-3 text-sm font-bold text-[var(--accent)] transition-transform hover:-translate-y-0.5"
+          className="inline-flex items-center gap-2 bg-[#111214] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[var(--accent)] hover:text-[#111214]"
         >
           <UserPlus size={15} />
           Publicar perfil

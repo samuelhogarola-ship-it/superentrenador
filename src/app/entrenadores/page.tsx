@@ -63,19 +63,19 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
   ].filter(Boolean);
 
   return (
-    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-6 md:px-6 md:py-8 lg:px-8">
+    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-6 bg-white px-4 py-6 text-[#111214] md:px-6 md:py-8 lg:px-8">
       <JsonLd data={trainerCollectionJsonLd(trainers, `${siteConfig.url}/entrenadores`, "Entrenadores por categoría")} />
-      <section className="premium-card grid gap-5 rounded-[28px] px-6 py-7 sm:px-8 lg:grid-cols-[1fr_auto] lg:items-end">
+      <section className="grid gap-5 border border-[#111214] px-6 py-7 sm:px-8 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <p className="app-kicker">Marketplace</p>
-          <h1 className="app-title mt-2 text-3xl text-[var(--text)] sm:text-5xl">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--accent)]">Marketplace</p>
+          <h1 className="mt-2 font-heading text-3xl font-bold text-[#111214] sm:text-5xl">
             {trainers.length > 0
               ? `${trainers.length} entrenador${trainers.length === 1 ? "" : "es"} para comparar`
               : params.category
                 ? `Entrenadores de ${params.category}`
                 : "Encuentra tu entrenador por categoría y ciudad"}
           </h1>
-          <p className="app-copy mt-3 max-w-2xl text-sm">
+          <p className="mt-3 max-w-2xl text-sm text-[#5b5b63]">
             {trainers.length > 0
               ? "Filtra por categoría, objetivo, ciudad o modalidad y compara perfiles antes de contactar."
               : "Estamos ampliando la oferta por categorías y ciudades. Filtra para explorar la cobertura o publica tu perfil."}
@@ -83,10 +83,7 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
           {activeFilters.length > 0 ? (
             <div className="mt-4 flex flex-wrap gap-2">
               {activeFilters.map((filter) => (
-                <span
-                  key={filter}
-                  className="rounded-full border border-[var(--line-strong)] bg-[var(--panel)] px-3 py-1.5 text-xs font-semibold text-[var(--text)]"
-                >
+                <span key={filter} className="border border-[#111214]/15 px-3 py-1.5 text-xs font-semibold text-[#111214]">
                   {filter}
                 </span>
               ))}
@@ -95,7 +92,7 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
         </div>
         <Link
           href="/registro?intent=trainer"
-          className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-5 py-3 text-sm font-bold text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+          className="inline-flex items-center justify-center gap-2 border border-[#111214] bg-white px-5 py-3 text-sm font-bold text-[#111214] transition-colors hover:bg-[#111214] hover:text-white"
         >
           Publicar perfil
           <ArrowRight size={15} />
@@ -104,7 +101,7 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
 
       <section className="grid gap-3 md:grid-cols-3">
         {["Contacto protegido", "Perfiles comparables", "Búsqueda por ciudad"].map((item) => (
-          <div key={item} className="rounded-[18px] border border-[var(--line)] bg-[var(--surface)] px-4 py-3 text-sm font-semibold text-[var(--text)]">
+          <div key={item} className="border border-[#111214]/15 px-4 py-3 text-sm font-semibold text-[#111214]">
             <span className="inline-flex items-center gap-2">
               <ShieldCheck size={15} className="text-[var(--accent)]" />
               {item}
@@ -119,13 +116,13 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
         </Suspense>
       </section>
 
-      <section className="flex flex-wrap items-center justify-between gap-3 text-sm text-[var(--muted)]">
+      <section className="flex flex-wrap items-center justify-between gap-3 text-sm text-[#5b5b63]">
         <p>
           {trainers.length > 0
             ? "Perfiles ordenados para comparar antes de contactar."
             : "No hay perfiles publicados con estos filtros todavía."}
         </p>
-        <Link href="/registro?intent=trainer" className="font-semibold text-[var(--accent)] hover:text-[var(--accent-strong)]">
+        <Link href="/registro?intent=trainer" className="font-semibold text-[var(--accent)]">
           ¿Falta tu ciudad? Publica tu perfil
         </Link>
       </section>
