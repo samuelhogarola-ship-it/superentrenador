@@ -49,7 +49,7 @@ export function MessageForm({ trainerProfileId, trainerName, clientId, onSent }:
 
   if (sent) {
     return (
-      <div role="status" className="rounded-2xl bg-[var(--accent-soft)] px-4 py-3 text-sm text-[var(--accent)]">
+      <div role="status" className="border border-[var(--accent)]/30 bg-[var(--accent)]/10 px-4 py-3 text-sm font-semibold text-[#8a5c0f]">
         Mensaje enviado a {trainerName}. Te responderá pronto.
       </div>
     );
@@ -64,13 +64,13 @@ export function MessageForm({ trainerProfileId, trainerName, clientId, onSent }:
         placeholder={`Escribe un mensaje a ${trainerName}…`}
         maxLength={2000}
         rows={4}
-        className="w-full resize-none rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm text-[var(--text)] placeholder-[var(--muted)] focus:border-[var(--accent)] focus:outline-none"
+        className="w-full resize-none border border-[#111214]/15 bg-white px-4 py-3 text-sm text-[#111214] placeholder-[#8a8a92] focus:border-[#111214] focus:outline-none"
       />
       {error && <p role="alert" className="text-xs text-red-600">{error}</p>}
       <button
         type="submit"
         disabled={sending || !body.trim()}
-        className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-[var(--ink)] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+        className="inline-flex items-center justify-center gap-2 bg-[#111214] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--accent)] hover:text-[#111214] disabled:cursor-not-allowed disabled:opacity-40"
       >
         <SendHorizonal size={15} />
         {sending ? "Enviando…" : "Enviar mensaje"}

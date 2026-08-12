@@ -18,8 +18,6 @@ export function FiltersBar({ categories, specialties, modalities, cities, basePa
   const router = useRouter();
   const searchParams = useSearchParams();
   const hasActiveFilters = searchParams.toString().length > 0;
-  const paperClass =
-    "rounded-[26px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(247,249,252,0.94))] p-3 text-[var(--ink)] shadow-[0_24px_64px_rgba(0,0,0,0.24)] sm:p-4";
 
   function updateParam(key: string, value: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -32,20 +30,20 @@ export function FiltersBar({ categories, specialties, modalities, cities, basePa
   }
 
   const selectClass =
-    "min-h-[50px] w-full appearance-none border-0 bg-transparent px-4 pr-10 text-sm font-semibold text-[var(--ink)] outline-none sm:min-w-[190px]";
+    "min-h-[50px] w-full appearance-none border-0 bg-transparent px-4 pr-10 text-sm font-semibold text-[#111214] outline-none sm:min-w-[190px]";
 
   const selectWrapClass =
-    "relative rounded-[18px] border border-black/10 bg-white/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_12px_30px_rgba(7,9,14,0.06)] transition focus-within:-translate-y-0.5 focus-within:border-[rgba(225,25,49,0.50)] focus-within:shadow-[0_0_0_4px_rgba(225,25,49,0.12),0_18px_42px_rgba(7,9,14,0.10)]";
+    "relative border border-[#111214]/15 bg-white transition-colors focus-within:border-[#111214]";
 
   return (
-    <div className={paperClass}>
-      <span className="mb-3 inline-flex items-center gap-2 px-2 text-sm font-semibold text-[var(--paper-muted)] sm:hidden">
+    <div className="border border-[#111214] bg-white p-3 sm:p-4">
+      <span className="mb-3 inline-flex items-center gap-2 px-2 text-sm font-semibold text-[#5b5b63] sm:hidden">
         <SlidersHorizontal size={15} />
         Filtrar
       </span>
 
       <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
-        <span className="hidden items-center gap-2 px-2 text-sm font-bold text-[var(--paper-muted)] sm:inline-flex">
+        <span className="hidden items-center gap-2 px-2 text-sm font-bold text-[#5b5b63] sm:inline-flex">
           <SlidersHorizontal size={15} />
           Filtrar
         </span>
@@ -64,7 +62,7 @@ export function FiltersBar({ categories, specialties, modalities, cities, basePa
               </option>
             ))}
           </select>
-          <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[var(--paper-muted)]" />
+          <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#8a8a92]" />
         </span>
 
         <span className={`${selectWrapClass} col-span-2 sm:col-span-1`}>
@@ -81,7 +79,7 @@ export function FiltersBar({ categories, specialties, modalities, cities, basePa
               </option>
             ))}
           </select>
-          <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[var(--paper-muted)]" />
+          <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#8a8a92]" />
         </span>
 
         {lockCity ? null : (
@@ -99,7 +97,7 @@ export function FiltersBar({ categories, specialties, modalities, cities, basePa
                 </option>
               ))}
             </select>
-            <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[var(--paper-muted)]" />
+            <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#8a8a92]" />
           </span>
         )}
 
@@ -117,7 +115,7 @@ export function FiltersBar({ categories, specialties, modalities, cities, basePa
               </option>
             ))}
           </select>
-          <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[var(--paper-muted)]" />
+          <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#8a8a92]" />
         </span>
 
         <span className={`${selectWrapClass} col-span-2 sm:col-span-1 sm:ml-auto`}>
@@ -132,13 +130,13 @@ export function FiltersBar({ categories, specialties, modalities, cities, basePa
             <option value="price-asc">Precio: menor a mayor</option>
             <option value="price-desc">Precio: mayor a menor</option>
           </select>
-          <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[var(--paper-muted)]" />
+          <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#8a8a92]" />
         </span>
 
         {hasActiveFilters ? (
           <Link
             href={basePath}
-            className="col-span-2 inline-flex min-h-[50px] items-center justify-center gap-2 rounded-[18px] border border-black/10 bg-white/70 px-4 py-2 text-sm font-semibold text-[var(--paper-muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--ink)] sm:col-span-1"
+            className="col-span-2 inline-flex min-h-[50px] items-center justify-center gap-2 border border-[#111214]/15 bg-white px-4 py-2 text-sm font-semibold text-[#5b5b63] transition-colors hover:border-[#111214] hover:text-[#111214] sm:col-span-1"
           >
             <RotateCcw size={14} />
             Limpiar
