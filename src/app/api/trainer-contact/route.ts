@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ contactInfo: "" }, { status: 401 });
   }
 
-  const limited = rateLimit(`trainer-contact:${user.id}:${getClientIp(request)}`, {
+  const limited = await rateLimit(supabase, `trainer-contact:${user.id}:${getClientIp(request)}`, {
     limit: 30,
     windowMs: 10 * 60 * 1000,
   });

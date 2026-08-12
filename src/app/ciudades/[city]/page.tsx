@@ -22,6 +22,8 @@ interface CityPageProps {
   searchParams: Promise<{ category?: string; specialty?: string; modality?: string; sort?: string }>;
 }
 
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
   const cities = await listMarketplaceCities();
   return cities.map((city) => ({ city: city.slug }));

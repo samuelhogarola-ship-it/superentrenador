@@ -117,7 +117,7 @@ export default function PoliticaPrivacidadPage() {
               <div>
                 <h3 className="font-semibold text-[var(--text)]">10. Cookies</h3>
                 <p className="app-copy mt-2">
-                  Utilizamos cookies técnicas necesarias para el funcionamiento de la plataforma (sesión de usuario y preferencias básicas). En esta fase no activamos cookies analíticas o publicitarias no necesarias desde la propia aplicación. Puedes consultar más detalle en la{" "}
+                  Utilizamos cookies técnicas necesarias para el funcionamiento de la plataforma (sesión de usuario y preferencias básicas). Si das tu consentimiento, también activamos Google Analytics para medir el uso de la web. Puedes consultar más detalle en la{" "}
                   <Link href="/cookies" className="font-semibold text-[var(--accent)] hover:underline">
                     política de cookies
                   </Link>

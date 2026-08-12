@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Política de cookies",
-  description: "Información sobre las cookies técnicas y preferencias de Super Entrenador.",
+  description: "Información sobre las cookies técnicas, preferencias y analítica de Super Entrenador.",
   alternates: {
     canonical: "/cookies",
   },
@@ -27,14 +27,14 @@ export default function CookiesPage() {
           <section>
             <h2 className="app-title text-xl text-[var(--text)]">Analítica y marketing</h2>
             <p className="app-copy mt-3">
-              En esta fase no activamos cookies analíticas o publicitarias no necesarias desde la propia aplicación. Si incorporamos herramientas de medición, las cargaremos solo cuando corresponda según la normativa aplicable y actualizaremos esta página.
+              Si aceptas las cookies analíticas, cargamos Google Analytics con el identificador G-XP5C05LFL5 para medir visitas, páginas consultadas y uso general de la web. No usamos cookies publicitarias desde la propia aplicación.
             </p>
           </section>
 
           <section>
             <h2 className="app-title text-xl text-[var(--text)]">Gestión de preferencias</h2>
             <p className="app-copy mt-3">
-              Puedes aceptar el aviso informativo de cookies técnicas desde el banner de la web. También puedes borrar o bloquear cookies desde la configuración de tu navegador, aunque algunas funciones de sesión podrían dejar de funcionar.
+              Puedes aceptar solo las cookies necesarias o permitir también las analíticas desde el banner de la web. También puedes borrar o bloquear cookies desde la configuración de tu navegador, aunque algunas funciones de sesión podrían dejar de funcionar.
             </p>
           </section>
 

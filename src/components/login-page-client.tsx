@@ -116,7 +116,12 @@ function LoginForm() {
             disabled={googleLoading}
             onClick={async () => {
               setGoogleLoading(true);
-              await signInWithGoogle(redirectTo);
+              setError(null);
+              const { error: authError } = await signInWithGoogle(redirectTo);
+              if (authError) {
+                setError(getAuthErrorMessage(authError.message));
+                setGoogleLoading(false);
+              }
             }}
             className="mt-6 inline-flex w-full items-center justify-center gap-3 rounded-full border border-[var(--line-strong)] bg-[var(--surface)] px-4 py-3 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)] disabled:opacity-50"
           >

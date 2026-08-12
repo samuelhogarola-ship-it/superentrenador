@@ -123,7 +123,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
-  const limited = rateLimit(`messages:post:${user.id}:${getClientIp(request)}`, {
+  const limited = await rateLimit(supabase, `messages:post:${user.id}:${getClientIp(request)}`, {
     limit: 5,
     windowMs: 10 * 60 * 1000,
   });

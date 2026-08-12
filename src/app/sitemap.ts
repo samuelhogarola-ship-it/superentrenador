@@ -48,8 +48,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     ...trainers.map((trainer) => ({
       url: `${siteConfig.url}/entrenadores/${trainer.slug}`,
+      ...(trainer.updatedAt ? { lastModified: trainer.updatedAt } : {}),
       changeFrequency: "weekly" as const,
       priority: 0.7,
     })),
+    {
+      url: `${siteConfig.url}/premium`,
+      changeFrequency: "monthly",
+      priority: 0.4,
+    },
+    {
+      url: `${siteConfig.url}/cookies`,
+      changeFrequency: "yearly",
+      priority: 0.1,
+    },
+    {
+      url: `${siteConfig.url}/politica-privacidad`,
+      changeFrequency: "yearly",
+      priority: 0.1,
+    },
+    {
+      url: `${siteConfig.url}/terminos`,
+      changeFrequency: "yearly",
+      priority: 0.1,
+    },
   ];
 }

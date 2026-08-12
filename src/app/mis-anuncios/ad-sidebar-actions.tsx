@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, Share2, Trash2 } from "lucide-react";
 import { deleteTrainerProfile } from "./actions";
 
@@ -9,12 +9,54 @@ interface AdSidebarActionsProps {
   trainerSlug: string;
 }
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+
 export function AdSidebarActions({ trainerId, trainerSlug }: AdSidebarActionsProps) {
   const [copied, setCopied] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const confirmRef = useRef<HTMLDivElement>(null);
+  const deleteTriggerRef = useRef<HTMLButtonElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!showConfirm) return;
+
+    cancelRef.current?.focus();
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setShowConfirm(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      const dialog = confirmRef.current;
+      if (!dialog) return;
+      const focusable = Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    const trigger = deleteTriggerRef.current;
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      trigger?.focus();
+    };
+  }, [showConfirm]);
 
   async function handleShare() {
     const url = `${window.location.origin}/entrenadores/${trainerSlug}`;
@@ -50,6 +92,7 @@ export function AdSidebarActions({ trainerId, trainerSlug }: AdSidebarActionsPro
 
       <button
         type="button"
+        ref={deleteTriggerRef}
         onClick={() => { setShowConfirm(true); setDeleteError(null); }}
         className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f5f5f5] px-4 py-3 text-sm font-bold text-[#555] transition-colors hover:bg-red-50 hover:text-red-600"
       >
@@ -80,6 +123,7 @@ export function AdSidebarActions({ trainerId, trainerSlug }: AdSidebarActionsPro
             <div className="mt-6 flex gap-3">
               <button
                 type="button"
+                ref={cancelRef}
                 onClick={() => setShowConfirm(false)}
                 disabled={deleting}
                 className="flex-1 rounded-full border border-[#e2e2e2] bg-white px-4 py-2.5 text-sm font-bold text-[#17171b] transition-colors hover:bg-[#f5f5f5] disabled:opacity-40"

@@ -108,35 +108,38 @@ export default function MensajesPage() {
 
   useEffect(() => {
     async function load() {
-      const response = await fetch("/api/messages");
+      try {
+        const response = await fetch("/api/messages");
 
-      if (response.status === 401) {
-        router.replace("/login?redirectTo=/dashboard/mensajes");
-        return;
-      }
+        if (response.status === 401) {
+          router.replace("/login?redirectTo=/dashboard/mensajes");
+          return;
+        }
 
-      const payload = (await response.json().catch(() => null)) as MessagesPayload | null;
+        const payload = (await response.json().catch(() => null)) as MessagesPayload | null;
 
-      if (!response.ok || !payload?.ok || !payload.userId || !payload.userName) {
+        if (!response.ok || !payload?.ok || !payload.userId || !payload.userName) {
+          return;
+        }
+
+        setCurrentUserId(payload.userId);
+
+        if (payload.mode === "trainer" && payload.trainerProfile) {
+          setIsTrainer(true);
+          setThreads(buildThreadsAsPT(payload.messages ?? [], payload.trainerProfile));
+        } else {
+          setIsTrainer(false);
+          setThreads(buildThreadsAsClient(payload.messages ?? [], payload.trainers ?? [], payload.userId, payload.userName));
+        }
+      } catch (error) {
+        console.error("[dashboard/mensajes] failed to load messages", error);
+      } finally {
         setLoading(false);
-        return;
       }
-
-      setCurrentUserId(payload.userId);
-
-      if (payload.mode === "trainer" && payload.trainerProfile) {
-        setIsTrainer(true);
-        setThreads(buildThreadsAsPT(payload.messages ?? [], payload.trainerProfile));
-      } else {
-        setIsTrainer(false);
-        setThreads(buildThreadsAsClient(payload.messages ?? [], payload.trainers ?? [], payload.userId, payload.userName));
-      }
-
-      setLoading(false);
     }
     load();
   // reloadToken forces re-fetch after sending a reply
-   
+
   }, [router, reloadToken]);
 
   async function markThreadRead(thread: Thread) {
@@ -144,18 +147,22 @@ export default function MensajesPage() {
     const unreadIds = thread.messages
       .filter((m) => m.sender_id !== currentUserId && !m.read_at)
       .map((m) => m.id);
-    await fetch("/api/messages", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messageIds: unreadIds }),
-    });
-    setThreads((prev) =>
-      prev.map((t) =>
-        t.key === thread.key
-          ? { ...t, unread: 0, messages: t.messages.map((m) => ({ ...m, read_at: m.read_at ?? new Date().toISOString() })) }
-          : t
-      )
-    );
+    try {
+      await fetch("/api/messages", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messageIds: unreadIds }),
+      });
+      setThreads((prev) =>
+        prev.map((t) =>
+          t.key === thread.key
+            ? { ...t, unread: 0, messages: t.messages.map((m) => ({ ...m, read_at: m.read_at ?? new Date().toISOString() })) }
+            : t
+        )
+      );
+    } catch (error) {
+      console.error("[dashboard/mensajes] failed to mark thread read", error);
+    }
   }
 
   const selectedThread = threads.find((t) => t.key === selectedKey) ?? null;

@@ -2,6 +2,7 @@ import { hasSupabaseEnv } from "@/lib/supabase/client";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { marketplaceCities, publicTrainerProfiles } from "@/lib/marketplace-data";
 import { MARKETPLACE_CATEGORIES, MARKETPLACE_MODALITIES, MARKETPLACE_SPECIALTIES } from "@/lib/marketplace-taxonomy";
+import type { Tables } from "@/lib/supabase/database.types";
 import type { MarketplaceCity, PublicTrainerProfile } from "@/types/marketplace";
 
 export interface TrainerFilters {
@@ -25,35 +26,27 @@ interface CityRow {
 
 // Rows returned by the trainer_profiles_public view (flat shape — cities joined).
 // contact_info, stripe_customer_id, user_id are excluded at the view level.
-interface TrainerRow {
-  id: string;
-  slug: string;
-  display_name: string;
-  city_slug: string;
+//
+// The generated view type marks every column nullable (accurate for an empty
+// view row), but a real published profile always has these populated — the
+// `as unknown as TrainerRow` casts below assert that business invariant.
+// Derived from the generated type instead of hand-restated so the two can't
+// drift out of sync again.
+type PublicTrainerViewRow = Tables<"trainer_profiles_public">;
+type TrainerRow = Omit<
+  { [K in keyof PublicTrainerViewRow]: NonNullable<PublicTrainerViewRow[K]> },
+  "city_name" | "city_region"
+> & {
   city_name: string | null;
   city_region: string | null;
-  headline: string;
-  short_bio: string;
-  long_bio: string;
-  specialties: string[];
-  verified: boolean;
-  years_experience: number;
-  rating: number;
-  reviews_count: number;
-  price_from: number;
-  modalities: string[];
-  languages: string[];
-  hidden_contact_hint: string;
-  photo_url: string | null;
-  review_status: string;
-}
+};
 
 // Columns to fetch from trainer_profiles_public view (no nested selects needed).
 const PUBLIC_VIEW_COLUMNS =
   "id, slug, display_name, city_slug, city_name, city_region, " +
   "headline, short_bio, long_bio, specialties, verified, years_experience, " +
   "rating, reviews_count, price_from, modalities, languages, " +
-  "hidden_contact_hint, photo_url, review_status";
+  "hidden_contact_hint, photo_url, review_status, updated_at";
 
 const DEMO_PROFILE_SLUGS = new Set(publicTrainerProfiles.map((trainer) => trainer.slug));
 
@@ -110,6 +103,7 @@ function mapTrainer(row: TrainerRow): PublicTrainerProfile {
     hiddenContactHint: row.hidden_contact_hint,
     photoUrl: row.photo_url ?? null,
     reviewStatus: row.review_status ?? "pending",
+    updatedAt: row.updated_at,
   };
 }
 
@@ -212,7 +206,14 @@ export async function listPublicTrainerProfiles(filters: TrainerFilters = {}): P
     .select(PUBLIC_VIEW_COLUMNS);
 
   if (filters.category) {
-    query = query.contains("specialties", [filters.category]);
+    // `category` (sport/discipline, e.g. "Fútbol") is a different taxonomy from
+    // `specialties` (e.g. "Fuerza") and has no dedicated column on the profile —
+    // match it against specialties and free-text bio fields instead of a column
+    // that can never contain it.
+    const term = filters.category.replace(/[%,()]/g, " ").trim();
+    query = query.or(
+      `specialties.cs.{${filters.category}},headline.ilike.%${term}%,short_bio.ilike.%${term}%,long_bio.ilike.%${term}%`,
+    );
   }
   if (filters.specialty) {
     query = query.contains("specialties", [filters.specialty]);
@@ -281,10 +282,12 @@ export async function getPublicTrainerProfileBySlug(slug: string): Promise<Publi
     .maybeSingle();
 
   if (error || !data) {
-    const draftProfile = publicTrainerProfiles.find(
-      (profile) => profile.slug === slug && profile.reviewStatus === "draft",
-    );
-    if (draftProfile) return draftProfile;
+    if (isMarketplaceDemoMode()) {
+      const draftProfile = publicTrainerProfiles.find(
+        (profile) => profile.slug === slug && profile.reviewStatus === "draft",
+      );
+      if (draftProfile) return draftProfile;
+    }
     console.error("[supabase] getPublicTrainerProfileBySlug failed", error);
     return null;
   }

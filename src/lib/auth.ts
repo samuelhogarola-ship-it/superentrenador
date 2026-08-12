@@ -1,8 +1,50 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export type AuthIntent = "client" | "trainer";
+
+export interface CurrentUser {
+  id: string;
+  name: string;
+  email: string | null;
+}
+
+function toCurrentUser(user: { id: string; email?: string | null; user_metadata?: Record<string, unknown> } | null | undefined): CurrentUser | null {
+  if (!user) return null;
+  return {
+    id: user.id,
+    name: (user.user_metadata?.full_name as string | undefined) ?? user.email ?? "Usuario",
+    email: user.email ?? null,
+  };
+}
+
+/** Tracks the logged-in user client-side so shared UI (header, nav) can react to auth state. */
+export function useCurrentUser() {
+  const [user, setUser] = useState<CurrentUser | null>(null);
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(toCurrentUser(data.user));
+      setChecked(true);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(toCurrentUser(session?.user));
+      setChecked(true);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  return { user, checked };
+}
 
 function getAuthCallbackUrl(redirectPath: string) {
   const origin = process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin;
