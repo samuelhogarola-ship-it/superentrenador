@@ -7,12 +7,13 @@ import { deleteTrainerProfile } from "./actions";
 interface AdSidebarActionsProps {
   trainerId: string;
   trainerSlug: string;
+  canShare: boolean;
 }
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
 
-export function AdSidebarActions({ trainerId, trainerSlug }: AdSidebarActionsProps) {
+export function AdSidebarActions({ trainerId, trainerSlug, canShare }: AdSidebarActionsProps) {
   const [copied, setCopied] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -81,14 +82,16 @@ export function AdSidebarActions({ trainerId, trainerSlug }: AdSidebarActionsPro
 
   return (
     <>
-      <button
-        type="button"
-        onClick={handleShare}
-        className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f5f5f5] px-4 py-3 text-sm font-bold text-[#555] transition-colors hover:bg-[#ffe1df] hover:text-[#ff6868]"
-      >
-        {copied ? <Check size={16} /> : <Share2 size={16} />}
-        {copied ? "¡Enlace copiado!" : "Compartir anuncio"}
-      </button>
+      {canShare ? (
+        <button
+          type="button"
+          onClick={handleShare}
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f5f5f5] px-4 py-3 text-sm font-bold text-[#555] transition-colors hover:bg-[#ffe1df] hover:text-[#ff6868]"
+        >
+          {copied ? <Check size={16} /> : <Share2 size={16} />}
+          {copied ? "¡Enlace copiado!" : "Compartir anuncio"}
+        </button>
+      ) : null}
 
       <button
         type="button"

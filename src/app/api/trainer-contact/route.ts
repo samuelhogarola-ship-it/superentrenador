@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
-import { getClientIp, rateLimit } from "@/lib/server/rate-limit";
+import { rateLimit } from "@/lib/server/rate-limit";
+import { hasVerifiedEmail } from "@/lib/server/request-security";
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -21,7 +22,11 @@ export async function GET(request: Request) {
     return NextResponse.json({ contactInfo: "" }, { status: 401 });
   }
 
-  const limited = await rateLimit(supabase, `trainer-contact:${user.id}:${getClientIp(request)}`, {
+  if (!hasVerifiedEmail(user)) {
+    return NextResponse.json({ contactInfo: "", error: "email_not_verified" }, { status: 403 });
+  }
+
+  const limited = await rateLimit(supabase, `trainer-contact:${user.id}`, {
     limit: 30,
     windowMs: 10 * 60 * 1000,
   });

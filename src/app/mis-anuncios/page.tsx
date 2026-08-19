@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Eye, MessageSquare, PenLine, Plus, Search } from "lucide-react";
+import { Eye, MessageSquare, PenLine, Plus } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import { Avatar } from "@/components/avatar";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
@@ -50,6 +51,9 @@ export default async function MisAnunciosPage() {
     .maybeSingle();
 
   const trainerProfile = profile as AdProfile | null;
+  const canViewPublic = Boolean(
+    trainerProfile && trainerProfile.is_published && trainerProfile.review_status === "approved"
+  );
   const city = marketplaceCities.find((item) => item.slug === trainerProfile?.city_slug);
   const { count: messageCount } = trainerProfile
     ? await supabase.from("messages").select("id", { count: "exact", head: true }).eq("trainer_profile_id", trainerProfile.id)
@@ -91,16 +95,14 @@ export default async function MisAnunciosPage() {
               <section className="overflow-hidden rounded-[28px] bg-[#111111] p-5 text-white shadow-[0_20px_50px_rgba(0,0,0,0.14)] sm:p-7">
                 <div className="flex flex-wrap items-end justify-between gap-4">
                   <div>
-                    <p className="text-sm font-bold uppercase tracking-[0.12em] text-white/60">Estadísticas</p>
+                    <p className="text-sm font-bold uppercase tracking-[0.12em] text-white/60">Contactos</p>
                     <p className="mt-1 text-sm text-white/60">De los últimos 30 días</p>
                   </div>
                   <span className={`rounded-full px-3 py-1.5 text-xs font-bold ${trainerProfile.is_published ? "bg-[#59c993] text-[#102a20]" : "bg-white/10 text-white/70"}`}>
                     {trainerProfile.is_published ? "Anuncio en línea" : "Pendiente de publicación"}
                   </span>
                 </div>
-                <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                  <StatCard icon={Search} label="Apariciones en búsquedas (próximamente)" value="—" />
-                  <StatCard icon={Eye} label="Visitas al anuncio (próximamente)" value="—" />
+                <div className="mt-6 grid gap-3 sm:max-w-sm">
                   <StatCard icon={MessageSquare} label="Nuevos contactos" value={String(messageCount ?? 0)} />
                 </div>
               </section>
@@ -149,8 +151,12 @@ export default async function MisAnunciosPage() {
               {trainerProfile.reviews_count > 0 ? <p className="mt-2 text-center text-sm font-bold">★ {trainerProfile.rating.toFixed(1)} ({trainerProfile.reviews_count} opiniones)</p> : null}
               <p className="mt-6 flex items-center justify-between border-t border-[#ededed] pt-5 text-sm"><span>Tarifa horaria</span><strong className="text-2xl">{trainerProfile.price_from > 0 ? `${trainerProfile.price_from}€` : "—"}</strong></p>
               <div className="mt-6 grid gap-2">
-                <Link href={`/entrenadores/${trainerProfile.slug}`} className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f5f5f5] px-4 py-3 text-sm font-bold"><Eye size={16} /> Vista pública</Link>
-                <AdSidebarActions trainerId={trainerProfile.id} trainerSlug={trainerProfile.slug} />
+                {canViewPublic ? (
+                  <Link href={`/entrenadores/${trainerProfile.slug}`} className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f5f5f5] px-4 py-3 text-sm font-bold"><Eye size={16} /> Vista pública</Link>
+                ) : (
+                  <span className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f5f5f5] px-4 py-3 text-sm font-bold text-[#777]"><Eye size={16} /> Vista disponible al publicar</span>
+                )}
+                <AdSidebarActions trainerId={trainerProfile.id} trainerSlug={trainerProfile.slug} canShare={canViewPublic} />
               </div>
             </>
           ) : <p className="text-sm leading-6 text-[#666]">Tu resumen aparecerá aquí cuando publiques tu primer anuncio.</p>}
@@ -160,7 +166,7 @@ export default async function MisAnunciosPage() {
   );
 }
 
-function StatCard({ icon: Icon, label, value }: { icon: typeof Search; label: string; value: string }) {
+function StatCard({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
   return <div className="rounded-[20px] bg-[#292929] p-4"><Icon size={18} className="text-[#ffb4ac]" /><p className="mt-4 text-xs font-semibold leading-5 text-white/60">{label}</p><strong className="mt-1 block font-heading text-3xl">{value}</strong></div>;
 }
 

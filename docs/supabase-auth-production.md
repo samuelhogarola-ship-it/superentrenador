@@ -52,6 +52,7 @@ En `Authentication > URL Configuration`:
 En `Authentication > Emails > Magic Link / OTP`:
 
 - Usar `{{ .ConfirmationURL }}`.
+- Confirmar que `Confirm email` esta activado; `supabase/config.toml` usa `enable_confirmations = true`.
 
 En `Authentication > Rate Limits`:
 
@@ -73,4 +74,4 @@ Tambien faltaba:
 SUPABASE_AUTH_SMTP_PASS
 ```
 
-Con una cuenta Supabase con permisos suficientes y SMTP real, la configuracion ya esta lista en `supabase/config.toml`.
+Con una cuenta Supabase con permisos suficientes y SMTP real, la configuracion ya esta lista en `supabase/config.toml`. Tras el push, crear una cuenta de prueba sin confirmar y comprobar que no puede leer contacto ni mensajes.

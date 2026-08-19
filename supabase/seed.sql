@@ -128,45 +128,25 @@ on conflict (slug) do update set
   intro = excluded.intro,
   seo_description = excluded.seo_description;
 
+DELETE FROM public.trainer_profiles
+WHERE is_demo = true
+  AND slug <> 'samuel-entrenador-personal-fuengirola';
+
 insert into public.trainer_profiles (
   slug, display_name, city_slug, headline, short_bio, long_bio, specialties,
   verified, years_experience, rating, reviews_count, price_from, modalities, languages, hidden_contact_hint, is_demo
 )
 values
   (
-    'carlos-ruiz-entrenador-personal-fuengirola',
-    'Carlos Ruiz',
+    'samuel-entrenador-personal-fuengirola',
+    'Samuel Irongar',
     'fuengirola',
-    'Hipertrofia, pérdida de grasa y seguimiento online con estructura real.',
-    'Entrenador personal en Fuengirola especializado en recomposición corporal y adherencia para perfiles que necesitan orden y constancia.',
-    'Trabajo con clientes presenciales y online que quieren entrenar con dirección, seguimiento y una experiencia mucho más profesional que el clásico PDF suelto por WhatsApp. Mi enfoque combina fuerza, progresión real y procesos claros.',
-    array['Hipertrofia', 'Pérdida de grasa', 'Seguimiento online', 'Planes híbridos'],
-    true, 8, 4.9, 47, 45, array['Presencial', 'Online', 'Híbrido'], array['Español', 'Inglés'],
-    'El contacto directo y la contratación se desbloquean tras registro o pago.',
-    true
-  ),
-  (
-    'laura-moreno-fitness-malaga',
-    'Laura Moreno',
-    'malaga',
-    'Fuerza femenina, posparto y entrenamiento funcional sin humo.',
-    'Perfil orientado a mujeres que buscan un proceso claro, técnico y sostenible, tanto presencial como online.',
-    'Acompaño a mujeres en etapas de vuelta al entrenamiento, fuerza general y objetivos de salud o estética con una metodología clara y progresiva. El foco está en mantener adherencia sin sacrificar calidad técnica.',
-    array['Fuerza femenina', 'Posparto', 'Entrenamiento funcional'],
-    true, 6, 4.8, 31, 50, array['Presencial', 'Online'], array['Español'],
-    'El perfil público muestra el valor; el contacto se reserva para usuarios registrados.',
-    true
-  ),
-  (
-    'sergio-navarro-rendimiento-madrid',
-    'Sergio Navarro',
-    'madrid',
-    'Rendimiento, fuerza aplicada y preparación física para deportistas.',
-    'Entrenador orientado a deportistas y perfiles intermedios que quieren estructura, métricas y progresión seria.',
-    'Diseño programas de fuerza y preparación física para deportistas amateur y semiprofesionales. Mi servicio combina planificación clara, control de carga y una capa digital pensada para trabajar con datos reales.',
-    array['Rendimiento', 'Preparación física', 'Fuerza aplicada'],
-    false, 10, 4.7, 22, 60, array['Online', 'Híbrido'], array['Español', 'Inglés'],
-    'El acceso completo al entrenador se activará en la zona privada premium.',
+    'Viking Fitness: entrenador personal en Fuengirola para fuerza, recomposición y hábitos reales.',
+    'Samuel Irongar dirige Viking Fitness en Fuengirola con sesiones presenciales y seguimiento online para personas que quieren entrenar con estructura.',
+    'Viking Fitness nace para ayudar a personas de Fuengirola y alrededores a entrenar con un plan claro, medible y sostenible. Trabajo fuerza, recomposición corporal, pérdida de grasa y mejora de hábitos con sesiones presenciales, planificación online y revisiones periódicas.',
+    array['Fuerza', 'Recomposición corporal', 'Pérdida de grasa', 'Hábitos saludables', 'Seguimiento online'],
+    true, 7, 5.0, 12, 50, array['Presencial', 'Online'], array['Español', 'Inglés'],
+    'Contacta con Viking Fitness desde una cuenta protegida para consultar disponibilidad presencial u online.',
     true
   )
 on conflict (slug) do update set

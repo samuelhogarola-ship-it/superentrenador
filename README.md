@@ -1,6 +1,6 @@
 # Super Entrenador
 
-Base nueva del marketplace público de `superentrenador.com`, rehecha dentro del mismo repositorio con `Next.js + Supabase` y conservando el frontend anterior en `legacy-vite/`.
+Marketplace de `superentrenador.com` construido con `Next.js + Supabase`. El frontend anterior se conserva como referencia en `legacy-vite/`.
 
 ## Estado actual
 
@@ -14,7 +14,7 @@ Base nueva del marketplace público de `superentrenador.com`, rehecha dentro del
 - Next.js App Router
 - TypeScript
 - Tailwind CSS v4
-- Supabase preparado por variables de entorno
+- Supabase Auth, Postgres, RLS y Storage
 
 ## Comandos
 
@@ -25,6 +25,9 @@ npm run build
 npm run start
 npm run lint
 npm run check
+npm test
+npm run audit:deps
+npm run secrets:scan
 ```
 
 ## Variables de entorno
@@ -37,6 +40,12 @@ NEXT_PUBLIC_COACH_STUDIO_URL=https://coach-studio.superentrenador.com
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
+MARKETPLACE_DEMO_MODE=false
+SUPABASE_DB_PASSWORD=
+SUPABASE_AUTH_SMTP_HOST=
+SUPABASE_AUTH_SMTP_USER=
+SUPABASE_AUTH_SMTP_PASS=
+SUPABASE_AUTH_SMTP_ADMIN_EMAIL=
 ```
 
 ## Estructura útil
@@ -49,7 +58,9 @@ SUPABASE_SERVICE_ROLE_KEY=
 │   ├── entrenadores/page.tsx
 │   ├── ciudades/[city]/page.tsx
 │   ├── login/page.tsx
-│   └── dashboard/page.tsx
+│   ├── dashboard/page.tsx
+│   ├── mis-anuncios/page.tsx
+│   └── admin/entrenadores/page.tsx
 ├── src/components
 ├── src/lib
 │   ├── marketplace-data.ts
@@ -59,21 +70,24 @@ SUPABASE_SERVICE_ROLE_KEY=
 └── legacy-vite/
 ```
 
-## Qué está ya preparado
+## Estado funcional
 
-- Home pública inicial para marketplace
-- Listado público de entrenadores
-- Ficha pública SEO por entrenador
-- Landings SEO por ciudad
+- Home, listado, fichas y landings públicas conectadas al repositorio Supabase
 - `sitemap.xml` y `robots.txt`
-- Placeholder limpio para login y zona privada futura
-- Capa Supabase preparada para integrar datos reales
+- Supabase Auth con magic link y Google
+- Panel de cliente, panel de entrenador, anuncios y mensajería
+- Panel de administración para revisar y publicar entrenadores
+- Fotos de perfil en el bucket `trainer-photos`
+- RLS, funciones SQL restringidas, rate limiting y cabeceras de seguridad
+- Perfil modelo de Samuel disponible sólo con `MARKETPLACE_DEMO_MODE=true`
 
-## Qué falta después
+## Pendiente de lanzamiento
 
-- sustituir mocks por consultas reales a Supabase
-- implementar auth con Supabase
-- definir desbloqueo premium y pagos
+- aplicar todas las migraciones de `supabase/migrations/` en el proyecto remoto
+- activar confirmación de email y SMTP propio con `scripts/push-supabase-auth-config.sh`
+- verificar grants, RLS y Storage contra Supabase remoto
+- validar dominio, redirects OAuth y DNS finales
+- decidir y construir el flujo comercial de Premium; la página actual es acceso anticipado y está en `noindex`
 - mantener Coach Studio separado del marketplace y enlazado mediante `NEXT_PUBLIC_COACH_STUDIO_URL`
 - añadir páginas SEO por especialidad / ciudad / combinación
 

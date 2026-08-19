@@ -111,7 +111,7 @@ export function PhotoUpload({ value, onChange, userId }: PhotoUploadProps) {
       <input
         ref={inputRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp"
+        accept="image/jpeg,image/png,image/webp,image/gif"
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0];
@@ -123,17 +123,6 @@ export function PhotoUpload({ value, onChange, userId }: PhotoUploadProps) {
       {uploadError ? (
         <p className="text-xs text-red-600">{uploadError}</p>
       ) : null}
-
-      <label className="flex flex-col gap-1 text-xs font-normal text-[var(--muted)]">
-        O pega una URL directa
-        <input
-          type="url"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="https://ejemplo.com/tu-foto.jpg"
-          className="rounded-xl border border-[var(--line)] bg-[var(--bg-soft)] px-3 py-2 text-sm text-[var(--text)] outline-none focus-visible:border-[var(--accent)]"
-        />
-      </label>
     </div>
   );
 }

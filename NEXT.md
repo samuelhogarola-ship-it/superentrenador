@@ -1,9 +1,11 @@
 # NEXT
 
+Informe integral actualizado: `docs/super-entrenador-deep-audit-2026-08-19.md`.
+
 ## Prioridad inmediata
 
 - Activar en Supabase cloud la configuracion de Auth preparada en este repo cuando haya cuenta Owner/Admin y SMTP real.
-- Aplicar la migracion `20260714090000_separate_demo_marketplace_data.sql` en Supabase remoto cuando haya `SUPABASE_DB_PASSWORD` o permisos Owner/Admin.
+- Aplicar todas las migraciones pendientes, incluida `20260819120000_harden_marketplace_security.sql`, en Supabase remoto cuando haya `SUPABASE_DB_PASSWORD` o permisos Owner/Admin.
 - Pulir la home pública ya migrada al sistema visual tipo Saulo para llevarla a un nivel comercial real.
 - Tomar como referencia de tono: Porsche, McDonald's, Superprof.
 - Mantener el marketplace en Next.js y terminar de cerrar la capa pública antes de abrir más frentes.
@@ -11,7 +13,7 @@
 ## Problemas detectados
 
 - Supabase Auth esta implementado en app y configurado en repo, pero el push cloud devolvio `403` por falta de permisos de la cuenta actual.
-- Supabase CLI tambien devuelve `403` al listar migraciones remotas sin una cuenta con privilegios y pide `SUPABASE_DB_PASSWORD`; la migracion demo/produccion ya esta en repo pero pendiente de aplicar en cloud.
+- Supabase CLI tambien devuelve `403` al listar migraciones remotas sin una cuenta con privilegios y pide `SUPABASE_DB_PASSWORD`; las migraciones de datos y seguridad estan en repo pero pendientes de verificar en cloud.
 - Magic link necesita SMTP propio para evitar el limite bajo del SMTP integrado de Supabase.
 - Coach Studio ya tiene editor configurable por lineas y vista alumno demo/local; para produccion falta aprobar y aplicar una politica segura de acceso por token en Supabase antes de exponer rutinas sin login.
 - La nueva base visual ya es más coherente, pero la hero aún no transmite suficiente autoridad de marca.
@@ -43,7 +45,9 @@
   - `SUPABASE_AUTH_SMTP_PASS`
   - `SUPABASE_AUTH_SMTP_ADMIN_EMAIL`
 - Ejecutar `scripts/push-supabase-auth-config.sh`.
-- Ejecutar `supabase db push` o aplicar manualmente `supabase/migrations/20260714090000_separate_demo_marketplace_data.sql`.
+- Ejecutar `supabase db push` para aplicar todas las migraciones pendientes.
+- Verificar que `anon` no tiene `SELECT` sobre ninguna columna de `trainer_profiles` y que el acceso público usa sólo `trainer_profiles_public`.
+- Confirmar que usuarios sin email verificado no pueden leer contacto ni usar mensajería.
 - Confirmar en dashboard Auth que Magic Link, redirect URLs y rate limits quedan aplicados.
 - Validar DNS/dominio final de `superentrenador.com` y `www.superentrenador.com`.
 

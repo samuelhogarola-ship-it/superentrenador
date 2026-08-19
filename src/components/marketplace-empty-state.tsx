@@ -35,7 +35,7 @@ export function MarketplaceEmptyState({ cityName, resetHref }: MarketplaceEmptyS
         </Link>
         <Link
           href="/registro?intent=trainer"
-          className="inline-flex items-center gap-2 bg-[#111214] px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[var(--accent)] hover:text-[#111214]"
+          className="empty-state-publish-cta inline-flex items-center gap-2 px-5 py-3 text-sm font-bold transition-colors"
         >
           <UserPlus size={15} />
           Publicar perfil

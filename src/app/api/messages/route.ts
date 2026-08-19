@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
-import { getClientIp, rateLimit } from "@/lib/server/rate-limit";
+import { rateLimit } from "@/lib/server/rate-limit";
+import { hasVerifiedEmail, isSameOriginRequest } from "@/lib/server/request-security";
 
 interface PublicTrainerProfile {
   id: string;
@@ -30,6 +31,10 @@ export async function GET() {
 
   if (!user) {
     return NextResponse.json({ ok: false }, { status: 401 });
+  }
+
+  if (!hasVerifiedEmail(user)) {
+    return NextResponse.json({ ok: false, error: "email_not_verified" }, { status: 403 });
   }
 
   const userName = user.user_metadata?.full_name ?? user.email ?? "Usuario";
@@ -94,6 +99,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (!isSameOriginRequest(request)) {
+    return NextResponse.json({ ok: false, error: "invalid_origin" }, { status: 403 });
+  }
+
   const payload = (await request.json().catch(() => null)) as {
     trainerProfileId?: string;
     clientId?: string;
@@ -123,7 +132,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false }, { status: 401 });
   }
 
-  const limited = await rateLimit(supabase, `messages:post:${user.id}:${getClientIp(request)}`, {
+  if (!hasVerifiedEmail(user)) {
+    return NextResponse.json({ ok: false, error: "email_not_verified" }, { status: 403 });
+  }
+
+  const limited = await rateLimit(supabase, `messages:post:${user.id}`, {
     limit: 5,
     windowMs: 10 * 60 * 1000,
   });
@@ -148,6 +161,10 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  if (!isSameOriginRequest(request)) {
+    return NextResponse.json({ ok: false, error: "invalid_origin" }, { status: 403 });
+  }
+
   const payload = (await request.json().catch(() => null)) as {
     messageIds?: unknown;
   } | null;
@@ -164,6 +181,10 @@ export async function PATCH(request: Request) {
 
   if (!user) {
     return NextResponse.json({ ok: false }, { status: 401 });
+  }
+
+  if (!hasVerifiedEmail(user)) {
+    return NextResponse.json({ ok: false, error: "email_not_verified" }, { status: 403 });
   }
 
   const { error } = await supabase

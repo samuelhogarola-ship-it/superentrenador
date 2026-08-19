@@ -2,6 +2,8 @@ import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
 import { COMMERCIAL_NAME_ERROR, isCommercialTrainerName } from "@/lib/profile-validation";
+import { hasVerifiedEmail, isSameOriginRequest } from "@/lib/server/request-security";
+import { getTrainerPhotoStoragePath } from "@/lib/trainer-photo";
 
 interface OwnTrainerProfilePayload {
   slug?: string;
@@ -83,6 +85,10 @@ async function revalidatePublicTrainerPaths(
 }
 
 export async function POST(request: Request) {
+  if (!isSameOriginRequest(request)) {
+    return NextResponse.json({ ok: false, error: "Origen de solicitud no válido." }, { status: 403 });
+  }
+
   const payload = (await request.json().catch(() => null)) as OwnTrainerProfilePayload | null;
 
   if (!payload) {
@@ -126,8 +132,7 @@ export async function POST(request: Request) {
     shortBio.length > MAX_TEXT_LENGTH.shortBio ||
     longBio.length > MAX_TEXT_LENGTH.longBio ||
     contactInfo.length > MAX_TEXT_LENGTH.contactInfo ||
-    photoUrl.length > MAX_TEXT_LENGTH.photoUrl ||
-    (photoUrl && !photoUrl.startsWith("https://"))
+    photoUrl.length > MAX_TEXT_LENGTH.photoUrl
   ) {
     return NextResponse.json({ ok: false, error: "Revisa los campos del perfil." }, { status: 400 });
   }
@@ -139,6 +144,20 @@ export async function POST(request: Request) {
 
   if (!user) {
     return NextResponse.json({ ok: false, error: "Debes iniciar sesión." }, { status: 401 });
+  }
+
+  if (!hasVerifiedEmail(user)) {
+    return NextResponse.json({ ok: false, error: "Confirma tu email antes de guardar el perfil." }, { status: 403 });
+  }
+
+  if (
+    photoUrl &&
+    !getTrainerPhotoStoragePath(photoUrl, user.id, process.env.NEXT_PUBLIC_SUPABASE_URL ?? "")
+  ) {
+    return NextResponse.json(
+      { ok: false, error: "La foto debe subirse desde tu cuenta de Super Entrenador." },
+      { status: 400 },
+    );
   }
 
   const { data: city } = await supabase

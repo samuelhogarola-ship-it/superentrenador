@@ -74,13 +74,6 @@ function mapCity(row: CityRow): MarketplaceCity {
   };
 }
 
-function mergeCitiesWithFallback(rows: CityRow[] = []) {
-  const bySlug = new Map<string, MarketplaceCity>();
-  marketplaceCities.forEach((city) => bySlug.set(city.slug, city));
-  rows.map(mapCity).forEach((city) => bySlug.set(city.slug, city));
-  return Array.from(bySlug.values()).sort((a, b) => a.name.localeCompare(b.name, "es"));
-}
-
 function mapTrainer(row: TrainerRow): PublicTrainerProfile {
   return {
     id: row.id,
@@ -169,10 +162,10 @@ export async function listMarketplaceCities(): Promise<MarketplaceCity[]> {
 
   if (error || !data) {
     console.error("[supabase] listMarketplaceCities failed", error);
-    return marketplaceCities;
+    return [];
   }
 
-  return mergeCitiesWithFallback(data as CityRow[]);
+  return (data as CityRow[]).map(mapCity);
 }
 
 export async function getMarketplaceCity(slug: string): Promise<MarketplaceCity | null> {
@@ -185,11 +178,11 @@ export async function getMarketplaceCity(slug: string): Promise<MarketplaceCity 
 
   if (error) {
     console.error("[supabase] getMarketplaceCity failed", error);
-    return marketplaceCities.find((city) => city.slug === slug) ?? null;
+    return null;
   }
 
   if (!data) {
-    return marketplaceCities.find((city) => city.slug === slug) ?? null;
+    return null;
   }
 
   return mapCity(data as CityRow);
@@ -283,11 +276,9 @@ export async function getPublicTrainerProfileBySlug(slug: string): Promise<Publi
 
   if (error || !data) {
     if (isMarketplaceDemoMode()) {
-      const draftProfile = publicTrainerProfiles.find(
-        (profile) => profile.slug === slug && profile.reviewStatus === "draft",
-      );
-      if (draftProfile) return draftProfile;
+      return publicTrainerProfiles.find((profile) => profile.slug === slug) ?? null;
     }
+
     console.error("[supabase] getPublicTrainerProfileBySlug failed", error);
     return null;
   }
@@ -369,7 +360,7 @@ export async function getMarketplaceStats() {
     (row) => !isProductionDemoProfile(row)
   );
   const totalTrainers = profiles.length;
-  const totalCities = Math.max(citiesCountRes.count ?? 0, marketplaceCities.length);
+  const totalCities = citiesCountRes.count ?? 0;
   const totalReviews = profiles.reduce((sum, row) => sum + (row.reviews_count ?? 0), 0);
   const avgRating = totalTrainers
     ? profiles.reduce((sum, row) => sum + (row.rating ?? 0), 0) / totalTrainers

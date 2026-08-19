@@ -11,6 +11,8 @@ import { siteConfig } from "@/lib/site";
 const ANDALUCIA_DESCRIPTION =
   "Marketplace de entrenadores personales en Andalucía. Compara perfiles por ciudad, especialidad, modalidad, experiencia y precio antes de contactar.";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const trainers = await listPublicTrainerProfiles();
 

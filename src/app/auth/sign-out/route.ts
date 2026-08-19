@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
+import { isSameOriginRequest } from "@/lib/server/request-security";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
 
-export async function POST() {
+export async function POST(request: Request) {
+  if (!isSameOriginRequest(request)) {
+    return NextResponse.json({ ok: false, error: "invalid_origin" }, { status: 403 });
+  }
+
   try {
     const supabase = await getSupabaseSessionServerClient();
     const { error } = await supabase.auth.signOut();
