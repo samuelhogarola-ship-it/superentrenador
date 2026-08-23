@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 required_vars=(
   "SUPABASE_AUTH_SMTP_HOST"
   "SUPABASE_AUTH_SMTP_USER"
@@ -15,4 +17,5 @@ for var_name in "${required_vars[@]}"; do
   fi
 done
 
+node "${repo_root}/scripts/verify-supabase-project.mjs" --workdir "${repo_root}"
 supabase config push --project-ref qxugymzyvtbxeyqcvtgk

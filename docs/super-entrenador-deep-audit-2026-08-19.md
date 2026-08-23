@@ -16,6 +16,7 @@ El codigo local queda en un estado sensiblemente mas seguro y coherente. Los rie
 | P0 | Email verificado | Corregido en app y SQL | Bloquear contacto, mensajes, perfil y fotos sin confirmacion | Activar SMTP y probar alta, magic link y confirmacion reales | Alto hasta configurar Auth cloud | 1-2 h |
 | P0 | CSRF en mutaciones | Corregido | Validacion estricta de `Origin` en mensajes, perfil y cierre de sesion | Verificar dominios finales autorizados en produccion | Bajo | 15 min |
 | P0 | Rate limit compartido | Corregido en migracion | Vincular claves al usuario autenticado y limitar parametros del RPC | Aplicar migracion y ejecutar prueba de abuso en cloud | Medio hasta desplegar SQL | 30 min |
+| P0 | Proyecto Supabase objetivo | Corregido localmente | Retirar enlace residual a `tiynn...` y bloquear operaciones si app, enlace y ref esperado divergen | Conceder acceso Owner/Admin a `qxug...` y volver a enlazar | Alto: cloud sigue sin migrar | 10-20 min |
 | P1 | Datos demo en produccion | Corregido | Demo solo con `MARKETPLACE_DEMO_MODE=true`; seed unico de Samuel | Mantener la variable en `false` en Preview y Production | Bajo | 5 min |
 | P1 | Fotos de entrenador | Corregido | Aceptar solo URLs del bucket y ruta del usuario; borrar foto al eliminar perfil | Revisar limites y politica de retencion deseada | Bajo | 30 min |
 | P1 | Mensajeria | Corregido | Errores visibles, reintento y control de respuestas PATCH | Probar dos cuentas confirmadas en cloud | Medio hasta prueba E2E real | 30-45 min |
@@ -36,10 +37,11 @@ El codigo local queda en un estado sensiblemente mas seguro y coherente. Los rie
 - Producto: retiradas metricas simuladas, etiquetas de verificacion falsas y claims premium no demostrados.
 - Operacion: variables documentadas, CI con secretos/dependencias y documentacion de despliegue actualizada.
 - Renderizado: home, Andalucia y sitemap no quedan congelados con datos vacios si Supabase falla durante el build.
+- Despliegue Supabase: guard previo a migraciones/Auth y enlace local incorrecto retirado.
 
 ## Evidencias de verificacion
 
-- `npm run ci`: 40 tests, ESLint, TypeScript y build de Next.js correctos.
+- `npm run ci`: 44 tests, ESLint, TypeScript y build de Next.js correctos.
 - `npm run secrets:scan`: 88 commits revisados, sin secretos detectados.
 - `npm run audit:deps`: 0 vulnerabilidades conocidas en 597 dependencias.
 - Navegador: home, listado y login cargan sin errores ni overlays.
@@ -47,6 +49,8 @@ El codigo local queda en un estado sensiblemente mas seguro y coherente. Los rie
 - Responsive: portada sin overflow horizontal medido en viewport movil.
 
 La validacion SQL local no se pudo ejecutar porque Docker/Colima no estaba disponible. El build tampoco pudo resolver el host de Supabase desde el sandbox, pero completo correctamente y las rutas dependientes de datos quedaron marcadas como dinamicas.
+
+El 2026-08-23 se detecto que la CLI local estaba enlazada a `tiynnllrcdhsvrzsdsct` mientras la aplicacion y la documentacion apuntan a `qxugymzyvtbxeyqcvtgk`. El enlace residual se retiro y los comandos remotos ahora abortan ante cualquier discrepancia. La cuenta CLI actual no puede enlazar el proyecto correcto por falta de privilegios.
 
 ## Plan de salida
 

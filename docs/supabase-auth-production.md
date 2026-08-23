@@ -29,7 +29,7 @@ supabase login
 ## Aplicar configuracion
 
 ```bash
-scripts/push-supabase-auth-config.sh
+npm run supabase:auth:push
 ```
 
 El script ejecuta:
@@ -37,6 +37,8 @@ El script ejecuta:
 ```bash
 supabase config push --project-ref qxugymzyvtbxeyqcvtgk
 ```
+
+Antes del push, el script comprueba que `.env.local` apunta al mismo proyecto y aborta si detecta un enlace local a otro ref.
 
 ## Dashboard checklist
 

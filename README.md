@@ -28,6 +28,9 @@ npm run check
 npm test
 npm run audit:deps
 npm run secrets:scan
+npm run supabase:verify
+npm run supabase:db:push
+npm run supabase:auth:push
 ```
 
 ## Variables de entorno
@@ -84,7 +87,8 @@ SUPABASE_AUTH_SMTP_ADMIN_EMAIL=
 ## Pendiente de lanzamiento
 
 - aplicar todas las migraciones de `supabase/migrations/` en el proyecto remoto
-- activar confirmación de email y SMTP propio con `scripts/push-supabase-auth-config.sh`
+- enlazar la CLI al proyecto `qxugymzyvtbxeyqcvtgk` y aplicar migraciones con `npm run supabase:db:push`
+- activar confirmación de email y SMTP propio con `npm run supabase:auth:push`
 - verificar grants, RLS y Storage contra Supabase remoto
 - validar dominio, redirects OAuth y DNS finales
 - decidir y construir el flujo comercial de Premium; la página actual es acceso anticipado y está en `noindex`

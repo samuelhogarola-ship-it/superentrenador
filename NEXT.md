@@ -44,8 +44,9 @@ Informe integral actualizado: `docs/super-entrenador-deep-audit-2026-08-19.md`.
   - `SUPABASE_AUTH_SMTP_USER`
   - `SUPABASE_AUTH_SMTP_PASS`
   - `SUPABASE_AUTH_SMTP_ADMIN_EMAIL`
-- Ejecutar `scripts/push-supabase-auth-config.sh`.
-- Ejecutar `supabase db push` para aplicar todas las migraciones pendientes.
+- Ejecutar `npm run supabase:auth:push`.
+- Enlazar la CLI al proyecto correcto y ejecutar `npm run supabase:db:push` para aplicar todas las migraciones pendientes. El guard aborta si `.env.local` y el enlace local no coinciden con `qxugymzyvtbxeyqcvtgk`.
+- El enlace local residual a `tiynnllrcdhsvrzsdsct` ya se retiro. La cuenta actual sigue recibiendo `403` al intentar enlazar `qxugymzyvtbxeyqcvtgk`.
 - Verificar que `anon` no tiene `SELECT` sobre ninguna columna de `trainer_profiles` y que el acceso público usa sólo `trainer_profiles_public`.
 - Confirmar que usuarios sin email verificado no pueden leer contacto ni usar mensajería.
 - Confirmar en dashboard Auth que Magic Link, redirect URLs y rate limits quedan aplicados.
