@@ -4,19 +4,28 @@ const scriptSources = ["'self'", "'unsafe-inline'"];
 scriptSources.push("https://www.googletagmanager.com");
 if (process.env.NODE_ENV === "development") scriptSources.push("'unsafe-eval'");
 const isProduction = process.env.NODE_ENV === "production";
-const isDevelopment = process.env.NODE_ENV === "development";
-const supabaseConnectSources: string[] = [];
 
-try {
-  const supabaseUrl = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "");
-  if (supabaseUrl.protocol === "https:") {
-    supabaseConnectSources.push(supabaseUrl.origin, `wss://${supabaseUrl.host}`);
-  } else if (isDevelopment && supabaseUrl.protocol === "http:") {
-    supabaseConnectSources.push(supabaseUrl.origin, `ws://${supabaseUrl.host}`);
+export function getSupabaseConnectSources(rawUrl: string | undefined, nodeEnv: string | undefined) {
+  const sources: string[] = [];
+
+  try {
+    const supabaseUrl = new URL(rawUrl ?? "");
+    if (supabaseUrl.protocol === "https:") {
+      sources.push(supabaseUrl.origin, `wss://${supabaseUrl.host}`);
+    } else if (nodeEnv === "development" && supabaseUrl.protocol === "http:") {
+      sources.push(supabaseUrl.origin, `ws://${supabaseUrl.host}`);
+    }
+  } catch {
+    // A missing URL is handled by the app's Supabase configuration checks.
   }
-} catch {
-  // A missing URL is handled by the app's Supabase configuration checks.
+
+  return sources;
 }
+
+const supabaseConnectSources = getSupabaseConnectSources(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NODE_ENV,
+);
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,

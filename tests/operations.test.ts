@@ -121,11 +121,13 @@ test("connect CSP is scoped to the configured Supabase project", async () => {
 });
 
 test("development CSP permits the local Supabase HTTP and websocket origins", async () => {
-  const [policy] = await getContentSecurityPolicies("http://127.0.0.1:54321", "development");
+  const { getSupabaseConnectSources } = await import("../next.config.ts");
 
-  const connectDirective = policy?.split("; ").find((directive) => directive.startsWith("connect-src"));
-  assert.match(connectDirective ?? "", /http:\/\/127\.0\.0\.1:54321/);
-  assert.match(connectDirective ?? "", /ws:\/\/127\.0\.0\.1:54321/);
+  assert.deepEqual(getSupabaseConnectSources("http://127.0.0.1:54321", "development"), [
+    "http://127.0.0.1:54321",
+    "ws://127.0.0.1:54321",
+  ]);
+  assert.deepEqual(getSupabaseConnectSources("http://127.0.0.1:54321", "production"), []);
 });
 
 test("README describes the implemented auth and private surfaces", async () => {
