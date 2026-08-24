@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
-import { rateLimit } from "@/lib/server/rate-limit";
 import { hasVerifiedEmail, isSameOriginRequest } from "@/lib/server/request-security";
 
 interface PublicTrainerProfile {
@@ -136,15 +135,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "email_not_verified" }, { status: 403 });
   }
 
-  const limited = await rateLimit(supabase, `messages:post:${user.id}`, {
-    limit: 5,
-    windowMs: 10 * 60 * 1000,
-  });
-
-  if (!limited.allowed) {
-    return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
-  }
-
   const { error } = await supabase.from("messages").insert({
     sender_id: user.id,
     sender_name: user.user_metadata?.full_name ?? user.email ?? "Usuario",
@@ -154,6 +144,9 @@ export async function POST(request: Request) {
   });
 
   if (error) {
+    if (error.message.includes("rate_limit_exceeded")) {
+      return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
+    }
     return NextResponse.json({ ok: false }, { status: 500 });
   }
 

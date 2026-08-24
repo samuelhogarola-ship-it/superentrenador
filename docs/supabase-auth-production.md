@@ -40,6 +40,14 @@ supabase config push --project-ref qxugymzyvtbxeyqcvtgk
 
 Antes del push, el script comprueba que `.env.local` apunta al mismo proyecto y aborta si detecta un enlace local a otro ref.
 
+Tras el push:
+
+- Usar una cuenta confirmada para probar inicio de sesion y acceso a las rutas privadas.
+- Verificar con una cuenta sin confirmar que no puede iniciar sesion en produccion.
+- Comprobar aparte la defensa de las rutas con un fixture autenticado cuyo
+  `email_confirmed_at` sea `null`; si produccion no puede emitir esa sesion, ejecutar
+  contacto y mensajes contra ese fixture en la suite de integracion.
+
 ## Dashboard checklist
 
 En `Authentication > URL Configuration`:
@@ -92,4 +100,4 @@ Tambien faltaba:
 SUPABASE_AUTH_SMTP_PASS
 ```
 
-Con una cuenta Supabase con permisos suficientes y SMTP real, la configuracion ya esta lista en `supabase/config.toml`. Tras el push, crear una cuenta de prueba sin confirmar y comprobar que no puede leer contacto ni mensajes.
+Con una cuenta Supabase con permisos suficientes y SMTP real, la configuracion ya esta lista en `supabase/config.toml`. La prueba de una cuenta sin confirmar valida el rechazo de inicio de sesion; la autorizacion defensiva de contacto y mensajes se valida por separado con el fixture descrito arriba.

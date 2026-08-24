@@ -25,9 +25,24 @@ test("env template documents launch and demo configuration", async () => {
 test("CI runs secret and dependency security gates", async () => {
   const workflow = await readSource("../.github/workflows/ci.yml");
 
+  assert.match(workflow, /validate:[\s\S]*permissions:\s*\n\s*contents:\s*read/);
   assert.match(workflow, /npm run security:setup/);
   assert.match(workflow, /npm run secrets:scan/);
   assert.match(workflow, /npm run audit:deps/);
+});
+
+test("Supabase push scripts execute from the verified repository root", async () => {
+  const scripts = await Promise.all([
+    readSource("../scripts/push-supabase-migrations.sh"),
+    readSource("../scripts/push-supabase-auth-config.sh"),
+  ]);
+
+  for (const source of scripts) {
+    const changeDirectoryIndex = source.indexOf('cd "${repo_root}"');
+    const pushIndex = source.indexOf("supabase ");
+    assert.notEqual(changeDirectoryIndex, -1);
+    assert.ok(changeDirectoryIndex < pushIndex);
+  }
 });
 
 test("dependency audit has no stale vulnerability allowlist", async () => {
@@ -55,8 +70,17 @@ test("CSP permits the consent-gated Google Analytics transport", async () => {
   assert.match(config, /scriptSources\.push\("https:\/\/www\.googletagmanager\.com"\)/);
   assert.match(
     config,
-    /connect-src[^"\n]*https:\/\/www\.google-analytics\.com[^"\n]*https:\/\/\*\.google-analytics\.com/,
+    /connect-src[^\n]*https:\/\/www\.google-analytics\.com[^\n]*https:\/\/\*\.google-analytics\.com/,
   );
+});
+
+test("connect CSP is scoped to the configured Supabase project", async () => {
+  const config = await readSource("../next.config.ts");
+  const connectDirective = config.match(/connect-src[^"\n]*/)?.[0] ?? "";
+
+  assert.match(config, /new URL\(process\.env\.NEXT_PUBLIC_SUPABASE_URL/);
+  assert.match(config, /wss:\/\/\$\{supabaseUrl\.host\}/);
+  assert.doesNotMatch(connectDirective, /\*\.supabase\.(co|in)/);
 });
 
 test("README describes the implemented auth and private surfaces", async () => {

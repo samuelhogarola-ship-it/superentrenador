@@ -10,6 +10,14 @@ const reviewMigrationPath = new URL(
   "../supabase/migrations/20260824100000_close_security_review_findings.sql",
   import.meta.url,
 );
+const ownerDeleteMigrationPath = new URL(
+  "../supabase/migrations/20260824110000_allow_owner_profile_deletion.sql",
+  import.meta.url,
+);
+const databaseRateLimitsMigrationPath = new URL(
+  "../supabase/migrations/20260824120000_enforce_database_rate_limits.sql",
+  import.meta.url,
+);
 
 async function readSecurityMigration() {
   return readFile(migrationPath, "utf8").catch(() => "");
@@ -17,6 +25,14 @@ async function readSecurityMigration() {
 
 async function readReviewMigration() {
   return readFile(reviewMigrationPath, "utf8").catch(() => "");
+}
+
+async function readOwnerDeleteMigration() {
+  return readFile(ownerDeleteMigrationPath, "utf8").catch(() => "");
+}
+
+async function readDatabaseRateLimitsMigration() {
+  return readFile(databaseRateLimitsMigrationPath, "utf8").catch(() => "");
 }
 
 test("revokes every anonymous trainer_profiles column privilege", async () => {
@@ -71,4 +87,31 @@ test("applies review fixes incrementally and restricts future photo object names
   assert.doesNotMatch(historicalSql, /trainer_profiles_published_requires_approval/i);
   assert.match(reviewSql, /trainer_profiles_published_requires_approval/i);
   assert.match(reviewSql, /name = auth\.uid\(\)::text \|\| '\/profile'/i);
+});
+
+test("allows confirmed trainers to delete only their own profile", async () => {
+  const sql = await readOwnerDeleteMigration();
+
+  assert.match(sql, /GRANT DELETE ON public\.trainer_profiles TO authenticated/i);
+  assert.match(
+    sql,
+    /CREATE POLICY "Trainer can delete own profile"[\s\S]*FOR DELETE TO authenticated[\s\S]*has_confirmed_email\(\)[\s\S]*auth\.uid\(\) = user_id/i,
+  );
+});
+
+test("enforces contact and message limits in database entry points", async () => {
+  const sql = await readDatabaseRateLimitsMigration();
+
+  assert.match(
+    sql,
+    /get_public_trainer_contact_info[\s\S]*check_rate_limit\([\s\S]*trainer-contact:[\s\S]*is_demo = false/i,
+  );
+  assert.match(
+    sql,
+    /consume_message_rate_limit[\s\S]*check_rate_limit\([\s\S]*messages:post:[\s\S]*rate_limit_exceeded/i,
+  );
+  assert.match(
+    sql,
+    /Participants can insert thread messages[\s\S]*THEN public\.consume_message_rate_limit\(\)/i,
+  );
 });

@@ -15,7 +15,7 @@ El codigo local queda en un estado sensiblemente mas seguro y coherente. Los rie
 | P0 | Permisos de `trainer_profiles` | Corregido en migracion | Revocar `SELECT` anonimo por columna y exponer solo la vista publica | Aplicar `20260819120000_harden_marketplace_security.sql` y comprobar grants en cloud | Alto hasta aplicar la migracion | 30-60 min |
 | P0 | Email verificado | Corregido en app y SQL | Bloquear contacto, mensajes, perfil, borrado y moderacion sin confirmacion | Activar SMTP y probar alta, magic link y confirmacion reales | Alto hasta configurar Auth cloud | 1-2 h |
 | P0 | CSRF en mutaciones | Corregido | Validacion estricta de `Origin` en mensajes, perfil y cierre de sesion | Verificar dominios finales autorizados en produccion | Bajo | 15 min |
-| P0 | Rate limit compartido | Corregido en migracion | Vincular claves al usuario autenticado y limitar parametros del RPC | Aplicar migracion y ejecutar prueba de abuso en cloud | Medio hasta desplegar SQL | 30 min |
+| P0 | Rate limit compartido | Corregido en migracion | Vincular claves al usuario y consumir cuota dentro del RPC/politica de base de datos | Aplicar migraciones y ejecutar prueba de abuso en cloud | Medio hasta desplegar SQL | 30 min |
 | P0 | Proyecto Supabase objetivo | Corregido localmente | Retirar enlace residual a `tiynn...` y bloquear operaciones si app, enlace y ref esperado divergen | Conceder acceso Owner/Admin a `qxug...` y volver a enlazar | Alto: cloud sigue sin migrar | 10-20 min |
 | P1 | Datos demo en produccion | Corregido | Demo solo con `MARKETPLACE_DEMO_MODE=true`; seed unico de Samuel | Mantener la variable en `false` en Preview y Production | Bajo | 5 min |
 | P1 | Fotos de entrenador | Corregido | Usar una ruta estable, aceptar solo nombres gestionados y limpiar variantes al guardar o eliminar | Verificar el bucket tras aplicar politicas en cloud | Bajo | 30 min |
@@ -42,8 +42,8 @@ El codigo local queda en un estado sensiblemente mas seguro y coherente. Los rie
 
 ## Evidencias de verificacion
 
-- `npm run ci`: 52 tests, ESLint, TypeScript y build de Next.js correctos.
-- `npm run secrets:scan`: 91 commits revisados, sin secretos detectados.
+- `npm run ci`: 61 tests, ESLint, TypeScript y build de Next.js correctos.
+- `npm run secrets:scan`: 92 commits revisados, sin secretos detectados.
 - `npm run audit:deps`: 0 vulnerabilidades conocidas en 597 dependencias.
 - Navegador: home, listado y login cargan sin errores ni overlays.
 - Autorizacion: dashboard, anuncios y admin redirigen a login conservando `redirectTo`.
@@ -54,6 +54,10 @@ La validacion SQL local no se pudo ejecutar porque Docker/Colima no estaba dispo
 El 2026-08-23 se detecto que la CLI local estaba enlazada a `tiynnllrcdhsvrzsdsct` mientras la aplicacion y la documentacion apuntan a `qxugymzyvtbxeyqcvtgk`. El enlace residual se retiro y los comandos remotos ahora abortan ante cualquier discrepancia. La cuenta CLI actual no puede enlazar el proyecto correcto por falta de privilegios.
 
 El 2026-08-24 una segunda revision independiente detecto y se corrigieron cinco huecos: parametros manipulables del RPC de rate limit, publicacion sin aprobacion obligatoria, variantes de foto huerfanas, cache antigua tras cambiar slug/ciudad y acciones sensibles sin confirmacion de email. Tambien se alineo la CSP con Analytics consentido y se redujeron los limites locales de Auth. CAPTCHA permanece pendiente porque requiere claves y token del cliente antes de poder activarse sin bloquear usuarios legitimos.
+
+La revision del PR añadio seis correcciones: permisos `contents: read` en CI, pushes de Supabase anclados a la raiz validada, politica DELETE por propietario, compensacion ante fallos parciales de Storage/base, estados publicos basados en publicacion y aprobacion, y cancelacion de cargas antiguas de mensajes. El runbook separa ahora la prueba real de inicio de sesion de la autorizacion defensiva con fixture no confirmado.
+
+Una ultima pasada movio el consumo del rate limit a los puntos de entrada de Postgres para impedir bypass por PostgREST directo, excluyo perfiles demo del contacto y acoto `connect-src` al proyecto Supabase configurado. El borrado de perfiles despublica y elimina la referencia a la foto antes de tocar Storage, confirma despues la fila eliminada y mantiene el flujo reintentable ante fallos parciales.
 
 ## Plan de salida
 

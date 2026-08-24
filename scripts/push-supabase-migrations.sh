@@ -2,6 +2,7 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "${repo_root}"
 
 node "${repo_root}/scripts/verify-supabase-project.mjs" --workdir "${repo_root}" --require-linked
 supabase db push

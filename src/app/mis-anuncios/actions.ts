@@ -33,23 +33,41 @@ export async function deleteTrainerProfile(trainerId: string): Promise<DeleteRes
     return { ok: false, error: "Perfil no encontrado o sin permisos." };
   }
 
+  const { data: preparedProfile, error: prepareError } = await supabase
+    .from("trainer_profiles")
+    .update({
+      photo_url: null,
+      is_published: false,
+      review_status: "pending",
+    })
+    .eq("id", trainerId)
+    .eq("user_id", user.id)
+    .select("id")
+    .maybeSingle();
+
+  if (prepareError || !preparedProfile) {
+    return { ok: false, error: "No se pudo preparar el anuncio para eliminarlo." };
+  }
+
   const photoPaths = getTrainerPhotoCleanupPaths(user.id);
   const { error: photoError } = await supabase.storage
     .from("trainer-photos")
     .remove(photoPaths);
 
   if (photoError) {
-    return { ok: false, error: "No se pudo eliminar la foto del anuncio." };
+    return { ok: false, error: "No se pudieron eliminar las fotos. Vuelve a intentarlo." };
   }
 
-  const { error } = await supabase
+  const { data: deletedProfile, error: deleteError } = await supabase
     .from("trainer_profiles")
     .delete()
     .eq("id", trainerId)
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .select("id")
+    .maybeSingle();
 
-  if (error) {
-    return { ok: false, error: "No se pudo eliminar el anuncio." };
+  if (deleteError || !deletedProfile) {
+    return { ok: false, error: "Las fotos se eliminaron, pero no el anuncio. Vuelve a intentarlo." };
   }
 
   revalidatePath("/mis-anuncios");

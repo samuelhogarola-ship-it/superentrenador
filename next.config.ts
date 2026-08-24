@@ -4,6 +4,16 @@ const scriptSources = ["'self'", "'unsafe-inline'"];
 scriptSources.push("https://www.googletagmanager.com");
 if (process.env.NODE_ENV === "development") scriptSources.push("'unsafe-eval'");
 const isProduction = process.env.NODE_ENV === "production";
+const supabaseConnectSources: string[] = [];
+
+try {
+  const supabaseUrl = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "");
+  if (supabaseUrl.protocol === "https:") {
+    supabaseConnectSources.push(supabaseUrl.origin, `wss://${supabaseUrl.host}`);
+  }
+} catch {
+  // A missing URL is handled by the app's Supabase configuration checks.
+}
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
@@ -59,7 +69,7 @@ const nextConfig: NextConfig = {
       "font-src 'self' data:",
       "style-src 'self' 'unsafe-inline'",
       `script-src ${scriptSources.join(" ")}`,
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.supabase.in wss://*.supabase.in https://accounts.google.com https://www.google-analytics.com https://*.google-analytics.com",
+      `connect-src 'self' ${supabaseConnectSources.join(" ")} https://accounts.google.com https://www.google-analytics.com https://*.google-analytics.com`,
       "frame-src https://accounts.google.com",
       ...(isProduction ? ["upgrade-insecure-requests"] : []),
     ].join("; ");

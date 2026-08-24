@@ -67,6 +67,7 @@ interface TrainerProfile {
 
 function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile; unreadMessages: number }) {
   const status = profile.review_status;
+  const canViewPublic = profile.is_published && status === "approved";
   const profileIncomplete =
     !profile.photo_url ||
     !profile.specialties?.length ||
@@ -74,10 +75,12 @@ function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile
     !profile.price_from;
 
   const statusBadge =
-    status === "approved"
+    canViewPublic
       ? { label: "Publicado", icon: BadgeCheck, cls: "text-[var(--accent)] bg-[var(--accent-soft)]" }
       : status === "rejected"
         ? { label: "Rechazado", icon: XCircle, cls: "text-red-600 bg-red-500/10" }
+        : status === "approved"
+          ? { label: "No publicado", icon: Clock, cls: "text-[var(--accent)] bg-[var(--accent-soft)]" }
         : { label: "Pendiente de revisión", icon: Clock, cls: "text-[var(--accent)] bg-[var(--accent-soft)]" };
 
   const StatusIcon = statusBadge.icon;
@@ -125,10 +128,12 @@ function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile
                 <p className="text-sm font-bold text-[#777]">Estado de publicación</p>
                 <h2 className="mt-1 font-heading text-2xl font-bold">{statusBadge.label}</h2>
                 <p className="mt-2 text-sm text-[#666]">
-                  {status === "approved"
+                  {canViewPublic
                     ? "Tu perfil está visible en el marketplace."
                     : status === "rejected"
                       ? "Revisa tu perfil y vuelve a enviarlo para evaluación."
+                      : status === "approved"
+                        ? "Tu perfil está aprobado, pero todavía no está visible."
                       : "Revisaremos el perfil antes de hacerlo público."}
                 </p>
               </div>

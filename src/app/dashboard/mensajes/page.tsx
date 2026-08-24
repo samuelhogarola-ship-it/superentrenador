@@ -108,10 +108,16 @@ export default function MensajesPage() {
   const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
+    let active = true;
+    const controller = new AbortController();
+
     async function load() {
+      setLoading(true);
       setLoadError(null);
       try {
-        const response = await fetch("/api/messages");
+        const response = await fetch("/api/messages", { signal: controller.signal });
+
+        if (!active) return;
 
         if (response.status === 401) {
           router.replace("/login?redirectTo=/dashboard/mensajes");
@@ -119,6 +125,8 @@ export default function MensajesPage() {
         }
 
         const payload = (await response.json().catch(() => null)) as MessagesPayload | null;
+
+        if (!active) return;
 
         if (!response.ok || !payload?.ok || !payload.userId || !payload.userName) {
           setLoadError(
@@ -139,15 +147,20 @@ export default function MensajesPage() {
           setThreads(buildThreadsAsClient(payload.messages ?? [], payload.trainers ?? [], payload.userId, payload.userName));
         }
       } catch (error) {
+        if (!active || (error instanceof Error && error.name === "AbortError")) return;
         console.error("[dashboard/mensajes] failed to load messages", error);
         setLoadError("No se pudieron cargar los mensajes.");
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     }
     load();
-  // reloadToken forces re-fetch after sending a reply
+    // reloadToken forces re-fetch after sending a reply
 
+    return () => {
+      active = false;
+      controller.abort();
+    };
   }, [router, reloadToken]);
 
   async function markThreadRead(thread: Thread) {

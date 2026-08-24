@@ -6,11 +6,11 @@ async function readSource(path: string) {
   return readFile(new URL(path, import.meta.url), "utf8");
 }
 
-test("contact access requires a confirmed email and a user-scoped limit", async () => {
+test("contact access requires a confirmed email and the protected database RPC", async () => {
   const source = await readSource("../src/app/api/trainer-contact/route.ts");
 
   assert.match(source, /hasVerifiedEmail\(user\)/);
-  assert.match(source, /trainer-contact:\$\{user\.id\}/);
+  assert.match(source, /rpc\("get_public_trainer_contact_info"/);
   assert.doesNotMatch(source, /getClientIp/);
 });
 
@@ -19,8 +19,20 @@ test("message mutations require same origin and confirmed email", async () => {
 
   assert.match(source, /isSameOriginRequest\(request\)/);
   assert.match(source, /hasVerifiedEmail\(user\)/);
-  assert.match(source, /messages:post:\$\{user\.id\}/);
   assert.doesNotMatch(source, /getClientIp/);
+});
+
+test("contact and message mutations rely on database-enforced limits", async () => {
+  const [contact, messages] = await Promise.all([
+    readSource("../src/app/api/trainer-contact/route.ts"),
+    readSource("../src/app/api/messages/route.ts"),
+  ]);
+
+  for (const source of [contact, messages]) {
+    assert.doesNotMatch(source, /import \{ rateLimit \}/);
+    assert.doesNotMatch(source, /await rateLimit\(/);
+    assert.match(source, /rate_limit_exceeded/);
+  }
 });
 
 test("profile updates and sign-out require same origin", async () => {
@@ -58,4 +70,12 @@ test("production auth runbook tracks CAPTCHA as a coordinated launch requirement
   assert.match(runbook, /Turnstile/);
   assert.match(runbook, /captchaToken/);
   assert.match(runbook, /no activar[\s\S]*sin[\s\S]*clave/i);
+});
+
+test("production auth runbook separates sign-in and route authorization checks", async () => {
+  const runbook = await readSource("../docs/supabase-auth-production.md");
+
+  assert.match(runbook, /cuenta confirmada[\s\S]*rutas privadas/i);
+  assert.match(runbook, /cuenta sin confirmar[\s\S]*no puede iniciar sesion/i);
+  assert.match(runbook, /email_confirmed_at[\s\S]*null[\s\S]*integracion/i);
 });

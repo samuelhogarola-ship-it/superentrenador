@@ -98,8 +98,8 @@ export default async function MisAnunciosPage() {
                     <p className="text-sm font-bold uppercase tracking-[0.12em] text-white/60">Contactos</p>
                     <p className="mt-1 text-sm text-white/60">De los últimos 30 días</p>
                   </div>
-                  <span className={`rounded-full px-3 py-1.5 text-xs font-bold ${trainerProfile.is_published ? "bg-[#59c993] text-[#102a20]" : "bg-white/10 text-white/70"}`}>
-                    {trainerProfile.is_published ? "Anuncio en línea" : "Pendiente de publicación"}
+                  <span className={`rounded-full px-3 py-1.5 text-xs font-bold ${canViewPublic ? "bg-[#59c993] text-[#102a20]" : "bg-white/10 text-white/70"}`}>
+                    {canViewPublic ? "Anuncio en línea" : "Pendiente de publicación"}
                   </span>
                 </div>
                 <div className="mt-6 grid gap-3 sm:max-w-sm">

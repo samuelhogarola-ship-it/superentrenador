@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
-import { rateLimit } from "@/lib/server/rate-limit";
 import { hasVerifiedEmail } from "@/lib/server/request-security";
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -26,20 +25,14 @@ export async function GET(request: Request) {
     return NextResponse.json({ contactInfo: "", error: "email_not_verified" }, { status: 403 });
   }
 
-  const limited = await rateLimit(supabase, `trainer-contact:${user.id}`, {
-    limit: 30,
-    windowMs: 10 * 60 * 1000,
-  });
-
-  if (!limited.allowed) {
-    return NextResponse.json({ contactInfo: "", error: "rate_limited" }, { status: 429 });
-  }
-
   const { data, error } = await supabase.rpc("get_public_trainer_contact_info", {
     trainer_slug: slug,
   });
 
   if (error) {
+    if (error.message.includes("rate_limit_exceeded")) {
+      return NextResponse.json({ contactInfo: "", error: "rate_limited" }, { status: 429 });
+    }
     return NextResponse.json({ contactInfo: "" }, { status: 500 });
   }
 
