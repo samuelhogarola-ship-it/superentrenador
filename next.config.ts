@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const scriptSources = ["'self'", "'unsafe-inline'"];
+scriptSources.push("https://www.googletagmanager.com");
 if (process.env.NODE_ENV === "development") scriptSources.push("'unsafe-eval'");
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -58,7 +59,7 @@ const nextConfig: NextConfig = {
       "font-src 'self' data:",
       "style-src 'self' 'unsafe-inline'",
       `script-src ${scriptSources.join(" ")}`,
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.supabase.in wss://*.supabase.in https://accounts.google.com",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.supabase.in wss://*.supabase.in https://accounts.google.com https://www.google-analytics.com https://*.google-analytics.com",
       "frame-src https://accounts.google.com",
       ...(isProduction ? ["upgrade-insecure-requests"] : []),
     ].join("; ");

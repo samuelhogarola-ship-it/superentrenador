@@ -39,3 +39,23 @@ test("local Supabase auth requires email confirmation", async () => {
 
   assert.match(emailSection, /enable_confirmations\s*=\s*true/);
 });
+
+test("local Supabase auth throttles email and credential abuse", async () => {
+  const config = await readSource("../supabase/config.toml");
+  const rateLimitSection = config.match(/\[auth\.rate_limit\]([\s\S]*?)(?=\n\[|$)/)?.[1] ?? "";
+  const emailSection = config.match(/\[auth\.email\]([\s\S]*?)(?=\n\[|$)/)?.[1] ?? "";
+
+  assert.match(rateLimitSection, /email_sent\s*=\s*30/);
+  assert.match(rateLimitSection, /sign_in_sign_ups\s*=\s*30/);
+  assert.match(rateLimitSection, /token_verifications\s*=\s*30/);
+  assert.match(emailSection, /max_frequency\s*=\s*"60s"/);
+});
+
+test("production auth runbook tracks CAPTCHA as a coordinated launch requirement", async () => {
+  const runbook = await readSource("../docs/supabase-auth-production.md");
+
+  assert.match(runbook, /CAPTCHA/);
+  assert.match(runbook, /Turnstile/);
+  assert.match(runbook, /captchaToken/);
+  assert.match(runbook, /no activar[\s\S]*sin[\s\S]*clave/i);
+});

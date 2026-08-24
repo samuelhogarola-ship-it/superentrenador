@@ -58,7 +58,7 @@ export function PhotoUpload({ value, onChange, userId }: PhotoUploadProps) {
     }
 
     const supabase = getSupabaseBrowserClient();
-    const path = `${userId}/profile.${realExt}`;
+    const path = `${userId}/profile`;
     const contentType = realExt === "jpg" ? "image/jpeg" : `image/${realExt}`;
 
     const { error } = await supabase.storage

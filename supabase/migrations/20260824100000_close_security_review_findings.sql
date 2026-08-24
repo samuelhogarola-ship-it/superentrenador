@@ -1,43 +1,48 @@
--- Close legacy grants and require verified identities for sensitive marketplace RPCs.
+-- Apply security review corrections in a new migration so environments that
+-- already recorded the previous hardening migration receive every fix.
 
-DO $$
-DECLARE
-  v_column text;
-BEGIN
-  FOR v_column IN
-    SELECT column_name
-    FROM information_schema.columns
-    WHERE table_schema = 'public'
-      AND table_name = 'trainer_profiles'
-  LOOP
-    EXECUTE format(
-      'REVOKE SELECT (%I) ON TABLE public.trainer_profiles FROM anon',
-      v_column
-    );
-  END LOOP;
-END;
-$$;
+UPDATE public.trainer_profiles
+SET is_published = false
+WHERE is_published = true
+  AND review_status <> 'approved';
 
-REVOKE ALL PRIVILEGES ON TABLE public.trainer_profiles FROM anon;
-GRANT SELECT ON public.trainer_profiles_public TO anon;
+ALTER TABLE public.trainer_profiles
+  DROP CONSTRAINT IF EXISTS trainer_profiles_published_requires_approval,
+  ADD CONSTRAINT trainer_profiles_published_requires_approval
+    CHECK (NOT is_published OR review_status = 'approved');
 
-CREATE OR REPLACE FUNCTION public.has_confirmed_email()
-RETURNS boolean
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-SET search_path = ''
-AS $$
-  SELECT EXISTS (
-    SELECT 1
-    FROM auth.users
-    WHERE id = auth.uid()
-      AND email_confirmed_at IS NOT NULL
-  )
-$$;
+CREATE OR REPLACE VIEW public.trainer_profiles_public AS
+SELECT
+  tp.id,
+  tp.slug,
+  tp.display_name,
+  tp.city_slug,
+  c.name AS city_name,
+  c.region AS city_region,
+  tp.headline,
+  tp.short_bio,
+  tp.long_bio,
+  tp.specialties,
+  tp.verified,
+  tp.years_experience,
+  tp.rating,
+  tp.reviews_count,
+  tp.price_from,
+  tp.modalities,
+  tp.languages,
+  tp.hidden_contact_hint,
+  tp.is_published,
+  tp.created_at,
+  tp.updated_at,
+  tp.photo_url,
+  tp.review_status
+FROM public.trainer_profiles tp
+LEFT JOIN public.cities c ON c.slug = tp.city_slug
+WHERE tp.is_published = true
+  AND tp.review_status = 'approved'
+  AND tp.is_demo = false;
 
-REVOKE ALL ON FUNCTION public.has_confirmed_email() FROM PUBLIC, anon;
-GRANT EXECUTE ON FUNCTION public.has_confirmed_email() TO authenticated;
+GRANT SELECT ON public.trainer_profiles_public TO anon, authenticated;
 
 CREATE OR REPLACE FUNCTION public.get_public_trainer_contact_info(trainer_slug text)
 RETURNS text
@@ -51,6 +56,7 @@ AS $$
   WHERE public.has_confirmed_email()
     AND tp.slug = trainer_slug
     AND tp.is_published = true
+    AND tp.review_status = 'approved'
   LIMIT 1
 $$;
 
@@ -71,16 +77,24 @@ DECLARE
   v_now timestamptz := now();
   v_reset_at timestamptz;
   v_count integer;
+  v_expected_limit integer;
+  v_expected_window_seconds integer := 600;
 BEGIN
   IF auth.uid() IS NULL THEN
     RAISE EXCEPTION 'Authentication required' USING ERRCODE = '42501';
   END IF;
 
+  v_expected_limit := CASE
+    WHEN p_key LIKE 'trainer-contact:%' THEN 30
+    WHEN p_key LIKE 'messages:post:%' THEN 5
+    ELSE NULL
+  END;
+
   IF p_key IS NULL
     OR length(p_key) > 200
-    OR p_limit NOT BETWEEN 1 AND 100
-    OR p_window_seconds NOT BETWEEN 1 AND 86400
-    OR NOT (p_key LIKE 'trainer-contact:%' OR p_key LIKE 'messages:post:%')
+    OR v_expected_limit IS NULL
+    OR p_limit <> v_expected_limit
+    OR p_window_seconds <> v_expected_window_seconds
     OR right(p_key, 36) <> auth.uid()::text
   THEN
     RAISE EXCEPTION 'Invalid rate limit parameters' USING ERRCODE = '22023';
@@ -108,29 +122,7 @@ $$;
 REVOKE ALL ON FUNCTION public.check_rate_limit(text, integer, integer) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.check_rate_limit(text, integer, integer) TO authenticated;
 
-DROP POLICY IF EXISTS "Thread client can read messages" ON public.messages;
-DROP POLICY IF EXISTS "Trainer can read messages on own profiles" ON public.messages;
 DROP POLICY IF EXISTS "Participants can insert thread messages" ON public.messages;
-DROP POLICY IF EXISTS "Trainer can mark messages as read" ON public.messages;
-
-CREATE POLICY "Thread client can read messages"
-  ON public.messages FOR SELECT TO authenticated
-  USING (
-    public.has_confirmed_email()
-    AND auth.uid() = client_id
-  );
-
-CREATE POLICY "Trainer can read messages on own profiles"
-  ON public.messages FOR SELECT TO authenticated
-  USING (
-    public.has_confirmed_email()
-    AND EXISTS (
-      SELECT 1
-      FROM public.trainer_profiles tp
-      WHERE tp.id = trainer_profile_id
-        AND tp.user_id = auth.uid()
-    )
-  );
 
 CREATE POLICY "Participants can insert thread messages"
   ON public.messages FOR INSERT TO authenticated
@@ -145,43 +137,22 @@ CREATE POLICY "Participants can insert thread messages"
           FROM public.trainer_profiles tp
           WHERE tp.id = trainer_profile_id
             AND tp.is_published = true
+            AND tp.review_status = 'approved'
         )
       )
       OR public.can_reply_to_message_thread(trainer_profile_id, client_id)
     )
   );
 
-CREATE POLICY "Trainer can mark messages as read"
-  ON public.messages FOR UPDATE TO authenticated
-  USING (
-    public.has_confirmed_email()
-    AND EXISTS (
-      SELECT 1
-      FROM public.trainer_profiles tp
-      WHERE tp.id = trainer_profile_id
-        AND tp.user_id = auth.uid()
-    )
-  )
-  WITH CHECK (
-    public.has_confirmed_email()
-    AND EXISTS (
-      SELECT 1
-      FROM public.trainer_profiles tp
-      WHERE tp.id = trainer_profile_id
-        AND tp.user_id = auth.uid()
-    )
-  );
-
 DROP POLICY IF EXISTS "trainer_photos_authenticated_insert" ON storage.objects;
 DROP POLICY IF EXISTS "trainer_photos_authenticated_update" ON storage.objects;
-DROP POLICY IF EXISTS "trainer_photos_authenticated_delete" ON storage.objects;
 
 CREATE POLICY "trainer_photos_authenticated_insert"
   ON storage.objects FOR INSERT TO authenticated
   WITH CHECK (
     public.has_confirmed_email()
     AND bucket_id = 'trainer-photos'
-    AND (storage.foldername(name))[1] = auth.uid()::text
+    AND name = auth.uid()::text || '/profile'
   );
 
 CREATE POLICY "trainer_photos_authenticated_update"
@@ -194,13 +165,5 @@ CREATE POLICY "trainer_photos_authenticated_update"
   WITH CHECK (
     public.has_confirmed_email()
     AND bucket_id = 'trainer-photos'
-    AND (storage.foldername(name))[1] = auth.uid()::text
-  );
-
-CREATE POLICY "trainer_photos_authenticated_delete"
-  ON storage.objects FOR DELETE TO authenticated
-  USING (
-    public.has_confirmed_email()
-    AND bucket_id = 'trainer-photos'
-    AND (storage.foldername(name))[1] = auth.uid()::text
+    AND name = auth.uid()::text || '/profile'
   );

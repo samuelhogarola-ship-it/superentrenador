@@ -58,9 +58,25 @@ En `Authentication > Emails > Magic Link / OTP`:
 
 En `Authentication > Rate Limits`:
 
-- Email sent: `500` por hora.
-- Sign in / sign ups: `120` por 5 minutos.
-- OTP / magic link verifications: `120` por 5 minutos.
+- Email sent: `30` por hora.
+- Sign in / sign ups: `30` por 5 minutos y por IP.
+- OTP / magic link verifications: `30` por 5 minutos y por IP.
+- Reenvio de email: minimo `60s` entre solicitudes.
+
+## CAPTCHA pendiente
+
+Turnstile es el proveedor recomendado para registro, magic link y recuperacion. No activar
+`[auth.captcha]` sin integrar antes el widget en los formularios, enviar su `captchaToken`
+a Supabase Auth y disponer de la clave secreta del proveedor en el proyecto cloud. Activarlo
+solo en el servidor haria fallar todas las solicitudes legitimas.
+
+Orden de implantacion:
+
+1. Crear el sitio en Cloudflare Turnstile para produccion y localhost.
+2. Añadir la clave publica al frontend y entregar `captchaToken` en las llamadas de Auth.
+3. Guardar la clave secreta solo en Supabase y habilitar `[auth.captcha]` con `provider = "turnstile"`.
+4. Probar registro, magic link, recuperacion, expiracion y token invalido en Preview.
+5. Aplicar la misma configuracion en Production y vigilar rechazos durante el lanzamiento.
 
 ## Estado actual
 

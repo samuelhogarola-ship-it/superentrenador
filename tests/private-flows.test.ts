@@ -8,7 +8,7 @@ async function readSource(path: string) {
 
 test("profile API accepts only trainer-owned Supabase photo URLs", async () => {
   const source = await readSource("../src/app/api/own-trainer-profile/route.ts");
-  assert.match(source, /getTrainerPhotoStoragePath\(photoUrl, user\.id/);
+  assert.match(source, /getTrainerPhotoStoragePath\([\s\S]*photoUrl,[\s\S]*user\.id/);
 });
 
 test("photo upload does not accept arbitrary external URLs", async () => {
@@ -28,6 +28,32 @@ test("profile save and deletion remove stale managed photo objects", async () =>
   assert.match(profileRoute, /from\("trainer-photos"\)[\s\S]*remove\(stalePhotoPaths\)/);
   assert.match(deleteAction, /getTrainerPhotoCleanupPaths\(user\.id\)/);
   assert.match(deleteAction, /from\("trainer-photos"\)[\s\S]*remove\(photoPaths\)/);
+});
+
+test("profile changes revalidate both old and new public routes", async () => {
+  const source = await readSource("../src/app/api/own-trainer-profile/route.ts");
+  const revalidationHelper =
+    source.match(/function revalidatePublicTrainerPaths[\s\S]*?\n}\n\nexport async function POST/)?.[0] ?? "";
+
+  assert.match(
+    source,
+    /from\("trainer_profiles"\)[\s\S]*select\("slug, city_slug"\)[\s\S]*eq\("user_id", user\.id\)[\s\S]*maybeSingle\(\)/,
+  );
+  assert.match(
+    source,
+    /revalidatePublicTrainerPaths\([\s\S]*existingProfile\?\.slug[\s\S]*data\.slug[\s\S]*existingProfile\?\.city_slug[\s\S]*citySlug/,
+  );
+  assert.doesNotMatch(revalidationHelper, /supabase|from\("cities"\)/);
+});
+
+test("profile deletion and trainer moderation require a confirmed email", async () => {
+  const [deleteAction, reviewAction] = await Promise.all([
+    readSource("../src/app/mis-anuncios/actions.ts"),
+    readSource("../src/app/admin/entrenadores/actions.ts"),
+  ]);
+
+  assert.match(deleteAction, /hasVerifiedEmail\(user\)/);
+  assert.match(reviewAction, /hasVerifiedEmail\(user\)/);
 });
 
 test("unpublished ads do not link to a missing public page", async () => {

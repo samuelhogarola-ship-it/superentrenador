@@ -13,12 +13,13 @@ El codigo local queda en un estado sensiblemente mas seguro y coherente. Los rie
 | Prioridad | Area | Estado | Que arreglo yo | Que haces tu | Riesgo restante | Esfuerzo |
 | --- | --- | --- | --- | --- | --- | --- |
 | P0 | Permisos de `trainer_profiles` | Corregido en migracion | Revocar `SELECT` anonimo por columna y exponer solo la vista publica | Aplicar `20260819120000_harden_marketplace_security.sql` y comprobar grants en cloud | Alto hasta aplicar la migracion | 30-60 min |
-| P0 | Email verificado | Corregido en app y SQL | Bloquear contacto, mensajes, perfil y fotos sin confirmacion | Activar SMTP y probar alta, magic link y confirmacion reales | Alto hasta configurar Auth cloud | 1-2 h |
+| P0 | Email verificado | Corregido en app y SQL | Bloquear contacto, mensajes, perfil, borrado y moderacion sin confirmacion | Activar SMTP y probar alta, magic link y confirmacion reales | Alto hasta configurar Auth cloud | 1-2 h |
 | P0 | CSRF en mutaciones | Corregido | Validacion estricta de `Origin` en mensajes, perfil y cierre de sesion | Verificar dominios finales autorizados en produccion | Bajo | 15 min |
 | P0 | Rate limit compartido | Corregido en migracion | Vincular claves al usuario autenticado y limitar parametros del RPC | Aplicar migracion y ejecutar prueba de abuso en cloud | Medio hasta desplegar SQL | 30 min |
 | P0 | Proyecto Supabase objetivo | Corregido localmente | Retirar enlace residual a `tiynn...` y bloquear operaciones si app, enlace y ref esperado divergen | Conceder acceso Owner/Admin a `qxug...` y volver a enlazar | Alto: cloud sigue sin migrar | 10-20 min |
 | P1 | Datos demo en produccion | Corregido | Demo solo con `MARKETPLACE_DEMO_MODE=true`; seed unico de Samuel | Mantener la variable en `false` en Preview y Production | Bajo | 5 min |
-| P1 | Fotos de entrenador | Corregido | Aceptar solo URLs del bucket y ruta del usuario; borrar foto al eliminar perfil | Revisar limites y politica de retencion deseada | Bajo | 30 min |
+| P1 | Fotos de entrenador | Corregido | Usar una ruta estable, aceptar solo nombres gestionados y limpiar variantes al guardar o eliminar | Verificar el bucket tras aplicar politicas en cloud | Bajo | 30 min |
+| P1 | Abuso de Auth | Parcial: limites endurecidos | Reducir email, login y OTP; documentar integracion segura de Turnstile | Aportar claves, integrar el widget y activar CAPTCHA tras prueba en Preview | Medio hasta activar CAPTCHA | 1-2 h |
 | P1 | Mensajeria | Corregido | Errores visibles, reintento y control de respuestas PATCH | Probar dos cuentas confirmadas en cloud | Medio hasta prueba E2E real | 30-45 min |
 | P1 | Rutas y SEO | Corregido | Redirects legacy, premium sin indexar, sitemap vivo y rutas de datos dinamicas | Validar canonical y dominio raiz tras el despliegue | Bajo | 20 min |
 | P1 | CI y supply chain | Corregido | Gitleaks y audit-ci en CI; eliminadas excepciones obsoletas | Proteger la rama y exigir el workflow | Bajo | 10 min |
@@ -30,10 +31,10 @@ El codigo local queda en un estado sensiblemente mas seguro y coherente. Los rie
 ## Cambios implementados
 
 - Seguridad de rutas: email confirmado y mismo origen para operaciones sensibles.
-- Seguridad de base de datos: grants anonimos endurecidos, RLS de mensajes y fotos, RPCs restringidos.
+- Seguridad de base de datos: grants anonimos endurecidos, publicacion ligada a aprobacion, RLS de mensajes y fotos, RPCs restringidos.
 - Datos: sin mezcla silenciosa entre Supabase y modelos estaticos; demo explicita por entorno.
 - Marketplace: home conectada al repositorio, estados vacios reales y rutas antiguas redirigidas.
-- Privado: eliminacion de fotos asociadas, enlaces publicos solo para anuncios publicados y mejor manejo de errores.
+- Privado: limpieza de todas las variantes de fotos, revalidacion de slug/ciudad anteriores, enlaces publicos solo para anuncios aprobados y mejor manejo de errores.
 - Producto: retiradas metricas simuladas, etiquetas de verificacion falsas y claims premium no demostrados.
 - Operacion: variables documentadas, CI con secretos/dependencias y documentacion de despliegue actualizada.
 - Renderizado: home, Andalucia y sitemap no quedan congelados con datos vacios si Supabase falla durante el build.
@@ -41,28 +42,31 @@ El codigo local queda en un estado sensiblemente mas seguro y coherente. Los rie
 
 ## Evidencias de verificacion
 
-- `npm run ci`: 44 tests, ESLint, TypeScript y build de Next.js correctos.
-- `npm run secrets:scan`: 88 commits revisados, sin secretos detectados.
+- `npm run ci`: 52 tests, ESLint, TypeScript y build de Next.js correctos.
+- `npm run secrets:scan`: 91 commits revisados, sin secretos detectados.
 - `npm run audit:deps`: 0 vulnerabilidades conocidas en 597 dependencias.
 - Navegador: home, listado y login cargan sin errores ni overlays.
 - Autorizacion: dashboard, anuncios y admin redirigen a login conservando `redirectTo`.
 - Responsive: portada sin overflow horizontal medido en viewport movil.
 
-La validacion SQL local no se pudo ejecutar porque Docker/Colima no estaba disponible. El build tampoco pudo resolver el host de Supabase desde el sandbox, pero completo correctamente y las rutas dependientes de datos quedaron marcadas como dinamicas.
+La validacion SQL local no se pudo ejecutar porque Docker/Colima no estaba disponible. El build tampoco pudo resolver el host de Supabase desde el sandbox, pero completo correctamente: home, Andalucia y sitemap permanecen dinamicos; ciudad y perfil usan ISR con revalidacion explicita.
 
 El 2026-08-23 se detecto que la CLI local estaba enlazada a `tiynnllrcdhsvrzsdsct` mientras la aplicacion y la documentacion apuntan a `qxugymzyvtbxeyqcvtgk`. El enlace residual se retiro y los comandos remotos ahora abortan ante cualquier discrepancia. La cuenta CLI actual no puede enlazar el proyecto correcto por falta de privilegios.
+
+El 2026-08-24 una segunda revision independiente detecto y se corrigieron cinco huecos: parametros manipulables del RPC de rate limit, publicacion sin aprobacion obligatoria, variantes de foto huerfanas, cache antigua tras cambiar slug/ciudad y acciones sensibles sin confirmacion de email. Tambien se alineo la CSP con Analytics consentido y se redujeron los limites locales de Auth. CAPTCHA permanece pendiente porque requiere claves y token del cliente antes de poder activarse sin bloquear usuarios legitimos.
 
 ## Plan de salida
 
 1. Aplicar todas las migraciones en Supabase cloud con una cuenta Owner/Admin.
 2. Configurar SMTP, redirects de Auth y rate limits en el proyecto cloud.
-3. Ejecutar una prueba E2E con dos usuarios confirmados: publicar perfil, aprobarlo, contactar y responder mensajes.
-4. Verificar grants anonimos, RLS y borrado de fotos directamente contra cloud.
-5. Confirmar `MARKETPLACE_DEMO_MODE=false` y todas las variables de produccion.
-6. Validar dominio raiz, `www`, canonical, sitemap y robots en el despliegue final.
-7. Completar logo, cookies y revision legal antes de presentacion publica.
-8. Activar proteccion de rama y exigir CI para cada cambio.
+3. Integrar Turnstile en Preview, enviar `captchaToken` y activar CAPTCHA solo tras una prueba completa.
+4. Ejecutar una prueba E2E con dos usuarios confirmados: publicar perfil, aprobarlo, contactar y responder mensajes.
+5. Verificar grants anonimos, RLS y borrado de fotos directamente contra cloud.
+6. Confirmar `MARKETPLACE_DEMO_MODE=false` y todas las variables de produccion.
+7. Validar dominio raiz, `www`, canonical, sitemap y robots en el despliegue final.
+8. Completar logo, cookies y revision legal antes de presentacion publica.
+9. Activar proteccion de rama y exigir CI para cada cambio.
 
 ## Criterio de cierre
 
-El producto se considera listo para lanzamiento tecnico cuando los pasos 1 a 6 esten verificados en cloud. Los pasos 7 y 8 son requisitos de salida comercial y operativa. Coach Studio debe permanecer privado hasta definir y probar su politica de acceso.
+El producto se considera listo para lanzamiento tecnico cuando los pasos 1 a 7 esten verificados en cloud. Los pasos 8 y 9 son requisitos de salida comercial y operativa. Coach Studio debe permanecer privado hasta definir y probar su politica de acceso.

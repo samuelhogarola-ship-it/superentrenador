@@ -6,9 +6,17 @@ const migrationPath = new URL(
   "../supabase/migrations/20260819120000_harden_marketplace_security.sql",
   import.meta.url,
 );
+const reviewMigrationPath = new URL(
+  "../supabase/migrations/20260824100000_close_security_review_findings.sql",
+  import.meta.url,
+);
 
 async function readSecurityMigration() {
   return readFile(migrationPath, "utf8").catch(() => "");
+}
+
+async function readReviewMigration() {
+  return readFile(reviewMigrationPath, "utf8").catch(() => "");
 }
 
 test("revokes every anonymous trainer_profiles column privilege", async () => {
@@ -27,7 +35,7 @@ test("requires confirmed email before returning trainer contact details", async 
 });
 
 test("requires approval everywhere a trainer can become public", async () => {
-  const sql = await readSecurityMigration();
+  const sql = await readReviewMigration();
 
   assert.match(sql, /CREATE OR REPLACE VIEW public\.trainer_profiles_public[\s\S]*review_status = 'approved'/i);
   assert.match(sql, /get_public_trainer_contact_info[\s\S]*tp\.review_status = 'approved'/i);
@@ -36,7 +44,7 @@ test("requires approval everywhere a trainer can become public", async () => {
 });
 
 test("constrains direct calls to the shared rate-limit RPC", async () => {
-  const sql = await readSecurityMigration();
+  const sql = await readReviewMigration();
 
   assert.match(sql, /WHEN p_key LIKE 'trainer-contact:%' THEN 30/i);
   assert.match(sql, /WHEN p_key LIKE 'messages:post:%' THEN 5/i);
@@ -46,10 +54,21 @@ test("constrains direct calls to the shared rate-limit RPC", async () => {
 });
 
 test("enforces confirmed email in message and photo storage policies", async () => {
-  const sql = await readSecurityMigration();
+  const sql = `${await readSecurityMigration()}\n${await readReviewMigration()}`;
 
   assert.match(sql, /CREATE OR REPLACE FUNCTION public\.has_confirmed_email/i);
   assert.match(sql, /CREATE POLICY "Participants can insert thread messages"[\s\S]*has_confirmed_email\(\)/i);
   assert.match(sql, /CREATE POLICY "Thread client can read messages"[\s\S]*has_confirmed_email\(\)/i);
   assert.match(sql, /CREATE POLICY "trainer_photos_authenticated_insert"[\s\S]*has_confirmed_email\(\)/i);
+});
+
+test("applies review fixes incrementally and restricts future photo object names", async () => {
+  const [historicalSql, reviewSql] = await Promise.all([
+    readSecurityMigration(),
+    readReviewMigration(),
+  ]);
+
+  assert.doesNotMatch(historicalSql, /trainer_profiles_published_requires_approval/i);
+  assert.match(reviewSql, /trainer_profiles_published_requires_approval/i);
+  assert.match(reviewSql, /name = auth\.uid\(\)::text \|\| '\/profile'/i);
 });

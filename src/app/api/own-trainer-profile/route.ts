@@ -3,7 +3,10 @@ import { NextResponse } from "next/server";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
 import { COMMERCIAL_NAME_ERROR, isCommercialTrainerName } from "@/lib/profile-validation";
 import { hasVerifiedEmail, isSameOriginRequest } from "@/lib/server/request-security";
-import { getTrainerPhotoStoragePath } from "@/lib/trainer-photo";
+import {
+  getTrainerPhotoCleanupPaths,
+  getTrainerPhotoStoragePath,
+} from "@/lib/trainer-photo";
 
 interface OwnTrainerProfilePayload {
   slug?: string;
@@ -71,17 +74,22 @@ function cleanNonNegativeNumber(value: unknown, max: number) {
   return Math.min(Math.max(Math.floor(parsed), 0), max);
 }
 
-async function revalidatePublicTrainerPaths(
-  supabase: Awaited<ReturnType<typeof getSupabaseSessionServerClient>>,
-  slug: string
+function revalidatePublicTrainerPaths(
+  slugs: Array<string | null | undefined>,
+  citySlugs: Array<string | null | undefined>,
 ) {
   revalidatePath("/");
   revalidatePath("/entrenadores");
-  revalidatePath(`/entrenadores/${slug}`);
   revalidatePath("/sitemap.xml");
 
-  const { data: cities } = await supabase.from("cities").select("slug");
-  cities?.forEach((city) => revalidatePath(`/ciudades/${city.slug}`));
+  new Set(slugs.filter((slug): slug is string => Boolean(slug))).forEach((slug) => {
+    revalidatePath(`/entrenadores/${slug}`);
+  });
+  new Set(citySlugs.filter((citySlug): citySlug is string => Boolean(citySlug))).forEach(
+    (citySlug) => {
+      revalidatePath(`/ciudades/${citySlug}`);
+    },
+  );
 }
 
 export async function POST(request: Request) {
@@ -150,10 +158,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Confirma tu email antes de guardar el perfil." }, { status: 403 });
   }
 
-  if (
-    photoUrl &&
-    !getTrainerPhotoStoragePath(photoUrl, user.id, process.env.NEXT_PUBLIC_SUPABASE_URL ?? "")
-  ) {
+  const { data: existingProfile, error: existingProfileError } = await supabase
+    .from("trainer_profiles")
+    .select("slug, city_slug")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (existingProfileError) {
+    return NextResponse.json(
+      { ok: false, error: "No se pudo comprobar el perfil actual." },
+      { status: 500 },
+    );
+  }
+
+  const newPhotoPath = photoUrl
+    ? getTrainerPhotoStoragePath(
+        photoUrl,
+        user.id,
+        process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
+      )
+    : null;
+
+  if (photoUrl && !newPhotoPath) {
     return NextResponse.json(
       { ok: false, error: "La foto debe subirse desde tu cuenta de Super Entrenador." },
       { status: 400 },
@@ -205,7 +231,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "No se pudo guardar el perfil." }, { status: 500 });
   }
 
-  await revalidatePublicTrainerPaths(supabase, data.slug);
+  const stalePhotoPaths = getTrainerPhotoCleanupPaths(user.id, newPhotoPath);
+  const { error: photoCleanupError } = await supabase.storage
+    .from("trainer-photos")
+    .remove(stalePhotoPaths);
+
+  if (photoCleanupError) {
+    return NextResponse.json(
+      { ok: false, error: "El perfil se guardó, pero no se pudieron limpiar las fotos anteriores." },
+      { status: 500 },
+    );
+  }
+
+  revalidatePublicTrainerPaths(
+    [existingProfile?.slug, data.slug],
+    [existingProfile?.city_slug, citySlug],
+  );
 
   return NextResponse.json({ ok: true, slug: data.slug });
 }

@@ -49,6 +49,16 @@ test("image CSP allows only app and Supabase image origins", async () => {
   assert.doesNotMatch(config, /"img-src 'self' data: blob: https:"/);
 });
 
+test("CSP permits the consent-gated Google Analytics transport", async () => {
+  const config = await readSource("../next.config.ts");
+
+  assert.match(config, /scriptSources\.push\("https:\/\/www\.googletagmanager\.com"\)/);
+  assert.match(
+    config,
+    /connect-src[^"\n]*https:\/\/www\.google-analytics\.com[^"\n]*https:\/\/\*\.google-analytics\.com/,
+  );
+});
+
 test("README describes the implemented auth and private surfaces", async () => {
   const readme = await readSource("../README.md");
 
