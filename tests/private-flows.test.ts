@@ -15,12 +15,19 @@ test("photo upload does not accept arbitrary external URLs", async () => {
   const source = await readSource("../src/components/photo-upload.tsx");
   assert.doesNotMatch(source, /O pega una URL directa/);
   assert.doesNotMatch(source, /placeholder="https:\/\/ejemplo\.com/);
+  assert.match(source, /const path = `\$\{userId\}\/profile`/);
 });
 
-test("deleting a trainer profile removes its owned storage photo", async () => {
-  const source = await readSource("../src/app/mis-anuncios/actions.ts");
-  assert.match(source, /select\("id, slug, city_slug, photo_url"\)/);
-  assert.match(source, /storage[\s\S]*from\("trainer-photos"\)[\s\S]*remove\(\[photoPath\]\)/);
+test("profile save and deletion remove stale managed photo objects", async () => {
+  const [profileRoute, deleteAction] = await Promise.all([
+    readSource("../src/app/api/own-trainer-profile/route.ts"),
+    readSource("../src/app/mis-anuncios/actions.ts"),
+  ]);
+
+  assert.match(profileRoute, /getTrainerPhotoCleanupPaths\(user\.id, newPhotoPath\)/);
+  assert.match(profileRoute, /from\("trainer-photos"\)[\s\S]*remove\(stalePhotoPaths\)/);
+  assert.match(deleteAction, /getTrainerPhotoCleanupPaths\(user\.id\)/);
+  assert.match(deleteAction, /from\("trainer-photos"\)[\s\S]*remove\(photoPaths\)/);
 });
 
 test("unpublished ads do not link to a missing public page", async () => {

@@ -19,7 +19,49 @@ END;
 $$;
 
 REVOKE ALL PRIVILEGES ON TABLE public.trainer_profiles FROM anon;
-GRANT SELECT ON public.trainer_profiles_public TO anon;
+
+UPDATE public.trainer_profiles
+SET is_published = false
+WHERE is_published = true
+  AND review_status <> 'approved';
+
+ALTER TABLE public.trainer_profiles
+  DROP CONSTRAINT IF EXISTS trainer_profiles_published_requires_approval,
+  ADD CONSTRAINT trainer_profiles_published_requires_approval
+    CHECK (NOT is_published OR review_status = 'approved');
+
+CREATE OR REPLACE VIEW public.trainer_profiles_public AS
+SELECT
+  tp.id,
+  tp.slug,
+  tp.display_name,
+  tp.city_slug,
+  c.name AS city_name,
+  c.region AS city_region,
+  tp.headline,
+  tp.short_bio,
+  tp.long_bio,
+  tp.specialties,
+  tp.verified,
+  tp.years_experience,
+  tp.rating,
+  tp.reviews_count,
+  tp.price_from,
+  tp.modalities,
+  tp.languages,
+  tp.hidden_contact_hint,
+  tp.is_published,
+  tp.created_at,
+  tp.updated_at,
+  tp.photo_url,
+  tp.review_status
+FROM public.trainer_profiles tp
+LEFT JOIN public.cities c ON c.slug = tp.city_slug
+WHERE tp.is_published = true
+  AND tp.review_status = 'approved'
+  AND tp.is_demo = false;
+
+GRANT SELECT ON public.trainer_profiles_public TO anon, authenticated;
 
 CREATE OR REPLACE FUNCTION public.has_confirmed_email()
 RETURNS boolean
@@ -51,6 +93,7 @@ AS $$
   WHERE public.has_confirmed_email()
     AND tp.slug = trainer_slug
     AND tp.is_published = true
+    AND tp.review_status = 'approved'
   LIMIT 1
 $$;
 
@@ -71,16 +114,24 @@ DECLARE
   v_now timestamptz := now();
   v_reset_at timestamptz;
   v_count integer;
+  v_expected_limit integer;
+  v_expected_window_seconds integer := 600;
 BEGIN
   IF auth.uid() IS NULL THEN
     RAISE EXCEPTION 'Authentication required' USING ERRCODE = '42501';
   END IF;
 
+  v_expected_limit := CASE
+    WHEN p_key LIKE 'trainer-contact:%' THEN 30
+    WHEN p_key LIKE 'messages:post:%' THEN 5
+    ELSE NULL
+  END;
+
   IF p_key IS NULL
     OR length(p_key) > 200
-    OR p_limit NOT BETWEEN 1 AND 100
-    OR p_window_seconds NOT BETWEEN 1 AND 86400
-    OR NOT (p_key LIKE 'trainer-contact:%' OR p_key LIKE 'messages:post:%')
+    OR v_expected_limit IS NULL
+    OR p_limit <> v_expected_limit
+    OR p_window_seconds <> v_expected_window_seconds
     OR right(p_key, 36) <> auth.uid()::text
   THEN
     RAISE EXCEPTION 'Invalid rate limit parameters' USING ERRCODE = '22023';
@@ -145,6 +196,7 @@ CREATE POLICY "Participants can insert thread messages"
           FROM public.trainer_profiles tp
           WHERE tp.id = trainer_profile_id
             AND tp.is_published = true
+            AND tp.review_status = 'approved'
         )
       )
       OR public.can_reply_to_message_thread(trainer_profile_id, client_id)

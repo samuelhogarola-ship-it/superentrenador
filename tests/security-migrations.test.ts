@@ -26,11 +26,22 @@ test("requires confirmed email before returning trainer contact details", async 
   assert.match(sql, /email_confirmed_at IS NOT NULL/i);
 });
 
+test("requires approval everywhere a trainer can become public", async () => {
+  const sql = await readSecurityMigration();
+
+  assert.match(sql, /CREATE OR REPLACE VIEW public\.trainer_profiles_public[\s\S]*review_status = 'approved'/i);
+  assert.match(sql, /get_public_trainer_contact_info[\s\S]*tp\.review_status = 'approved'/i);
+  assert.match(sql, /Participants can insert thread messages[\s\S]*tp\.review_status = 'approved'/i);
+  assert.match(sql, /CHECK \(NOT is_published OR review_status = 'approved'\)/i);
+});
+
 test("constrains direct calls to the shared rate-limit RPC", async () => {
   const sql = await readSecurityMigration();
 
-  assert.match(sql, /p_limit NOT BETWEEN 1 AND 100/i);
-  assert.match(sql, /p_window_seconds NOT BETWEEN 1 AND 86400/i);
+  assert.match(sql, /WHEN p_key LIKE 'trainer-contact:%' THEN 30/i);
+  assert.match(sql, /WHEN p_key LIKE 'messages:post:%' THEN 5/i);
+  assert.match(sql, /p_limit <> v_expected_limit/i);
+  assert.match(sql, /p_window_seconds <> v_expected_window_seconds/i);
   assert.match(sql, /auth\.uid\(\)::text/i);
 });
 

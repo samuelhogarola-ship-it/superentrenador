@@ -3,6 +3,7 @@ import test from "node:test";
 
 type TrainerPhotoModule = {
   getTrainerPhotoStoragePath?: (photoUrl: string, userId: string, supabaseUrl: string) => string | null;
+  getTrainerPhotoCleanupPaths?: (userId: string, keepPath?: string | null) => string[];
 };
 
 async function loadTrainerPhoto(): Promise<TrainerPhotoModule> {
@@ -38,4 +39,24 @@ test("rejects external, cross-user and malformed trainer photo URLs", async () =
     null,
   );
   assert.equal(getTrainerPhotoStoragePath?.("not-a-url", "user-123", supabaseUrl), null);
+  assert.equal(
+    getTrainerPhotoStoragePath?.(
+      "https://project.supabase.co/storage/v1/object/public/trainer-photos/user-123/arbitrary.jpg",
+      "user-123",
+      supabaseUrl,
+    ),
+    null,
+  );
+});
+
+test("returns every managed photo variant except the active object", async () => {
+  const { getTrainerPhotoCleanupPaths } = await loadTrainerPhoto();
+  assert.equal(typeof getTrainerPhotoCleanupPaths, "function");
+
+  assert.deepEqual(getTrainerPhotoCleanupPaths?.("user-123", "user-123/profile"), [
+    "user-123/profile.jpg",
+    "user-123/profile.png",
+    "user-123/profile.webp",
+    "user-123/profile.gif",
+  ]);
 });
