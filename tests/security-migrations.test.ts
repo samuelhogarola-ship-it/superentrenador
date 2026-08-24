@@ -129,7 +129,9 @@ test("qualifies rate-limit cleanup columns that conflict with output parameters"
 
   assert.match(sql, /DELETE FROM public\.rate_limit_buckets AS bucket/i);
   assert.match(sql, /WHERE bucket\.reset_at < v_now - interval '1 day'/i);
-  assert.match(sql, /right\(p_key, 36\) <> auth\.uid\(\)::text/i);
+  assert.match(sql, /WHEN 'trainer-contact:' \|\| auth\.uid\(\)::text THEN 30/i);
+  assert.match(sql, /WHEN 'messages:post:' \|\| auth\.uid\(\)::text THEN 5/i);
+  assert.doesNotMatch(sql, /p_key LIKE|right\(p_key, 36\)/i);
   assert.match(sql, /p_limit <> v_expected_limit/i);
   assert.match(sql, /p_window_seconds <> v_expected_window_seconds/i);
 });

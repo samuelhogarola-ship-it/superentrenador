@@ -49,6 +49,7 @@ test("local seed contains only the explicit Samuel demo profile", async () => {
   assert.doesNotMatch(seed, /sergio-navarro-rendimiento-madrid/);
   assert.match(seed, /DELETE FROM public\.trainer_profiles[\s\S]*is_demo = true/);
   assert.match(seed, /is_published, review_status, is_demo[\s\S]*true, 'approved', true/);
+  assert.match(seed, /is_published = excluded\.is_published/);
   assert.match(seed, /review_status = excluded\.review_status/);
 });
 

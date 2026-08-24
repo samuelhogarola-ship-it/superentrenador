@@ -22,18 +22,15 @@ BEGIN
     RAISE EXCEPTION 'Authentication required' USING ERRCODE = '42501';
   END IF;
 
-  v_expected_limit := CASE
-    WHEN p_key LIKE 'trainer-contact:%' THEN 30
-    WHEN p_key LIKE 'messages:post:%' THEN 5
+  v_expected_limit := CASE p_key
+    WHEN 'trainer-contact:' || auth.uid()::text THEN 30
+    WHEN 'messages:post:' || auth.uid()::text THEN 5
     ELSE NULL
   END;
 
-  IF p_key IS NULL
-    OR length(p_key) > 200
-    OR v_expected_limit IS NULL
+  IF v_expected_limit IS NULL
     OR p_limit <> v_expected_limit
     OR p_window_seconds <> v_expected_window_seconds
-    OR right(p_key, 36) <> auth.uid()::text
   THEN
     RAISE EXCEPTION 'Invalid rate limit parameters' USING ERRCODE = '22023';
   END IF;

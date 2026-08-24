@@ -47,7 +47,7 @@ El codigo local queda en un estado sensiblemente mas seguro y coherente. Los rie
 - `npm run audit:deps`: 0 vulnerabilidades conocidas en 597 dependencias.
 - `supabase db reset --local`: todas las migraciones aplicadas desde cero y `seed.sql` cargado correctamente.
 - `supabase db lint --local --level warning`: esquema `public` y extensiones sin errores.
-- PostgreSQL local: contacto admite 30 intentos y bloquea el 31; mensajes admite 5 y bloquea el 6; parametros de cuota manipulados son rechazados.
+- PostgreSQL local: contacto admite 30 intentos y bloquea el 31; mensajes admite 5 y bloquea el 6; parametros de cuota y claves manipuladas son rechazados.
 - Navegador: home, listado y login cargan sin errores ni overlays.
 - Autorizacion: dashboard, anuncios y admin redirigen a login conservando `redirectTo`.
 - Responsive: portada sin overflow horizontal medido en viewport movil.
