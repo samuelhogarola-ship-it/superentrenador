@@ -1,9 +1,28 @@
 import type { NextConfig } from "next";
 
+const isProduction = process.env.NODE_ENV === "production";
+
+/**
+ * Umami is self-hosted on a separate origin, so both its script and the
+ * beacons it posts back are blocked by our CSP unless that origin is
+ * allowlisted. Derived from the same env var the component reads, so the
+ * policy and the script tag cannot drift apart.
+ */
+export function getUmamiOrigin(rawUrl: string | undefined) {
+  try {
+    const url = new URL(rawUrl ?? "");
+    return url.protocol === "https:" ? url.origin : null;
+  } catch {
+    return null;
+  }
+}
+
+const umamiOrigin = getUmamiOrigin(process.env.NEXT_PUBLIC_UMAMI_URL);
+
 const scriptSources = ["'self'", "'unsafe-inline'"];
 scriptSources.push("https://www.googletagmanager.com");
+if (umamiOrigin) scriptSources.push(umamiOrigin);
 if (process.env.NODE_ENV === "development") scriptSources.push("'unsafe-eval'");
-const isProduction = process.env.NODE_ENV === "production";
 
 export function getSupabaseConnectSources(rawUrl: string | undefined, nodeEnv: string | undefined) {
   const sources: string[] = [];
@@ -81,7 +100,7 @@ const nextConfig: NextConfig = {
       "font-src 'self' data:",
       "style-src 'self' 'unsafe-inline'",
       `script-src ${scriptSources.join(" ")}`,
-      `connect-src 'self' ${supabaseConnectSources.join(" ")} https://accounts.google.com https://www.google-analytics.com https://*.google-analytics.com`,
+      `connect-src ${["'self'", ...supabaseConnectSources, "https://accounts.google.com", "https://www.google-analytics.com", "https://*.google-analytics.com", ...(umamiOrigin ? [umamiOrigin] : [])].join(" ")}`,
       "frame-src https://accounts.google.com",
       ...(isProduction ? ["upgrade-insecure-requests"] : []),
     ].join("; ");

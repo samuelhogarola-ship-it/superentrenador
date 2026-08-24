@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import "./globals.css";
 import { CookieConsent } from "@/components/cookie-consent";
 import { GoogleAnalytics } from "@/components/google-analytics";
+import { UmamiAnalytics } from "@/components/umami-analytics";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -63,6 +64,7 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <GoogleAnalytics />
         </Suspense>
+        <UmamiAnalytics />
         <div className="app-shell flex min-h-screen flex-col">
           <SiteHeader />
           {children}
