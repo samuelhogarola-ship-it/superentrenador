@@ -41,6 +41,8 @@ export function SiteHeader() {
             <>
               <Link
                 href="/registro?intent=trainer"
+                data-umami-event="entrenador-publicar-anuncio"
+                data-umami-event-origen="header"
                 className="inline-flex min-h-10 items-center justify-center rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-bold text-[var(--ink)] transition-transform hover:-translate-y-0.5 sm:px-5"
               >
                 Publica tu anuncio
