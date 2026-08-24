@@ -18,6 +18,10 @@ const databaseRateLimitsMigrationPath = new URL(
   "../supabase/migrations/20260824120000_enforce_database_rate_limits.sql",
   import.meta.url,
 );
+const rateLimitLintMigrationPath = new URL(
+  "../supabase/migrations/20260824130000_fix_rate_limit_lint.sql",
+  import.meta.url,
+);
 
 async function readSecurityMigration() {
   return readFile(migrationPath, "utf8").catch(() => "");
@@ -33,6 +37,10 @@ async function readOwnerDeleteMigration() {
 
 async function readDatabaseRateLimitsMigration() {
   return readFile(databaseRateLimitsMigrationPath, "utf8").catch(() => "");
+}
+
+async function readRateLimitLintMigration() {
+  return readFile(rateLimitLintMigrationPath, "utf8").catch(() => "");
 }
 
 test("revokes every anonymous trainer_profiles column privilege", async () => {
@@ -104,14 +112,24 @@ test("enforces contact and message limits in database entry points", async () =>
 
   assert.match(
     sql,
-    /get_public_trainer_contact_info[\s\S]*check_rate_limit\([\s\S]*trainer-contact:[\s\S]*is_demo = false/i,
+    /get_public_trainer_contact_info[\s\S]*check_rate_limit\(\s*'trainer-contact:'\s*\|\|\s*auth\.uid\(\)::text,\s*30,\s*600\s*\)[\s\S]*is_demo = false/i,
   );
   assert.match(
     sql,
-    /consume_message_rate_limit[\s\S]*check_rate_limit\([\s\S]*messages:post:[\s\S]*rate_limit_exceeded/i,
+    /consume_message_rate_limit[\s\S]*check_rate_limit\(\s*'messages:post:'\s*\|\|\s*auth\.uid\(\)::text,\s*5,\s*600\s*\)[\s\S]*rate_limit_exceeded/i,
   );
   assert.match(
     sql,
     /Participants can insert thread messages[\s\S]*THEN public\.consume_message_rate_limit\(\)/i,
   );
+});
+
+test("qualifies rate-limit cleanup columns that conflict with output parameters", async () => {
+  const sql = await readRateLimitLintMigration();
+
+  assert.match(sql, /DELETE FROM public\.rate_limit_buckets AS bucket/i);
+  assert.match(sql, /WHERE bucket\.reset_at < v_now - interval '1 day'/i);
+  assert.match(sql, /right\(p_key, 36\) <> auth\.uid\(\)::text/i);
+  assert.match(sql, /p_limit <> v_expected_limit/i);
+  assert.match(sql, /p_window_seconds <> v_expected_window_seconds/i);
 });

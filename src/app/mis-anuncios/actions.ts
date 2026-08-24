@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { hasVerifiedEmail } from "@/lib/server/request-security";
-import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
+import { getSupabaseAdminClient, getSupabaseSessionServerClient } from "@/lib/supabase/server";
 import { getTrainerPhotoCleanupPaths } from "@/lib/trainer-photo";
 
 type DeleteResult = { ok: true } | { ok: false; error: string };
@@ -24,7 +24,7 @@ export async function deleteTrainerProfile(trainerId: string): Promise<DeleteRes
 
   const { data: existing } = await supabase
     .from("trainer_profiles")
-    .select("id, slug, city_slug")
+    .select("id, slug, city_slug, photo_url, is_published, review_status")
     .eq("id", trainerId)
     .eq("user_id", user.id)
     .maybeSingle();
@@ -55,6 +55,39 @@ export async function deleteTrainerProfile(trainerId: string): Promise<DeleteRes
     .remove(photoPaths);
 
   if (photoError) {
+    try {
+      const admin = getSupabaseAdminClient();
+      const { data: restoredProfile, error: restoreError } = await admin
+        .from("trainer_profiles")
+        .update({
+          photo_url: existing.photo_url,
+          is_published: existing.is_published,
+          review_status: existing.review_status,
+        })
+        .eq("id", trainerId)
+        .eq("user_id", user.id)
+        .is("photo_url", null)
+        .eq("is_published", false)
+        .eq("review_status", "pending")
+        .select("photo_url, is_published, review_status")
+        .maybeSingle();
+
+      if (
+        restoreError ||
+        !restoredProfile ||
+        restoredProfile.photo_url !== existing.photo_url ||
+        restoredProfile.is_published !== existing.is_published ||
+        restoredProfile.review_status !== existing.review_status
+      ) {
+        throw new Error("Profile restoration was not confirmed.");
+      }
+    } catch {
+      return {
+        ok: false,
+        error: "No se pudieron eliminar las fotos y el anuncio quedó oculto. Vuelve a intentarlo.",
+      };
+    }
+
     return { ok: false, error: "No se pudieron eliminar las fotos. Vuelve a intentarlo." };
   }
 

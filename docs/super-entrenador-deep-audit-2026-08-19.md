@@ -42,14 +42,17 @@ El codigo local queda en un estado sensiblemente mas seguro y coherente. Los rie
 
 ## Evidencias de verificacion
 
-- `npm run ci`: 61 tests, ESLint, TypeScript y build de Next.js correctos.
-- `npm run secrets:scan`: 92 commits revisados, sin secretos detectados.
+- `npm run ci`: 63 tests, ESLint, TypeScript y build de Next.js correctos.
+- `npm run secrets:scan`: historial Git completo revisado, sin secretos detectados.
 - `npm run audit:deps`: 0 vulnerabilidades conocidas en 597 dependencias.
+- `supabase db reset --local`: todas las migraciones aplicadas desde cero y `seed.sql` cargado correctamente.
+- `supabase db lint --local --level warning`: esquema `public` y extensiones sin errores.
+- PostgreSQL local: contacto admite 30 intentos y bloquea el 31; mensajes admite 5 y bloquea el 6; parametros de cuota manipulados son rechazados.
 - Navegador: home, listado y login cargan sin errores ni overlays.
 - Autorizacion: dashboard, anuncios y admin redirigen a login conservando `redirectTo`.
 - Responsive: portada sin overflow horizontal medido en viewport movil.
 
-La validacion SQL local no se pudo ejecutar porque Docker/Colima no estaba disponible. El build tampoco pudo resolver el host de Supabase desde el sandbox, pero completo correctamente: home, Andalucia y sitemap permanecen dinamicos; ciudad y perfil usan ISR con revalidacion explicita.
+La validacion SQL local se completo en un entorno Supabase aislado y detecto una referencia ambigua a `reset_at` en `check_rate_limit`; se corrigio mediante la migracion incremental `20260824130000_fix_rate_limit_lint.sql` y una segunda reconstruccion limpia quedo sin errores. El build no pudo resolver el host cloud de Supabase desde el sandbox, pero completo correctamente: home, Andalucia y sitemap permanecen dinamicos; ciudad y perfil usan ISR con revalidacion explicita.
 
 El 2026-08-23 se detecto que la CLI local estaba enlazada a `tiynnllrcdhsvrzsdsct` mientras la aplicacion y la documentacion apuntan a `qxugymzyvtbxeyqcvtgk`. El enlace residual se retiro y los comandos remotos ahora abortan ante cualquier discrepancia. La cuenta CLI actual no puede enlazar el proyecto correcto por falta de privilegios.
 
@@ -57,7 +60,7 @@ El 2026-08-24 una segunda revision independiente detecto y se corrigieron cinco 
 
 La revision del PR añadio seis correcciones: permisos `contents: read` en CI, pushes de Supabase anclados a la raiz validada, politica DELETE por propietario, compensacion ante fallos parciales de Storage/base, estados publicos basados en publicacion y aprobacion, y cancelacion de cargas antiguas de mensajes. El runbook separa ahora la prueba real de inicio de sesion de la autorizacion defensiva con fixture no confirmado.
 
-Una ultima pasada movio el consumo del rate limit a los puntos de entrada de Postgres para impedir bypass por PostgREST directo, excluyo perfiles demo del contacto y acoto `connect-src` al proyecto Supabase configurado. El borrado de perfiles despublica y elimina la referencia a la foto antes de tocar Storage, confirma despues la fila eliminada y mantiene el flujo reintentable ante fallos parciales.
+Una ultima pasada movio el consumo del rate limit a los puntos de entrada de Postgres para impedir bypass por PostgREST directo, excluyo perfiles demo del contacto y acoto `connect-src` al proyecto Supabase configurado. El borrado de perfiles despublica y elimina la referencia a la foto antes de tocar Storage, confirma despues la fila eliminada y, si Storage falla, restaura y verifica la instantanea original mediante el cliente servidor privilegiado; si esa compensacion falla, el perfil permanece oculto de forma segura.
 
 ## Plan de salida
 

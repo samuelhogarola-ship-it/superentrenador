@@ -69,6 +69,20 @@ test("profile deletion compensates failures and confirms the deleted row", async
   assert.ok(storageRemoveIndex < databaseDeleteIndex);
   assert.match(source, /\.delete\(\)[\s\S]*\.select\("id"\)[\s\S]*\.maybeSingle\(\)/);
   assert.match(source, /if \(deleteError \|\| !deletedProfile\)/);
+  assert.match(source, /select\("id, slug, city_slug, photo_url, is_published, review_status"\)/);
+  assert.match(
+    source,
+    /if \(photoError\)[\s\S]*photo_url: existing\.photo_url[\s\S]*is_published: existing\.is_published[\s\S]*review_status: existing\.review_status/,
+  );
+  assert.match(source, /if \(photoError\)[\s\S]*getSupabaseAdminClient\(\)/);
+  assert.match(
+    source,
+    /\.is\("photo_url", null\)[\s\S]*\.eq\("is_published", false\)[\s\S]*\.eq\("review_status", "pending"\)/,
+  );
+  assert.match(
+    source,
+    /select\("photo_url, is_published, review_status"\)[\s\S]*restoredProfile\.photo_url !== existing\.photo_url[\s\S]*restoredProfile\.is_published !== existing\.is_published[\s\S]*restoredProfile\.review_status !== existing\.review_status/,
+  );
 });
 
 test("private trainer surfaces only call an approved published profile public", async () => {
