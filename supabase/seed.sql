@@ -134,7 +134,8 @@ WHERE is_demo = true
 
 insert into public.trainer_profiles (
   slug, display_name, city_slug, headline, short_bio, long_bio, specialties,
-  verified, years_experience, rating, reviews_count, price_from, modalities, languages, hidden_contact_hint, is_demo
+  verified, years_experience, rating, reviews_count, price_from, modalities, languages,
+  hidden_contact_hint, is_published, review_status, is_demo
 )
 values
   (
@@ -147,7 +148,7 @@ values
     array['Fuerza', 'Recomposición corporal', 'Pérdida de grasa', 'Hábitos saludables', 'Seguimiento online'],
     true, 7, 5.0, 12, 50, array['Presencial', 'Online'], array['Español', 'Inglés'],
     'Contacta con Viking Fitness desde una cuenta protegida para consultar disponibilidad presencial u online.',
-    true
+    true, 'approved', true
   )
 on conflict (slug) do update set
   display_name = excluded.display_name,
@@ -164,4 +165,6 @@ on conflict (slug) do update set
   modalities = excluded.modalities,
   languages = excluded.languages,
   hidden_contact_hint = excluded.hidden_contact_hint,
+  is_published = excluded.is_published,
+  review_status = excluded.review_status,
   is_demo = excluded.is_demo;
