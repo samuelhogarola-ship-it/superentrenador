@@ -129,6 +129,8 @@ export default function PremiumPage() {
 
             <Link
               href={plan.ctaHref}
+              data-umami-event="premium-cta"
+              data-umami-event-plan={plan.id}
               className={`mt-8 inline-flex items-center justify-center px-5 py-3 text-sm font-bold transition-colors ${
                 plan.highlight
                   ? "bg-[var(--accent)] text-[#111214] hover:bg-white"

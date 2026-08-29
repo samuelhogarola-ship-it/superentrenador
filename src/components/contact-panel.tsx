@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Award, Globe2, LockKeyhole, MapPin, MessageSquare, Phone, ShieldCheck } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { MessageForm } from "@/components/message-form";
+import { trackEvent } from "@/lib/analytics";
 
 interface ContactPanelProps {
   priceFrom: number;
@@ -151,7 +152,13 @@ export function ContactPanel({
                 <MessageForm
                   trainerProfileId={trainerProfileId}
                   trainerName={trainerName}
-                  onSent={() => setShowMessageForm(false)}
+                  onSent={() => {
+                    // Tracked here rather than inside MessageForm: the same
+                    // form is reused in the dashboard for ongoing threads,
+                    // and only this first contact is a conversion.
+                    trackEvent("mensaje-enviado", { entrenador: trainerSlug });
+                    setShowMessageForm(false);
+                  }}
                 />
               ) : (
                 <button
@@ -173,6 +180,8 @@ export function ContactPanel({
             <div className="mt-5 grid gap-3">
               <Link
                 href={loginHref}
+                data-umami-event="contacto-iniciar-sesion"
+                data-umami-event-entrenador={trainerSlug}
                 className="inline-flex items-center justify-center gap-2 bg-[#111214] px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-[var(--accent)] hover:text-[#111214]"
               >
                 <MessageSquare size={16} />
@@ -180,6 +189,8 @@ export function ContactPanel({
               </Link>
               <Link
                 href={registerHref}
+                data-umami-event="contacto-crear-cuenta"
+                data-umami-event-entrenador={trainerSlug}
                 className="inline-flex items-center justify-center gap-2 border border-[#111214]/15 px-4 py-3 text-sm font-semibold text-[#111214]"
               >
                 <LockKeyhole size={16} />

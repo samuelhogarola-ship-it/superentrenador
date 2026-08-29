@@ -19,7 +19,8 @@
     "supabase:verify": "node scripts/verify-supabase-project.mjs --require-linked",
     "supabase:db:push": "scripts/push-supabase-migrations.sh",
     "supabase:auth:push": "scripts/push-supabase-auth-config.sh",
-    "commitlint": "commitlint --from HEAD~1 --to HEAD"
+    "commitlint": "commitlint --from HEAD~1 --to HEAD",
+    "informe": "node scripts/informe-umami.mjs"
   },
   "lint-staged": {
     "*.{js,mjs,cjs,ts,tsx}": [

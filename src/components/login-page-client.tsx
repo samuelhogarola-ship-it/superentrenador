@@ -6,6 +6,7 @@ import { Suspense, useState } from "react";
 import { ArrowRight, Mail, ShieldCheck } from "lucide-react";
 import { getAuthErrorMessage, signIn, signInWithGoogle, signInWithMagicLink } from "@/lib/auth";
 import { getSafeInternalPath } from "@/lib/safe-navigation";
+import { TurnstileWidget } from "@/components/turnstile-widget";
 
 export function LoginPageClient() {
   return (
@@ -41,6 +42,11 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [magicLoading, setMagicLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [magicCaptchaToken, setMagicCaptchaToken] = useState<string | null>(null);
+  const [passwordCaptchaToken, setPasswordCaptchaToken] = useState<string | null>(null);
+  const [magicCaptchaResetKey, setMagicCaptchaResetKey] = useState(0);
+  const [passwordCaptchaResetKey, setPasswordCaptchaResetKey] = useState(0);
+  const turnstileEnabled = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
 
   async function handleMagicLinkSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -48,7 +54,12 @@ function LoginForm() {
     setMagicSent(false);
     setMagicLoading(true);
 
-    const { error: authError } = await signInWithMagicLink(magicEmail, redirectTo);
+    const { error: authError } = await signInWithMagicLink(
+      magicEmail,
+      redirectTo,
+      magicCaptchaToken ?? undefined,
+    );
+    setMagicCaptchaResetKey((value) => value + 1);
 
     if (authError) {
       console.error("[auth/client/magic-link] signInWithOtp failed", authError);
@@ -66,7 +77,8 @@ function LoginForm() {
     setError(null);
     setLoading(true);
 
-    const { error: authError } = await signIn(email, password);
+    const { error: authError } = await signIn(email, password, passwordCaptchaToken ?? undefined);
+    setPasswordCaptchaResetKey((value) => value + 1);
 
     if (authError) {
       setError(getAuthErrorMessage(authError.message));
@@ -160,9 +172,15 @@ function LoginForm() {
               </p>
             ) : null}
 
+            <TurnstileWidget
+              action="magic_link"
+              onToken={setMagicCaptchaToken}
+              resetKey={magicCaptchaResetKey}
+            />
+
             <button
               type="submit"
-              disabled={magicLoading}
+              disabled={magicLoading || (turnstileEnabled && !magicCaptchaToken)}
               className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[var(--ink)] transition-colors hover:opacity-95 disabled:opacity-50"
             >
               <Mail size={15} />
@@ -211,9 +229,15 @@ function LoginForm() {
               />
             </label>
 
+            <TurnstileWidget
+              action="password_login"
+              onToken={setPasswordCaptchaToken}
+              resetKey={passwordCaptchaResetKey}
+            />
+
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || (turnstileEnabled && !passwordCaptchaToken)}
               className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[var(--ink)] transition-colors hover:opacity-95 disabled:opacity-50"
             >
               {loading ? "Entrando…" : "Iniciar sesión"}

@@ -22,6 +22,14 @@ const rateLimitLintMigrationPath = new URL(
   "../supabase/migrations/20260824130000_fix_rate_limit_lint.sql",
   import.meta.url,
 );
+const publicViewPrivilegesMigrationPath = new URL(
+  "../supabase/migrations/20260829180000_restrict_public_view_privileges.sql",
+  import.meta.url,
+);
+const updatedAtSearchPathMigrationPath = new URL(
+  "../supabase/migrations/20260829181500_harden_updated_at_search_path.sql",
+  import.meta.url,
+);
 
 async function readSecurityMigration() {
   return readFile(migrationPath, "utf8").catch(() => "");
@@ -41,6 +49,14 @@ async function readDatabaseRateLimitsMigration() {
 
 async function readRateLimitLintMigration() {
   return readFile(rateLimitLintMigrationPath, "utf8").catch(() => "");
+}
+
+async function readPublicViewPrivilegesMigration() {
+  return readFile(publicViewPrivilegesMigrationPath, "utf8").catch(() => "");
+}
+
+async function readUpdatedAtSearchPathMigration() {
+  return readFile(updatedAtSearchPathMigrationPath, "utf8").catch(() => "");
 }
 
 test("revokes every anonymous trainer_profiles column privilege", async () => {
@@ -134,4 +150,23 @@ test("qualifies rate-limit cleanup columns that conflict with output parameters"
   assert.doesNotMatch(sql, /p_key LIKE|right\(p_key, 36\)/i);
   assert.match(sql, /p_limit <> v_expected_limit/i);
   assert.match(sql, /p_window_seconds <> v_expected_window_seconds/i);
+});
+
+test("exposes the public trainer view as read-only", async () => {
+  const sql = await readPublicViewPrivilegesMigration();
+
+  assert.match(
+    sql,
+    /REVOKE ALL PRIVILEGES ON TABLE public\.trainer_profiles_public FROM anon, authenticated/i,
+  );
+  assert.match(sql, /GRANT SELECT ON TABLE public\.trainer_profiles_public TO anon, authenticated/i);
+});
+
+test("pins the updated-at trigger function search path", async () => {
+  const sql = await readUpdatedAtSearchPathMigration();
+
+  assert.match(
+    sql,
+    /ALTER FUNCTION public\.set_updated_at\(\) SET search_path = public/i,
+  );
 });

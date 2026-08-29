@@ -130,6 +130,18 @@ test("development CSP permits the local Supabase HTTP and websocket origins", as
   assert.deepEqual(getSupabaseConnectSources("http://127.0.0.1:54321", "production"), []);
 });
 
+test("Umami origin is allowlisted only for valid https hosts", async () => {
+  const { getUmamiOrigin } = await import("../next.config.ts");
+
+  assert.equal(getUmamiOrigin("https://analytics.example.com"), "https://analytics.example.com");
+  // Trailing paths must not leak into the CSP directive.
+  assert.equal(getUmamiOrigin("https://analytics.example.com/"), "https://analytics.example.com");
+  // A plaintext or malformed host would weaken the policy, so it is dropped.
+  assert.equal(getUmamiOrigin("http://analytics.example.com"), null);
+  assert.equal(getUmamiOrigin("not-a-url"), null);
+  assert.equal(getUmamiOrigin(undefined), null);
+});
+
 test("README describes the implemented auth and private surfaces", async () => {
   const readme = await readSource("../README.md");
 

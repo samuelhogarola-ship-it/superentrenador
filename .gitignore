@@ -52,3 +52,6 @@ next-env.d.ts
 
 # local supabase cli artifacts
 /supabase/.temp
+
+# umami cli config (contiene token)
+.umami.json

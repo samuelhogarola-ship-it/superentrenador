@@ -77,24 +77,31 @@ export async function signInWithGoogle(redirectPath = "/dashboard") {
   });
 }
 
-export async function signInWithMagicLink(email: string, redirectPath = "/dashboard") {
+export async function signInWithMagicLink(email: string, redirectPath = "/dashboard", captchaToken?: string) {
   const supabase = getSupabaseBrowserClient();
   return supabase.auth.signInWithOtp({
     email,
     options: {
       emailRedirectTo: getAuthCallbackUrl(redirectPath),
       shouldCreateUser: false,
+      captchaToken,
     },
   });
 }
 
-export async function signUpWithMagicLink(email: string, redirectPath = "/dashboard", intent: AuthIntent = "client") {
+export async function signUpWithMagicLink(
+  email: string,
+  redirectPath = "/dashboard",
+  intent: AuthIntent = "client",
+  captchaToken?: string,
+) {
   const supabase = getSupabaseBrowserClient();
   return supabase.auth.signInWithOtp({
     email,
     options: {
       emailRedirectTo: getAuthCallbackUrl(redirectPath),
       shouldCreateUser: true,
+      captchaToken,
       data: {
         intent,
       },
@@ -102,20 +109,25 @@ export async function signUpWithMagicLink(email: string, redirectPath = "/dashbo
   });
 }
 
-export async function signUp(email: string, password: string) {
+export async function signUp(email: string, password: string, captchaToken?: string) {
   const supabase = getSupabaseBrowserClient();
   return supabase.auth.signUp({
     email,
     password,
     options: {
       emailRedirectTo: getAuthCallbackUrl("/mi-perfil"),
+      captchaToken,
     },
   });
 }
 
-export async function signIn(email: string, password: string) {
+export async function signIn(email: string, password: string, captchaToken?: string) {
   const supabase = getSupabaseBrowserClient();
-  return supabase.auth.signInWithPassword({ email, password });
+  return supabase.auth.signInWithPassword({
+    email,
+    password,
+    options: { captchaToken },
+  });
 }
 
 export async function signOut() {
