@@ -19,12 +19,15 @@ import {
 } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
 import { HeroSearchBar } from "@/components/hero-search-bar";
+import { MarketplaceEmptyState } from "@/components/marketplace-empty-state";
 import { TrainerCard } from "@/components/trainer-card";
 import { marketplaceWebsiteJsonLd } from "@/lib/marketplace-seo";
 import { listAllCategories, listFeaturedTrainerProfiles, listMarketplaceCities } from "@/lib/repositories/trainers";
-import { publicTrainerProfiles } from "@/lib/marketplace-data";
 import { MARKETPLACE_CATEGORIES, PERSONAL_TRAINER_SERVICES, PERSONAL_TRAINER_SUBCATEGORIES } from "@/lib/marketplace-taxonomy";
 import { siteConfig } from "@/lib/site";
+import type { PublicTrainerProfile } from "@/types/marketplace";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Super Entrenador | Marketplace de entrenadores personales",
@@ -108,7 +111,7 @@ function PersonalSubcategories() {
   );
 }
 
-function HeroFeaturedList({ trainers }: { trainers: typeof publicTrainerProfiles }) {
+function HeroFeaturedList({ trainers }: { trainers: PublicTrainerProfile[] }) {
   return (
     <div className="hero-featured-list" aria-label="Entrenadores destacados">
       <div className="flex items-center justify-between gap-3">
@@ -139,14 +142,11 @@ function HeroFeaturedList({ trainers }: { trainers: typeof publicTrainerProfiles
 }
 
 export default async function Home() {
-  const [featuredTrainers, categories, cities] = await Promise.all([
+  const [trainersToShow, categories, cities] = await Promise.all([
     listFeaturedTrainerProfiles(),
     listAllCategories(),
     listMarketplaceCities(),
   ]);
-  const trainersToShow = featuredTrainers.length > 0
-    ? [publicTrainerProfiles[0], ...featuredTrainers.filter((trainer) => trainer.slug !== publicTrainerProfiles[0].slug)].slice(0, 3)
-    : publicTrainerProfiles.slice(0, 6);
 
   return (
     <main className="flex flex-1 flex-col">
@@ -170,7 +170,7 @@ export default async function Home() {
             <HeroSearchBar categories={categories} cities={cities} />
           </div>
           </div>
-          <HeroFeaturedList trainers={trainersToShow} />
+          {trainersToShow.length > 0 ? <HeroFeaturedList trainers={trainersToShow} /> : null}
         </div>
         <CategoryMarquee />
         <PersonalSubcategories />
@@ -190,11 +190,17 @@ export default async function Home() {
               Ver todos
             </Link>
           </div>
-          <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {trainersToShow.map((trainer) => (
-              <TrainerCard key={trainer.id} trainer={trainer} />
-            ))}
-          </div>
+          {trainersToShow.length > 0 ? (
+            <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {trainersToShow.map((trainer) => (
+                <TrainerCard key={trainer.id} trainer={trainer} />
+              ))}
+            </div>
+          ) : (
+            <div className="mt-8">
+              <MarketplaceEmptyState resetHref="/entrenadores" />
+            </div>
+          )}
         </div>
       </section>
     </main>

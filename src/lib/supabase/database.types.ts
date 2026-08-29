@@ -138,6 +138,24 @@ export type Database = {
           },
         ]
       }
+      rate_limit_buckets: {
+        Row: {
+          count: number
+          key: string
+          reset_at: string
+        }
+        Insert: {
+          count?: number
+          key: string
+          reset_at: string
+        }
+        Update: {
+          count?: number
+          key?: string
+          reset_at?: string
+        }
+        Relationships: []
+      }
       trainer_profiles: {
         Row: {
           city_slug: string

@@ -67,6 +67,7 @@ interface TrainerProfile {
 
 function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile; unreadMessages: number }) {
   const status = profile.review_status;
+  const canViewPublic = profile.is_published && status === "approved";
   const profileIncomplete =
     !profile.photo_url ||
     !profile.specialties?.length ||
@@ -74,10 +75,12 @@ function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile
     !profile.price_from;
 
   const statusBadge =
-    status === "approved"
+    canViewPublic
       ? { label: "Publicado", icon: BadgeCheck, cls: "text-[var(--accent)] bg-[var(--accent-soft)]" }
       : status === "rejected"
         ? { label: "Rechazado", icon: XCircle, cls: "text-red-600 bg-red-500/10" }
+        : status === "approved"
+          ? { label: "No publicado", icon: Clock, cls: "text-[var(--accent)] bg-[var(--accent-soft)]" }
         : { label: "Pendiente de revisión", icon: Clock, cls: "text-[var(--accent)] bg-[var(--accent-soft)]" };
 
   const StatusIcon = statusBadge.icon;
@@ -111,12 +114,7 @@ function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile
           <div className="flex justify-center"><div className="relative"><Avatar name={profile.display_name} photoUrl={profile.photo_url} size="xl" /><span className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-full bg-[#ff6868] text-white"><PenLine size={17} /></span></div></div>
           <h1 className="mt-5 font-heading text-3xl font-bold">{profile.display_name}</h1>
           <p className="mt-2 flex items-center justify-center gap-1 text-sm font-semibold text-[#858585]"><MapPin size={14} /> {profile.city_slug ?? "Añade tu ciudad"}</p>
-          <div className="my-6 border-t border-[#eeeeee] pt-5 text-left">
-            <p className="text-sm font-bold text-[#555]">Perfil verificado</p>
-            <p className="mt-2 text-sm text-[#55bf88]">Correo electrónico</p>
-            <p className="text-sm text-[#55bf88]">Perfil de entrenador</p>
-          </div>
-          <MetricRow label="Clases realizadas (próximamente)" value="—" />
+          <div className="mt-6 border-t border-[#eeeeee] pt-5" />
           <MetricRow label="Comentarios" value={`${profile.reviews_count ?? 0}`} />
           {profile.rating ? <MetricRow label="Valoración" value={`${profile.rating.toFixed(1)} ★`} /> : null}
           {profile.price_from ? <MetricRow label="Tarifa horaria" value={`${profile.price_from}€`} /> : null}
@@ -124,10 +122,25 @@ function TrainerDashboard({ profile, unreadMessages }: { profile: TrainerProfile
         </aside>
 
         <section className="min-w-0">
-          <div className="rounded-[22px] bg-gradient-to-r from-[#62a5f3] to-[#1978ed] p-6 text-white shadow-[0_20px_42px_rgba(25,120,237,0.24)] sm:p-8">
-            <div className="flex items-center justify-between gap-4"><div><p className="text-sm font-bold text-white/75">Tu nivel en Super Entrenador</p><h2 className="mt-1 font-heading text-2xl font-bold">{statusBadge.label}</h2></div><StatusIcon size={32} /></div>
-            <div className="mt-8 grid grid-cols-4 gap-2 text-center text-xs font-bold text-white/85"><span>Nuevo</span><span>Recomendado</span><span>Destacado</span><span>Embajador</span></div>
-            <div className="mt-3 h-2 rounded-full bg-white/35"><div className={`h-2 rounded-full bg-white ${status === "approved" ? "w-2/3" : "w-1/4"}`} /></div>
+          <div className="rounded-[22px] border border-[#e4e4e4] bg-white p-6 shadow-sm sm:p-8">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-bold text-[#777]">Estado de publicación</p>
+                <h2 className="mt-1 font-heading text-2xl font-bold">{statusBadge.label}</h2>
+                <p className="mt-2 text-sm text-[#666]">
+                  {canViewPublic
+                    ? "Tu perfil está visible en el marketplace."
+                    : status === "rejected"
+                      ? "Revisa tu perfil y vuelve a enviarlo para evaluación."
+                      : status === "approved"
+                        ? "Tu perfil está aprobado, pero todavía no está visible."
+                      : "Revisaremos el perfil antes de hacerlo público."}
+                </p>
+              </div>
+              <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${statusBadge.cls}`}>
+                <StatusIcon size={24} />
+              </span>
+            </div>
           </div>
 
           <section className="mt-6 overflow-hidden rounded-[22px] border border-[#e4e4e4] bg-white shadow-sm">

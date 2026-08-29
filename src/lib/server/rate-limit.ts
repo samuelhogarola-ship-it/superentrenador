@@ -54,14 +54,6 @@ function rateLimitInMemory(key: string, { limit, windowMs }: RateLimitOptions): 
   return { allowed: true, remaining: limit - bucket.count, resetAt: bucket.resetAt };
 }
 
-export function getClientIp(request: Request) {
-  return (
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip")?.trim() ||
-    "unknown"
-  );
-}
-
 /**
  * Shared, cross-instance rate limit backed by the `check_rate_limit` Postgres
  * function (see supabase/migrations/20260811100000_rate_limit_buckets.sql).

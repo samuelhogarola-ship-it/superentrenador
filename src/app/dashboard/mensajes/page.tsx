@@ -105,11 +105,19 @@ export default function MensajesPage() {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [replying, setReplying] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
+    let active = true;
+    const controller = new AbortController();
+
     async function load() {
+      setLoading(true);
+      setLoadError(null);
       try {
-        const response = await fetch("/api/messages");
+        const response = await fetch("/api/messages", { signal: controller.signal });
+
+        if (!active) return;
 
         if (response.status === 401) {
           router.replace("/login?redirectTo=/dashboard/mensajes");
@@ -118,7 +126,14 @@ export default function MensajesPage() {
 
         const payload = (await response.json().catch(() => null)) as MessagesPayload | null;
 
+        if (!active) return;
+
         if (!response.ok || !payload?.ok || !payload.userId || !payload.userName) {
+          setLoadError(
+            response.status === 403
+              ? "Confirma tu email para acceder a los mensajes."
+              : "No se pudieron cargar los mensajes.",
+          );
           return;
         }
 
@@ -132,14 +147,20 @@ export default function MensajesPage() {
           setThreads(buildThreadsAsClient(payload.messages ?? [], payload.trainers ?? [], payload.userId, payload.userName));
         }
       } catch (error) {
+        if (!active || (error instanceof Error && error.name === "AbortError")) return;
         console.error("[dashboard/mensajes] failed to load messages", error);
+        setLoadError("No se pudieron cargar los mensajes.");
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     }
     load();
-  // reloadToken forces re-fetch after sending a reply
+    // reloadToken forces re-fetch after sending a reply
 
+    return () => {
+      active = false;
+      controller.abort();
+    };
   }, [router, reloadToken]);
 
   async function markThreadRead(thread: Thread) {
@@ -148,11 +169,14 @@ export default function MensajesPage() {
       .filter((m) => m.sender_id !== currentUserId && !m.read_at)
       .map((m) => m.id);
     try {
-      await fetch("/api/messages", {
+      const response = await fetch("/api/messages", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messageIds: unreadIds }),
       });
+      if (!response.ok) {
+        throw new Error(`Failed to mark messages as read (${response.status})`);
+      }
       setThreads((prev) =>
         prev.map((t) =>
           t.key === thread.key
@@ -166,6 +190,11 @@ export default function MensajesPage() {
   }
 
   const selectedThread = threads.find((t) => t.key === selectedKey) ?? null;
+
+  function retryLoad() {
+    setLoading(true);
+    setReloadToken((token) => token + 1);
+  }
 
   if (loading) {
     return (
@@ -200,7 +229,14 @@ export default function MensajesPage() {
           <p className="mt-2 text-sm text-[#68686f]">Gestiona tus conversaciones con clientes y entrenadores.</p>
         </div>
 
-      {threads.length === 0 ? (
+      {loadError ? (
+        <div role="alert" className="rounded-[24px] border border-red-200 bg-red-50 px-6 py-12 text-center text-sm text-red-700">
+          <p className="font-semibold">{loadError}</p>
+          <button type="button" onClick={retryLoad} className="mt-4 rounded-full bg-[#17171b] px-4 py-2 font-bold text-white">
+            Reintentar
+          </button>
+        </div>
+      ) : threads.length === 0 ? (
         <div className="rounded-[24px] border border-black/10 bg-white px-6 py-16 text-center text-sm text-[#68686f] shadow-sm">
           <MessageSquare size={32} className="mx-auto mb-3 opacity-30" />
           No tienes mensajes todavía.

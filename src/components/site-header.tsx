@@ -32,7 +32,7 @@ export function SiteHeader() {
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="inline-flex min-h-10 items-center justify-center rounded-full px-3 py-2 text-sm font-semibold text-[#9bd5ff] transition-colors hover:text-[#d9f2ff] sm:px-4"
+                className="brand-super inline-flex min-h-10 items-center justify-center rounded-full px-3 py-2 text-sm font-semibold transition-opacity hover:opacity-80 sm:px-4"
               >
                 Cerrar sesión
               </button>
@@ -47,7 +47,7 @@ export function SiteHeader() {
               </Link>
               <Link
                 href="/login"
-                className="inline-flex min-h-10 items-center justify-center rounded-full px-3 py-2 text-sm font-semibold text-[#9bd5ff] transition-colors hover:text-[#d9f2ff] sm:px-4"
+                className="brand-super inline-flex min-h-10 items-center justify-center rounded-full px-3 py-2 text-sm font-semibold transition-opacity hover:opacity-80 sm:px-4"
               >
                 Iniciar sesión
               </Link>

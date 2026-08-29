@@ -16,6 +16,9 @@
     "secrets:scan": ".tools/gitleaks/current/gitleaks git --redact --no-banner .",
     "secrets:scan:staged": ".tools/gitleaks/current/gitleaks git --staged --redact --no-banner .",
     "audit:deps": "audit-ci --config ./audit-ci.jsonc",
+    "supabase:verify": "node scripts/verify-supabase-project.mjs --require-linked",
+    "supabase:db:push": "scripts/push-supabase-migrations.sh",
+    "supabase:auth:push": "scripts/push-supabase-auth-config.sh",
     "commitlint": "commitlint --from HEAD~1 --to HEAD"
   },
   "lint-staged": {

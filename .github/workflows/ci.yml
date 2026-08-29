@@ -10,6 +10,8 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout
@@ -26,3 +28,12 @@ jobs:
 
       - name: Validate marketplace app
         run: npm run ci
+
+      - name: Install gitleaks
+        run: npm run security:setup
+
+      - name: Scan repository secrets
+        run: npm run secrets:scan
+
+      - name: Audit production dependencies
+        run: npm run audit:deps

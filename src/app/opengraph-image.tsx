@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/lib/site";
 
-export const runtime = "edge";
 export const alt = "Super Entrenador — Marketplace de entrenadores personales";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";

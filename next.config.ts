@@ -1,7 +1,31 @@
 import type { NextConfig } from "next";
 
 const scriptSources = ["'self'", "'unsafe-inline'"];
+scriptSources.push("https://www.googletagmanager.com");
 if (process.env.NODE_ENV === "development") scriptSources.push("'unsafe-eval'");
+const isProduction = process.env.NODE_ENV === "production";
+
+export function getSupabaseConnectSources(rawUrl: string | undefined, nodeEnv: string | undefined) {
+  const sources: string[] = [];
+
+  try {
+    const supabaseUrl = new URL(rawUrl ?? "");
+    if (supabaseUrl.protocol === "https:") {
+      sources.push(supabaseUrl.origin, `wss://${supabaseUrl.host}`);
+    } else if (nodeEnv === "development" && supabaseUrl.protocol === "http:") {
+      sources.push(supabaseUrl.origin, `ws://${supabaseUrl.host}`);
+    }
+  } catch {
+    // A missing URL is handled by the app's Supabase configuration checks.
+  }
+
+  return sources;
+}
+
+const supabaseConnectSources = getSupabaseConnectSources(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NODE_ENV,
+);
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
@@ -25,27 +49,51 @@ const nextConfig: NextConfig = {
         destination: "https://superentrenador.com/:path*",
         permanent: true,
       },
+      {
+        source: "/trainers/:slug",
+        destination: "/entrenadores/:slug",
+        permanent: true,
+      },
+      {
+        source: "/app/pt",
+        destination: "/dashboard",
+        permanent: true,
+      },
+      {
+        source: "/app/client",
+        destination: "/dashboard",
+        permanent: true,
+      },
+      {
+        source: "/app/admin",
+        destination: "/admin/entrenadores",
+        permanent: true,
+      },
     ];
   },
   async headers() {
+    const contentSecurityPolicy = [
+      "default-src 'self'",
+      "base-uri 'self'",
+      "frame-ancestors 'none'",
+      "form-action 'self'",
+      "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in",
+      "font-src 'self' data:",
+      "style-src 'self' 'unsafe-inline'",
+      `script-src ${scriptSources.join(" ")}`,
+      `connect-src 'self' ${supabaseConnectSources.join(" ")} https://accounts.google.com https://www.google-analytics.com https://*.google-analytics.com`,
+      "frame-src https://accounts.google.com",
+      ...(isProduction ? ["upgrade-insecure-requests"] : []),
+    ].join("; ");
+
     const securityHeaders = [
       {
         key: "Content-Security-Policy",
-        value: [
-          "default-src 'self'",
-          "base-uri 'self'",
-          "frame-ancestors 'none'",
-          "form-action 'self'",
-          "img-src 'self' data: blob: https:",
-          "font-src 'self' data:",
-          "style-src 'self' 'unsafe-inline'",
-          `script-src ${scriptSources.join(" ")}`,
-          "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://accounts.google.com",
-          "frame-src https://accounts.google.com",
-          "upgrade-insecure-requests",
-        ].join("; "),
+        value: contentSecurityPolicy,
       },
-      { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+      ...(isProduction
+        ? [{ key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" }]
+        : []),
       { key: "X-Content-Type-Options", value: "nosniff" },
       { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
       { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },

@@ -179,11 +179,11 @@ button {
 }
 
 .marketplace-hero-title {
-  background: linear-gradient(180deg, #d9f2ff 0%, #9bd5ff 48%, #5e9bd8 100%);
+  background: linear-gradient(180deg, #17171b 0%, #263f66 54%, #0073d1 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 4px 20px rgba(86, 157, 215, 0.14);
+  text-shadow: 0 4px 20px rgba(86, 157, 215, 0.1);
 }
 
 .marketplace-hero-points {
@@ -359,6 +359,16 @@ button {
 .personal-subcategories a:hover {
   background: var(--accent);
   color: var(--ink);
+}
+
+.empty-state-publish-cta {
+  background: #111214;
+  color: #ffffff;
+}
+
+.empty-state-publish-cta:hover {
+  background: var(--accent);
+  color: #111214;
 }
 
 .trainer-card-cover {

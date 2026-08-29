@@ -5,6 +5,7 @@ import { BadgeCheck, Check, Star, Zap } from "lucide-react";
 export const metadata: Metadata = {
   title: "Premium | Super Entrenador",
   description: "Destaca tu perfil, aparece primero en búsquedas y recibe más contactos con Super Entrenador Premium.",
+  robots: { index: false, follow: false },
 };
 
 const PLANS = [
@@ -147,7 +148,7 @@ export default function PremiumPage() {
           <Star size={28} className="shrink-0 fill-[var(--accent)] text-[var(--accent)]" />
           <div>
             <h2 className="font-heading text-2xl font-bold text-[#111214]">¿Por qué Premium?</h2>
-            <p className="mt-1 text-sm text-[#5b5b63]">Los entrenadores Premium reciben hasta 3× más contactos que los gratuitos.</p>
+            <p className="mt-1 text-sm text-[#5b5b63]">Estamos validando qué herramientas generan más visibilidad y contactos de calidad.</p>
           </div>
         </div>
         <div className="mt-8 grid gap-5 sm:grid-cols-3">

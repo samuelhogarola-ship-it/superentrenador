@@ -1,5 +1,7 @@
 # Auditoria UIX de lanzamiento del marketplace
 
+> Documento historico. El estado integral actualizado esta en `docs/super-entrenador-deep-audit-2026-08-19.md`.
+
 Fecha: 2026-07-17
 
 ## Objetivo
