@@ -71,22 +71,30 @@ En `Authentication > Rate Limits`:
 - OTP / magic link verifications: `30` por 5 minutos y por IP.
 - Reenvio de email: minimo `60s` entre solicitudes.
 
-## CAPTCHA pendiente
+## CAPTCHA preparado; activacion cloud pendiente
 
-Turnstile es el proveedor recomendado para registro, magic link y recuperacion. No activar
-`[auth.captcha]` sin integrar antes el widget en los formularios, enviar su `captchaToken`
-a Supabase Auth y disponer de la clave secreta del proveedor en el proyecto cloud. Activarlo
-solo en el servidor haria fallar todas las solicitudes legitimas.
+Turnstile es el proveedor recomendado para registro, magic link y recuperacion. Login,
+magic link y registro ya montan desafios independientes cuando existe
+`NEXT_PUBLIC_TURNSTILE_SITE_KEY`, envian su `captchaToken` a Supabase Auth y reinician el
+desafio despues de cada intento. Sin esa variable, el frontend conserva el flujo actual.
+
+No activar `[auth.captcha]` hasta disponer de una clave real de produccion y haber validado
+el recorrido completo en Preview. Activarlo solo en Supabase, sin desplegar simultaneamente
+la clave publica del frontend, haria fallar todas las solicitudes legitimas.
 
 Orden de implantacion:
 
 1. Crear el sitio en Cloudflare Turnstile para produccion y localhost.
-2. Añadir la clave publica al frontend y entregar `captchaToken` en las llamadas de Auth.
+2. Guardar la clave publica como `NEXT_PUBLIC_TURNSTILE_SITE_KEY` en Preview y desplegar el frontend preparado.
 3. Guardar la clave secreta solo en Supabase y habilitar `[auth.captcha]` con `provider = "turnstile"`.
 4. Probar registro, magic link, recuperacion, expiracion y token invalido en Preview.
 5. Aplicar la misma configuracion en Production y vigilar rechazos durante el lanzamiento.
 
 ## Estado actual
+
+La integracion frontend y la CSP estan implementadas y verificadas localmente con la clave
+publica oficial de pruebas de Cloudflare. Falta crear el widget real, guardar su clave publica
+en el entorno de despliegue y su secreto exclusivamente en Supabase antes de habilitar CAPTCHA.
 
 El intento de `supabase config push` desde Codex alcanzo el proyecto cloud, pero Supabase devolvio:
 

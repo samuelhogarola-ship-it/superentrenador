@@ -6,6 +6,7 @@ import { Suspense, useState } from "react";
 import { ArrowRight, CheckCircle, Mail, Sparkles, UserRound, Dumbbell } from "lucide-react";
 import { getAuthErrorMessage, signInWithGoogle, signUpWithMagicLink, type AuthIntent } from "@/lib/auth";
 import { getSafeInternalPath } from "@/lib/safe-navigation";
+import { TurnstileWidget } from "@/components/turnstile-widget";
 
 export function RegistroPageClient() {
   return (
@@ -40,6 +41,9 @@ function RegistroForm() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaResetKey, setCaptchaResetKey] = useState(0);
+  const turnstileEnabled = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
   const destination = intent === "trainer" ? "/mi-perfil" : redirectTo;
   const isTrainer = intent === "trainer";
 
@@ -47,7 +51,13 @@ function RegistroForm() {
     event.preventDefault();
     setError(null);
     setLoading(true);
-    const { error: authError } = await signUpWithMagicLink(email, destination, intent);
+    const { error: authError } = await signUpWithMagicLink(
+      email,
+      destination,
+      intent,
+      captchaToken ?? undefined,
+    );
+    setCaptchaResetKey((value) => value + 1);
 
     if (authError) {
       console.error("[auth/client/register] signInWithOtp failed", authError);
@@ -199,9 +209,15 @@ function RegistroForm() {
 
             {error ? <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p> : null}
 
+            <TurnstileWidget
+              action="registration"
+              onToken={setCaptchaToken}
+              resetKey={captchaResetKey}
+            />
+
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || (turnstileEnabled && !captchaToken)}
               className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[var(--ink)] transition-colors hover:opacity-95 disabled:opacity-50"
             >
               <Mail size={15} />

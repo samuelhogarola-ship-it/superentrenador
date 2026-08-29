@@ -21,6 +21,7 @@ const umamiOrigin = getUmamiOrigin(process.env.NEXT_PUBLIC_UMAMI_URL);
 
 const scriptSources = ["'self'", "'unsafe-inline'"];
 scriptSources.push("https://www.googletagmanager.com");
+scriptSources.push("https://challenges.cloudflare.com");
 if (umamiOrigin) scriptSources.push(umamiOrigin);
 if (process.env.NODE_ENV === "development") scriptSources.push("'unsafe-eval'");
 
@@ -100,8 +101,8 @@ const nextConfig: NextConfig = {
       "font-src 'self' data:",
       "style-src 'self' 'unsafe-inline'",
       `script-src ${scriptSources.join(" ")}`,
-      `connect-src ${["'self'", ...supabaseConnectSources, "https://accounts.google.com", "https://www.google-analytics.com", "https://*.google-analytics.com", ...(umamiOrigin ? [umamiOrigin] : [])].join(" ")}`,
-      "frame-src https://accounts.google.com",
+      `connect-src ${["'self'", ...supabaseConnectSources, "https://accounts.google.com", "https://challenges.cloudflare.com", "https://www.google-analytics.com", "https://*.google-analytics.com", ...(umamiOrigin ? [umamiOrigin] : [])].join(" ")}`,
+      "frame-src https://accounts.google.com https://challenges.cloudflare.com",
       ...(isProduction ? ["upgrade-insecure-requests"] : []),
     ].join("; ");
 
