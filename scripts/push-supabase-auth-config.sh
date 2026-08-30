@@ -9,6 +9,7 @@ required_vars=(
   "SUPABASE_AUTH_SMTP_USER"
   "SUPABASE_AUTH_SMTP_PASS"
   "SUPABASE_AUTH_SMTP_ADMIN_EMAIL"
+  "SUPABASE_AUTH_CAPTCHA_SECRET"
 )
 
 for var_name in "${required_vars[@]}"; do

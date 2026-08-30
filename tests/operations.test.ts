@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 
 async function readSource(path: string) {
   return readFile(new URL(path, import.meta.url), "utf8");
@@ -77,6 +79,36 @@ test("Supabase push scripts execute from the verified repository root", async ()
     assert.notEqual(changeDirectoryIndex, -1);
     assert.ok(changeDirectoryIndex < pushIndex);
   }
+});
+
+test("Supabase auth push refuses to run without the Turnstile secret", () => {
+  const script = fileURLToPath(new URL("../scripts/push-supabase-auth-config.sh", import.meta.url));
+  const result = spawnSync("bash", [script], {
+    encoding: "utf8",
+    env: {
+      ...process.env,
+      SUPABASE_AUTH_SMTP_HOST: "smtp.resend.com",
+      SUPABASE_AUTH_SMTP_USER: "resend",
+      SUPABASE_AUTH_SMTP_PASS: "test-only-secret",
+      SUPABASE_AUTH_SMTP_ADMIN_EMAIL: "no-reply@superentrenador.com",
+      SUPABASE_AUTH_CAPTCHA_SECRET: "",
+    },
+  });
+
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /Missing required environment variable: SUPABASE_AUTH_CAPTCHA_SECRET/);
+});
+
+test("reproducible auth config preserves the hardened OTP and Preview redirect", async () => {
+  const config = await readSource("../supabase/config.toml");
+  const totp = config.split("[auth.mfa.totp]\n")[1]?.split("\n[")[0] ?? "";
+  const vector = config.split("[storage.vector]\n")[1]?.split("\n[")[0] ?? "";
+
+  assert.match(config, /otp_length = 8/);
+  assert.match(config, /https:\/\/coach-studio-superentrenador\.vercel\.app\/\*\*/);
+  assert.match(totp, /enroll_enabled = true/);
+  assert.match(totp, /verify_enabled = true/);
+  assert.match(vector, /enabled = false/);
 });
 
 test("dependency audit has no stale vulnerability allowlist", async () => {
