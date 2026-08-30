@@ -10,6 +10,15 @@ test("documents the public Turnstile site key", async () => {
   const env = await readSource("../.env.example");
 
   assert.match(env, /NEXT_PUBLIC_TURNSTILE_SITE_KEY=/);
+  assert.match(env, /SUPABASE_AUTH_CAPTCHA_SECRET=/);
+});
+
+test("activates Turnstile validation in the reproducible Supabase auth config", async () => {
+  const config = await readSource("../supabase/config.toml");
+
+  assert.match(config, /\[auth\.captcha\][\s\S]*enabled = true/);
+  assert.match(config, /\[auth\.captcha\][\s\S]*provider = "turnstile"/);
+  assert.match(config, /\[auth\.captcha\][\s\S]*secret = "env\(SUPABASE_AUTH_CAPTCHA_SECRET\)"/);
 });
 
 test("passes CAPTCHA tokens to Supabase email auth calls", async () => {
