@@ -1,20 +1,17 @@
 import type { NextConfig } from "next";
+import { PERSONAL_UMAMI_HOST } from "./src/lib/umami-config";
 
 const isProduction = process.env.NODE_ENV === "production";
 
 /**
  * Umami is self-hosted on a separate origin, so both its script and the
  * beacons it posts back are blocked by our CSP unless that origin is
- * allowlisted. Derived from the same env var the component reads, so the
- * policy and the script tag cannot drift apart.
+ * allowlisted. Only the fixed personal origin is accepted, so a stale or
+ * accidental public environment variable cannot widen the policy.
  */
 export function getUmamiOrigin(rawUrl: string | undefined) {
-  try {
-    const url = new URL(rawUrl ?? "");
-    return url.protocol === "https:" ? url.origin : null;
-  } catch {
-    return null;
-  }
+  const normalizedUrl = rawUrl?.replace(/\/$/, "");
+  return normalizedUrl === PERSONAL_UMAMI_HOST ? PERSONAL_UMAMI_HOST : null;
 }
 
 const umamiOrigin = getUmamiOrigin(process.env.NEXT_PUBLIC_UMAMI_URL);

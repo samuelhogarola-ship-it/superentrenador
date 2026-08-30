@@ -1,4 +1,8 @@
 import Script from "next/script";
+import {
+  resolvePersonalUmamiConfig,
+  SUPERENTRENADOR_UMAMI_DOMAINS,
+} from "@/lib/umami-config";
 
 /**
  * Umami is cookieless and stores no personal data, so unlike Google Analytics
@@ -9,15 +13,17 @@ import Script from "next/script";
  * preview builds from polluting production stats.
  */
 export function UmamiAnalytics() {
-  const host = process.env.NEXT_PUBLIC_UMAMI_URL;
-  const websiteId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
-
-  if (!host || !websiteId) return null;
+  const config = resolvePersonalUmamiConfig({
+    hostUrl: process.env.NEXT_PUBLIC_UMAMI_URL,
+    websiteId: process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID,
+  });
+  if (!config) return null;
 
   return (
     <Script
-      src={`${host.replace(/\/$/, "")}/script.js`}
-      data-website-id={websiteId}
+      src={`${config.hostUrl}/script.js`}
+      data-website-id={config.websiteId}
+      data-domains={SUPERENTRENADOR_UMAMI_DOMAINS}
       strategy="afterInteractive"
     />
   );

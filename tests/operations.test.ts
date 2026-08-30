@@ -133,13 +133,53 @@ test("development CSP permits the local Supabase HTTP and websocket origins", as
 test("Umami origin is allowlisted only for valid https hosts", async () => {
   const { getUmamiOrigin } = await import("../next.config.ts");
 
-  assert.equal(getUmamiOrigin("https://analytics.example.com"), "https://analytics.example.com");
+  assert.equal(getUmamiOrigin("https://analytics.example.com"), null);
   // Trailing paths must not leak into the CSP directive.
-  assert.equal(getUmamiOrigin("https://analytics.example.com/"), "https://analytics.example.com");
+  assert.equal(
+    getUmamiOrigin("https://analytics.187.124.55.36.sslip.io/"),
+    "https://analytics.187.124.55.36.sslip.io",
+  );
   // A plaintext or malformed host would weaken the policy, so it is dropped.
   assert.equal(getUmamiOrigin("http://analytics.example.com"), null);
   assert.equal(getUmamiOrigin("not-a-url"), null);
   assert.equal(getUmamiOrigin(undefined), null);
+});
+
+test("Umami accepts only the personal host and exposes canonical domains", async () => {
+  const {
+    PERSONAL_UMAMI_HOST,
+    SUPERENTRENADOR_UMAMI_DOMAINS,
+    resolvePersonalUmamiConfig,
+  } = await import("../src/lib/umami-config.ts");
+
+  assert.deepEqual(
+    resolvePersonalUmamiConfig({
+      hostUrl: `${PERSONAL_UMAMI_HOST}/`,
+      websiteId: "superentrenador-test-id",
+    }),
+    {
+      hostUrl: PERSONAL_UMAMI_HOST,
+      websiteId: "superentrenador-test-id",
+    },
+  );
+  assert.equal(
+    resolvePersonalUmamiConfig({
+      hostUrl: "https://analytics.2.24.10.239.sslip.io",
+      websiteId: "superentrenador-test-id",
+    }),
+    null,
+  );
+  assert.equal(
+    resolvePersonalUmamiConfig({
+      hostUrl: PERSONAL_UMAMI_HOST,
+      websiteId: "",
+    }),
+    null,
+  );
+  assert.equal(
+    SUPERENTRENADOR_UMAMI_DOMAINS,
+    "superentrenador.com,www.superentrenador.com",
+  );
 });
 
 test("README describes the implemented auth and private surfaces", async () => {
