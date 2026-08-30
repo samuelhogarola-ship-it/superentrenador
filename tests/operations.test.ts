@@ -174,15 +174,28 @@ test("Umami origin is allowlisted only for valid https hosts", async () => {
   // A plaintext or malformed host would weaken the policy, so it is dropped.
   assert.equal(getUmamiOrigin("http://analytics.example.com"), null);
   assert.equal(getUmamiOrigin("not-a-url"), null);
-  assert.equal(getUmamiOrigin(undefined), null);
+  assert.equal(
+    getUmamiOrigin(undefined),
+    "https://analytics.187.124.55.36.sslip.io",
+  );
 });
 
 test("Umami accepts only the personal host and exposes canonical domains", async () => {
   const {
+    DEFAULT_SUPERENTRENADOR_UMAMI_WEBSITE_ID,
     PERSONAL_UMAMI_HOST,
     SUPERENTRENADOR_UMAMI_DOMAINS,
     resolvePersonalUmamiConfig,
   } = await import("../src/lib/umami-config.ts");
+
+  assert.deepEqual(resolvePersonalUmamiConfig({}), {
+    hostUrl: PERSONAL_UMAMI_HOST,
+    websiteId: "7fe51fc7-521e-45c4-b0d9-ea25d320fbc9",
+  });
+  assert.equal(
+    DEFAULT_SUPERENTRENADOR_UMAMI_WEBSITE_ID,
+    "7fe51fc7-521e-45c4-b0d9-ea25d320fbc9",
+  );
 
   assert.deepEqual(
     resolvePersonalUmamiConfig({
@@ -201,12 +214,15 @@ test("Umami accepts only the personal host and exposes canonical domains", async
     }),
     null,
   );
-  assert.equal(
+  assert.deepEqual(
     resolvePersonalUmamiConfig({
       hostUrl: PERSONAL_UMAMI_HOST,
       websiteId: "",
     }),
-    null,
+    {
+      hostUrl: PERSONAL_UMAMI_HOST,
+      websiteId: DEFAULT_SUPERENTRENADOR_UMAMI_WEBSITE_ID,
+    },
   );
   assert.equal(
     SUPERENTRENADOR_UMAMI_DOMAINS,

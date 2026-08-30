@@ -10,7 +10,7 @@ const isProduction = process.env.NODE_ENV === "production";
  * accidental public environment variable cannot widen the policy.
  */
 export function getUmamiOrigin(rawUrl: string | undefined) {
-  const normalizedUrl = rawUrl?.replace(/\/$/, "");
+  const normalizedUrl = rawUrl?.replace(/\/$/, "") || PERSONAL_UMAMI_HOST;
   return normalizedUrl === PERSONAL_UMAMI_HOST ? PERSONAL_UMAMI_HOST : null;
 }
 
