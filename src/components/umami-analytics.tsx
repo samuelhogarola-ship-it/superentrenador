@@ -9,8 +9,9 @@ import {
  * it runs without a consent gate — that is the point of using it: we measure
  * every visit instead of only the ones that accept the cookie banner.
  *
- * Both env vars must be set for the script to render, which keeps local and
- * preview builds from polluting production stats.
+ * The versioned production fallback keeps tracking active without build-time
+ * environment variables. Explicit values are still validated and a wrong
+ * host fails closed.
  */
 export function UmamiAnalytics() {
   const config = resolvePersonalUmamiConfig({
