@@ -297,7 +297,6 @@ button {
   width: 100vw;
   max-width: 100vw;
   overflow: hidden;
-  mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
 }
 
 .category-marquee-track {
