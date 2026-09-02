@@ -26,6 +26,14 @@ La CLI tambien necesita una sesion con permisos de Owner/Admin:
 supabase login
 ```
 
+Las plantillas del proyecto alojado se publican mediante Management API. Genera un
+token personal desde la cuenta con acceso al proyecto y expórtalo solo durante la
+operación:
+
+```bash
+export SUPABASE_ACCESS_TOKEN="..."
+```
+
 ## Aplicar configuracion
 
 ```bash
@@ -40,9 +48,21 @@ supabase config push --project-ref qxugymzyvtbxeyqcvtgk
 
 Antes del push, el script comprueba que `.env.local` apunta al mismo proyecto y aborta si detecta un enlace local a otro ref.
 
+Después, publica las plantillas versionadas de confirmación y Magic Link:
+
+```bash
+npm run supabase:auth:templates:push
+```
+
+Este comando tiene fijado el proyecto `qxugymzyvtbxeyqcvtgk`, valida que ambos HTML
+usen `TokenHash` y envía únicamente sus campos de asunto y contenido. No cambia SMTP,
+CAPTCHA, redirects ni la plantilla de recuperación.
+
 Tras el push:
 
 - Usar una cuenta confirmada para probar inicio de sesion y acceso a las rutas privadas.
+- Solicitar un correo nuevo y comprobar su enlace real; no reutilizar mensajes antiguos.
+- Confirmar que el callback crea sesión y permite entrar al panel protegido.
 - Verificar con una cuenta sin confirmar que no puede iniciar sesion en produccion.
 - Comprobar aparte la defensa de las rutas con un fixture autenticado cuyo
   `email_confirmed_at` sea `null`; si produccion no puede emitir esa sesion, ejecutar
@@ -61,7 +81,9 @@ En `Authentication > URL Configuration`:
 
 En `Authentication > Emails > Magic Link / OTP`:
 
-- Usar `{{ .ConfirmationURL }}`.
+- Confirm signup y Magic Link deben usar:
+  `{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=email`.
+- Abrir una pestaña nueva después de guardar y comprobar que el contenido persistió.
 - Confirmar que `Confirm email` esta activado; `supabase/config.toml` usa `enable_confirmations = true`.
 
 En `Authentication > Rate Limits`:
@@ -109,3 +131,6 @@ SUPABASE_AUTH_SMTP_PASS
 ```
 
 Con una cuenta Supabase con permisos suficientes y SMTP real, la configuracion ya esta lista en `supabase/config.toml`. La prueba de una cuenta sin confirmar valida el rechazo de inicio de sesion; la autorizacion defensiva de contacto y mensajes se valida por separado con el fixture descrito arriba.
+
+La recuperación de contraseña sigue siendo un flujo independiente: no se publica una
+plantilla `type=recovery` hasta que existan su callback y formulario de nueva contraseña.

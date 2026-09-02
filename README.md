@@ -49,6 +49,7 @@ SUPABASE_AUTH_SMTP_HOST=
 SUPABASE_AUTH_SMTP_USER=
 SUPABASE_AUTH_SMTP_PASS=
 SUPABASE_AUTH_SMTP_ADMIN_EMAIL=
+SUPABASE_ACCESS_TOKEN=
 ```
 
 ## Estructura útil
@@ -89,6 +90,7 @@ SUPABASE_AUTH_SMTP_ADMIN_EMAIL=
 - aplicar todas las migraciones de `supabase/migrations/` en el proyecto remoto
 - enlazar la CLI al proyecto `qxugymzyvtbxeyqcvtgk` y aplicar migraciones con `npm run supabase:db:push`
 - activar confirmación de email y SMTP propio con `npm run supabase:auth:push`
+- publicar confirmación y Magic Link con TokenHash mediante `npm run supabase:auth:templates:push`
 - verificar grants, RLS y Storage contra Supabase remoto
 - validar dominio, redirects OAuth y DNS finales
 - decidir y construir el flujo comercial de Premium; la página actual es acceso anticipado y está en `noindex`
