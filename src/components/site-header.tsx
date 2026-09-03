@@ -16,7 +16,7 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-[var(--line)] bg-[color:rgba(8,9,15,0.86)] backdrop-blur-md">
+    <header className="theme-dark sticky top-0 z-30 border-b border-[var(--line)] bg-[color:rgba(8,9,15,0.86)] backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 md:px-6 lg:px-8">
         <BrandMark />
 
@@ -25,7 +25,7 @@ export function SiteHeader() {
             <>
               <Link
                 href="/dashboard"
-                className="inline-flex min-h-10 items-center justify-center rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-bold text-[var(--ink)] transition-transform hover:-translate-y-0.5 sm:px-5"
+                className="inline-flex min-h-10 items-center justify-center rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-bold text-[var(--accent-foreground)] transition-transform hover:-translate-y-0.5 sm:px-5"
               >
                 Mi panel
               </Link>
@@ -43,7 +43,7 @@ export function SiteHeader() {
                 href="/registro?intent=trainer"
                 data-umami-event="entrenador-publicar-anuncio"
                 data-umami-event-origen="header"
-                className="inline-flex min-h-10 items-center justify-center rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-bold text-[var(--ink)] transition-transform hover:-translate-y-0.5 sm:px-5"
+                className="inline-flex min-h-10 items-center justify-center rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-bold text-[var(--accent-foreground)] transition-transform hover:-translate-y-0.5 sm:px-5"
               >
                 Publica tu anuncio
               </Link>

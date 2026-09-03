@@ -97,7 +97,7 @@ function RegistroForm() {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-4 py-12 md:px-6">
       <div className="grid w-full gap-6 lg:grid-cols-[1.02fr_0.98fr]">
-        <section className="rounded-[28px] bg-[var(--panel-strong)] p-8 sm:p-10">
+        <section className="theme-dark rounded-[28px] bg-[var(--panel-strong)] p-8 sm:p-10">
           <p className="app-kicker">{isTrainer ? "Para entrenadores" : "Para clientes"}</p>
           <h1 className="app-title mt-4 text-4xl text-[var(--text)] sm:text-5xl">
             {isTrainer ? "Publica tu perfil y recibe nuevos clientes." : "Encuentra y contacta con tu entrenador."}
