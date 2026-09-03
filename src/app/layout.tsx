@@ -60,7 +60,7 @@ export default function RootLayout({
       lang="es"
       className={`${plusJakartaSans.variable} ${sora.variable} h-full antialiased`}
     >
-      <body className="min-h-full text-[var(--text)]">
+      <body className="min-h-full bg-[var(--bg)] text-[var(--text)]">
         <Suspense fallback={null}>
           <GoogleAnalytics />
         </Suspense>
