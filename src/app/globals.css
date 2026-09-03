@@ -13,7 +13,8 @@
   --muted: rgba(23, 23, 27, 0.62);
   --ink: #07090e;
   --accent: #c62f5b;
-  --accent-strong: #ef6f91;
+  --accent-foreground: #ffffff;
+  --accent-strong: #a92750;
   --accent-2: #0094ff;
   --accent-hot: #e11931;
   --accent-soft: rgba(198, 47, 91, 0.14);
@@ -35,6 +36,7 @@
   --panel-strong: #101420;
   --text: #ededf5;
   --muted: rgba(237, 237, 245, 0.56);
+  --accent-strong: #ef6f91;
   --line: rgba(237, 237, 245, 0.08);
   --line-strong: rgba(237, 237, 245, 0.16);
   --shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
@@ -350,7 +352,7 @@ button {
 
 .category-pill:hover {
   border-color: var(--accent);
-  color: var(--accent-strong);
+  color: #ef6f91;
   transform: translateY(-2px);
 }
 

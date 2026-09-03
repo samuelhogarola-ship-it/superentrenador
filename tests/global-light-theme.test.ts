@@ -30,19 +30,34 @@ test("the application uses a light global canvas with scoped dark contrast block
   assert.match(css, /\.theme-dark\s*\{[^}]*--bg:\s*#08090f;/s);
   assert.doesNotMatch(layout, /bg-\[var\(--bg\)\]/);
 
-  for (const source of [header, footer, login, register]) {
-    assert.match(source, /theme-dark/);
-  }
+  assert.match(header, /<header\s+className="[^"]*\btheme-dark\b/);
+  assert.match(footer, /<footer\s+className="[^"]*\btheme-dark\b/);
+  assert.match(login, /<section\s+className="[^"]*\btheme-dark\b/);
+  assert.match(register, /<section\s+className="[^"]*\btheme-dark\b/);
 });
 
 test("the pink accent remains legible on the white canvas", async () => {
-  const css = await readSource("src/app/globals.css");
+  const [css, header] = await Promise.all([
+    readSource("src/app/globals.css"),
+    readSource("src/components/site-header.tsx"),
+  ]);
   const accent = css.match(/:root\s*\{[^}]*--accent:\s*(#[a-f\d]{6});/is)?.[1] ?? "";
+  const accentForeground =
+    css.match(/:root\s*\{[^}]*--accent-foreground:\s*(#[a-f\d]{6});/is)?.[1] ?? "";
+  const accentStrong =
+    css.match(/:root\s*\{[^}]*--accent-strong:\s*(#[a-f\d]{6});/is)?.[1] ?? "";
   const [red, green, blue] = accent.match(/[a-f\d]{2}/gi)?.map((value) => parseInt(value, 16)) ?? [];
   const contrastWithWhite = 1.05 / (relativeLuminance(accent) + 0.05);
+  const accentButtonContrast =
+    (Math.max(relativeLuminance(accent), relativeLuminance(accentForeground)) + 0.05) /
+    (Math.min(relativeLuminance(accent), relativeLuminance(accentForeground)) + 0.05);
+  const strongContrastWithWhite = 1.05 / (relativeLuminance(accentStrong) + 0.05);
 
   assert.ok(red > green && blue > green, `${accent} is not in the pink/red family`);
   assert.ok(contrastWithWhite >= 4.5, `${accent} has only ${contrastWithWhite.toFixed(2)}:1 contrast`);
+  assert.ok(accentButtonContrast >= 4.5, `accent buttons have only ${accentButtonContrast.toFixed(2)}:1 contrast`);
+  assert.ok(strongContrastWithWhite >= 4.5, `${accentStrong} has only ${strongContrastWithWhite.toFixed(2)}:1 contrast`);
+  assert.match(header, /bg-\[var\(--accent\)\][^"\n]*text-\[var\(--accent-foreground\)\]/);
 });
 
 test("loading skeletons remain visible on the white canvas", async () => {
