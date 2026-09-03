@@ -93,7 +93,7 @@ function LoginForm() {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-4 py-12 md:px-6">
       <div className="grid w-full gap-6 lg:grid-cols-[0.92fr_1.08fr]">
-        <section className="theme-dark rounded-[28px] bg-[var(--panel-strong)] p-8 sm:p-10">
+        <section className="rounded-[28px] bg-[var(--panel-strong)] p-8 sm:p-10">
           <p className="app-kicker">Acceso seguro</p>
           <h1 className="app-title mt-4 text-4xl text-[var(--text)] sm:text-5xl">Tus entrenadores y mensajes, en un solo lugar.</h1>
           <p className="app-copy mt-4 max-w-md text-base">
