@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   Accessibility,
+  ArrowRight,
   Bike,
   CircleDot,
   Dumbbell,
@@ -201,6 +202,21 @@ export default async function Home() {
               <MarketplaceEmptyState resetHref="/entrenadores" />
             </div>
           )}
+        </div>
+      </section>
+      <section
+        aria-label="Inscripción de entrenadores"
+        className="bg-white px-5 pb-16 text-[var(--ink)] sm:px-8 lg:px-12"
+      >
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 rounded-[2rem] bg-[#17171b] px-6 py-8 text-center sm:flex-row sm:px-10 sm:text-left">
+          <p className="font-heading text-2xl font-bold text-white sm:text-3xl">¿Eres entrenador?</p>
+          <Link
+            href="/registro?intent=trainer"
+            className="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 font-bold text-[#111214] transition-transform hover:-translate-y-0.5"
+          >
+            Inscríbete
+            <ArrowRight size={18} aria-hidden="true" />
+          </Link>
         </div>
       </section>
     </main>
