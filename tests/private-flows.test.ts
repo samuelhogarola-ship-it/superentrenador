@@ -37,8 +37,12 @@ test("profile changes revalidate both old and new public routes", async () => {
 
   assert.match(
     source,
-    /from\("trainer_profiles"\)[\s\S]*select\("slug, city_slug"\)[\s\S]*eq\("user_id", user\.id\)[\s\S]*maybeSingle\(\)/,
+    /rpc\("get_own_trainer_profile"\)[\s\S]*maybeSingle\(\)/,
   );
+  assert.doesNotMatch(source, /select\("slug, city_slug"\)[\s\S]*eq\("user_id", user\.id\)/);
+  assert.doesNotMatch(source, /upsert\([\s\S]*onConflict:\s*"user_id"/);
+  assert.match(source, /existingProfile[\s\S]*\.update\(profileValues\)[\s\S]*\.eq\("slug", existingProfile\.slug\)/);
+  assert.match(source, /\.insert\(profileValues\)/);
   assert.match(
     source,
     /revalidatePublicTrainerPaths\([\s\S]*existingProfile\?\.slug[\s\S]*data\.slug[\s\S]*existingProfile\?\.city_slug[\s\S]*citySlug/,

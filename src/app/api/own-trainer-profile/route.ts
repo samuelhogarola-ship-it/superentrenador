@@ -159,9 +159,7 @@ export async function POST(request: Request) {
   }
 
   const { data: existingProfile, error: existingProfileError } = await supabase
-    .from("trainer_profiles")
-    .select("slug, city_slug")
-    .eq("user_id", user.id)
+    .rpc("get_own_trainer_profile")
     .maybeSingle();
 
   if (existingProfileError) {
@@ -199,31 +197,35 @@ export async function POST(request: Request) {
     );
   }
 
-  const { data, error } = await supabase
-    .from("trainer_profiles")
-    .upsert(
-      {
-        user_id: user.id,
-        slug,
-        display_name: displayName,
-        city_slug: citySlug,
-        headline,
-        short_bio: shortBio,
-        long_bio: longBio,
-        specialties,
-        modalities,
-        languages,
-        years_experience: yearsExperience,
-        price_from: priceFrom,
-        contact_info: contactInfo,
-        photo_url: photoUrl || null,
-        is_published: false,
-        review_status: "pending" as const,
-        hidden_contact_hint:
-          "El contacto directo se desbloquea para usuarios registrados en el marketplace.",
-      },
-      { onConflict: "user_id" }
-    )
+  const profileValues = {
+    user_id: user.id,
+    slug,
+    display_name: displayName,
+    city_slug: citySlug,
+    headline,
+    short_bio: shortBio,
+    long_bio: longBio,
+    specialties,
+    modalities,
+    languages,
+    years_experience: yearsExperience,
+    price_from: priceFrom,
+    contact_info: contactInfo,
+    photo_url: photoUrl || null,
+    is_published: false,
+    review_status: "pending" as const,
+    hidden_contact_hint:
+      "El contacto directo se desbloquea para usuarios registrados en el marketplace.",
+  };
+
+  const profileWrite = existingProfile
+    ? supabase
+        .from("trainer_profiles")
+        .update(profileValues)
+        .eq("slug", existingProfile.slug)
+    : supabase.from("trainer_profiles").insert(profileValues);
+
+  const { data, error } = await profileWrite
     .select("slug")
     .single();
 

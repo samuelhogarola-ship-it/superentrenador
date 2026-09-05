@@ -67,6 +67,78 @@ export function getAuthErrorMessage(message: string) {
   return message;
 }
 
+export function getPasswordLoginErrorMessage(message: string) {
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes("invalid login")) {
+    return "Email o contraseña incorrectos.";
+  }
+  if (normalized.includes("email not confirmed")) {
+    return "Tu email todavía no está confirmado. Revisa tu correo.";
+  }
+  if (normalized.includes("fetch failed") || normalized.includes("network")) {
+    return "No se pudo conectar con el servicio de acceso. Inténtalo de nuevo.";
+  }
+
+  return "No se pudo iniciar sesión. Inténtalo de nuevo.";
+}
+
+export function getPasswordRegistrationErrorMessage(message: string) {
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes("already registered") || normalized.includes("already exists")) {
+    return "Ya existe una cuenta con ese email. Inicia sesión.";
+  }
+  if (normalized.includes("password")) {
+    return "La contraseña debe tener al menos 8 caracteres.";
+  }
+  if (normalized.includes("fetch failed") || normalized.includes("network")) {
+    return "No se pudo conectar con el servicio de registro. Inténtalo de nuevo.";
+  }
+
+  return "No se pudo crear la cuenta. Inténtalo de nuevo.";
+}
+
+interface PasswordRegistrationAuth {
+  signUp(input: {
+    email: string;
+    password: string;
+    options: {
+      emailRedirectTo: string;
+      captchaToken?: string;
+      data: { intent: AuthIntent };
+    };
+  }): Promise<{ data: { user: unknown; session: unknown }; error: { message: string } | null }>;
+  signOut(input: { scope: "local" }): Promise<{ error: unknown }>;
+}
+
+export async function completePasswordRegistration(
+  auth: PasswordRegistrationAuth,
+  input: {
+    email: string;
+    password: string;
+    intent: AuthIntent;
+    emailRedirectTo: string;
+    captchaToken?: string;
+  },
+) {
+  const result = await auth.signUp({
+    email: input.email.trim().toLowerCase(),
+    password: input.password,
+    options: {
+      emailRedirectTo: input.emailRedirectTo,
+      captchaToken: input.captchaToken,
+      data: { intent: input.intent },
+    },
+  });
+
+  if (result.data.session) {
+    await auth.signOut({ scope: "local" });
+  }
+
+  return result;
+}
+
 export async function signInWithGoogle(redirectPath = "/dashboard") {
   const supabase = getSupabaseBrowserClient();
   return supabase.auth.signInWithOAuth({
@@ -109,15 +181,19 @@ export async function signUpWithMagicLink(
   });
 }
 
-export async function signUp(email: string, password: string, captchaToken?: string) {
+export async function signUp(
+  email: string,
+  password: string,
+  intent: AuthIntent = "client",
+  captchaToken?: string,
+) {
   const supabase = getSupabaseBrowserClient();
-  return supabase.auth.signUp({
+  return completePasswordRegistration(supabase.auth, {
     email,
     password,
-    options: {
-      emailRedirectTo: getAuthCallbackUrl("/mi-perfil"),
-      captchaToken,
-    },
+    intent,
+    emailRedirectTo: getAuthCallbackUrl(intent === "trainer" ? "/mi-perfil" : "/dashboard"),
+    captchaToken,
   });
 }
 
