@@ -29,14 +29,13 @@ test("passes CAPTCHA tokens to Supabase email auth calls", async () => {
   assert.match(auth, /signIn\([\s\S]*captchaToken[\s\S]*signInWithPassword/);
 });
 
-test("renders independent Turnstile challenges for login and registration", async () => {
+test("renders Turnstile challenges for password login and registration", async () => {
   const [login, registration, widget] = await Promise.all([
     readSource("../src/components/login-page-client.tsx"),
     readSource("../src/components/registro-page-client.tsx"),
     readSource("../src/components/turnstile-widget.tsx"),
   ]);
 
-  assert.match(login, /<TurnstileWidget[\s\S]*action="magic_link"/);
   assert.match(login, /<TurnstileWidget[\s\S]*action="password_login"/);
   assert.match(registration, /<TurnstileWidget[\s\S]*action="registration"/);
   assert.match(widget, /challenges\.cloudflare\.com\/turnstile\/v0\/api\.js\?render=explicit/);
