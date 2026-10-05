@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BadgeCheck, CalendarCheck2, Clock3, MapPin, MessageCircle, ShieldCheck, Star, Video } from "lucide-react";
+import { BadgeCheck, MapPin, MessageCircle, ShieldCheck, Star } from "lucide-react";
 import { Avatar } from "@/components/avatar";
 import type { PublicTrainerProfile } from "@/types/marketplace";
 
@@ -8,9 +8,6 @@ interface TrainerListItemProps {
 }
 
 export function TrainerListItem({ trainer }: TrainerListItemProps) {
-  const hasOnline = trainer.modalities.includes("Online");
-  const responseLabel = trainer.verified ? "Responde en el día" : "Perfil revisado";
-
   return (
     <article className="group flex flex-col gap-5 border border-[#111214] bg-white p-5 text-[#111214] transition-shadow duration-150 hover:shadow-[6px_6px_0_0_#111214] sm:flex-row sm:gap-6 sm:p-6">
       <div className="shrink-0 self-start">
@@ -62,27 +59,13 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
           <span>{trainer.modalities.join(" · ")}</span>
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-xs font-semibold text-[#5b5b63]">
-          <span className="inline-flex items-center gap-1.5">
-            <Clock3 size={13} className="text-[var(--accent)]" />
-            {responseLabel}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Video size={13} className="text-[var(--accent-2)]" />
-            {hasOnline ? "Online disponible" : "Trabajo presencial"}
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <CalendarCheck2 size={13} className="text-[var(--accent)]" />
-            Primera consulta
-          </span>
-        </div>
       </div>
 
       <div className="flex shrink-0 flex-row items-center justify-between gap-3 border-t border-[#111214]/12 pt-4 sm:flex-col sm:items-end sm:justify-center sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
         <div className="text-right">
-          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#8a8a92]">Desde</p>
+          {trainer.priceFrom > 0 ? <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#8a8a92]">Desde</p> : null}
           <p className="font-heading text-3xl font-bold text-[#111214]">
-            {trainer.priceFrom}€<span className="text-sm font-medium text-[#8a8a92]"> /ses.</span>
+            {trainer.priceFrom > 0 ? <>{trainer.priceFrom}€<span className="text-sm font-medium text-[#8a8a92]"> / {trainer.priceUnit ?? "sesión"}</span></> : <span className="text-base">Consultar precio</span>}
           </p>
         </div>
         <Link

@@ -51,7 +51,7 @@ export function FiltersBar({ categories, specialties, modalities, cities, basePa
         <span className={`${selectWrapClass} col-span-2 sm:col-span-1`}>
           <select
             aria-label="Filtrar por categoría"
-            defaultValue={searchParams.get("category") ?? ""}
+            value={searchParams.get("category") ?? ""}
             onChange={(event) => updateParam("category", event.target.value)}
             className={selectClass}
           >
@@ -68,7 +68,7 @@ export function FiltersBar({ categories, specialties, modalities, cities, basePa
         <span className={`${selectWrapClass} col-span-2 sm:col-span-1`}>
           <select
             aria-label="Filtrar por especialidad"
-            defaultValue={searchParams.get("specialty") ?? ""}
+            value={searchParams.get("specialty") ?? ""}
             onChange={(event) => updateParam("specialty", event.target.value)}
             className={selectClass}
           >
@@ -86,7 +86,7 @@ export function FiltersBar({ categories, specialties, modalities, cities, basePa
           <span className={selectWrapClass}>
             <select
               aria-label="Filtrar por ciudad"
-              defaultValue={searchParams.get("city") ?? ""}
+              value={searchParams.get("city") ?? ""}
               onChange={(event) => updateParam("city", event.target.value)}
               className={selectClass}
             >
@@ -104,7 +104,7 @@ export function FiltersBar({ categories, specialties, modalities, cities, basePa
         <span className={selectWrapClass}>
           <select
             aria-label="Filtrar por modalidad"
-            defaultValue={searchParams.get("modality") ?? ""}
+            value={searchParams.get("modality") ?? ""}
             onChange={(event) => updateParam("modality", event.target.value)}
             className={selectClass}
           >
@@ -121,7 +121,7 @@ export function FiltersBar({ categories, specialties, modalities, cities, basePa
         <span className={`${selectWrapClass} col-span-2 sm:col-span-1 sm:ml-auto`}>
           <select
             aria-label="Ordenar perfiles"
-            defaultValue={searchParams.get("sort") ?? "featured"}
+            value={searchParams.get("sort") ?? "featured"}
             onChange={(event) => updateParam("sort", event.target.value)}
             className={selectClass}
           >

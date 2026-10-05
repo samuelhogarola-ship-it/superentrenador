@@ -110,7 +110,7 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
         ))}
       </section>
 
-      <section className="sticky top-20 z-20">
+      <section className="lg:sticky lg:top-20 lg:z-20">
         <Suspense fallback={null}>
           <FiltersBar categories={categories} specialties={specialties} modalities={modalities} cities={cities} basePath="/entrenadores" />
         </Suspense>
