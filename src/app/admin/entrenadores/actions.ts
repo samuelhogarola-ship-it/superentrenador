@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { hasVerifiedEmail } from "@/lib/server/request-security";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
 
 type TrainerReviewStatus = "approved" | "rejected";
@@ -19,6 +20,10 @@ export async function updateTrainerReviewStatus(
 
   if (!user) {
     return { ok: false, error: "Debes iniciar sesión." };
+  }
+
+  if (!hasVerifiedEmail(user)) {
+    return { ok: false, error: "Confirma tu email antes de moderar perfiles." };
   }
 
   const { data: adminRecord } = await supabase

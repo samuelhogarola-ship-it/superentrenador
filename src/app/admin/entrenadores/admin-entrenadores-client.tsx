@@ -43,7 +43,14 @@ export function AdminEntrenadoresClient({
   async function handleApprove(id: string) {
     setActing(id);
     setActionError(null);
-    const result = await updateTrainerReviewStatus(id, "approved");
+    let result;
+    try {
+      result = await updateTrainerReviewStatus(id, "approved");
+    } catch {
+      setActionError("No se pudo completar la acción. Inténtalo de nuevo.");
+      setActing(null);
+      return;
+    }
     if (!result.ok) {
       setActionError(result.error);
       setActing(null);
@@ -58,7 +65,14 @@ export function AdminEntrenadoresClient({
   async function handleReject(id: string) {
     setActing(id);
     setActionError(null);
-    const result = await updateTrainerReviewStatus(id, "rejected");
+    let result;
+    try {
+      result = await updateTrainerReviewStatus(id, "rejected");
+    } catch {
+      setActionError("No se pudo completar la acción. Inténtalo de nuevo.");
+      setActing(null);
+      return;
+    }
     if (!result.ok) {
       setActionError(result.error);
       setActing(null);
@@ -145,7 +159,7 @@ function TrainerReviewCard({
       ? "text-[var(--accent)] bg-[var(--accent-soft)]"
       : trainer.review_status === "rejected"
         ? "text-red-600 bg-red-500/10"
-        : "text-amber-600 bg-amber-500/10";
+        : "text-[var(--accent)] bg-[var(--accent-soft)]";
 
   const StatusIcon =
     trainer.review_status === "approved"
@@ -220,12 +234,8 @@ function TrainerReviewCard({
           ))}
         </div>
 
-        {trainer.photo_url ? (
-          <p className="mt-2 text-xs text-[var(--muted)] truncate">
-            Foto: <span className="text-[var(--text)]">{trainer.photo_url}</span>
-          </p>
-        ) : (
-          <p className="mt-2 text-xs text-amber-600">Sin foto de perfil</p>
+        {!trainer.photo_url && (
+          <p className="mt-2 text-xs text-[var(--accent)]">Sin foto de perfil</p>
         )}
 
         <p className="mt-1 text-xs text-[var(--muted)]">

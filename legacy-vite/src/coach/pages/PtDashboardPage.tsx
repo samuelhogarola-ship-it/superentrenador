@@ -14,7 +14,7 @@ import {
   UserPlus,
   Users
 } from "lucide-react";
-import { FormEvent, useEffect, useState } from "react";
+import { DragEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Avatar } from "../../components/Avatar";
 import { BrandMark } from "../../components/BrandMark";
@@ -22,7 +22,13 @@ import { ClientBadge } from "../../components/ClientBadge";
 import { MetricCard } from "../../components/MetricCard";
 import { SectionTitle } from "../../components/SectionTitle";
 import { CoachState, useCoachState } from "../context/CoachStateContext";
-import { NewClientInput, NewProgressInput, PTClient } from "../../types";
+import {
+  NewClientInput,
+  NewProgressInput,
+  PTClient,
+  RoutineExerciseBlock,
+  RoutineTemplate
+} from "../../types";
 import {
   formatClientType,
   formatDate,
@@ -127,13 +133,103 @@ function buildProgressInput(clientId: string): NewProgressInput {
   };
 }
 
+type ExerciseLibraryItem = {
+  id: string;
+  name: string;
+  category: string;
+  repRange: string;
+  restSeconds: number;
+  rir: string;
+  note: string;
+  videoUrl?: string;
+  mediaUrl?: string;
+};
+
+function buildExerciseLibrary(): ExerciseLibraryItem[] {
+  return [
+    {
+      id: "lib-sentadilla-trasera",
+      name: "Sentadilla trasera",
+      category: "Pierna",
+      repRange: "6-8",
+      restSeconds: 120,
+      rir: "2",
+      note: "Mantén tensión estable y profundidad limpia."
+    },
+    {
+      id: "lib-press-banca",
+      name: "Press banca con mancuernas",
+      category: "Pecho",
+      repRange: "8-10",
+      restSeconds: 90,
+      rir: "2",
+      note: "Recorrido completo con control excéntrico."
+    },
+    {
+      id: "lib-zancada",
+      name: "Zancada búlgara",
+      category: "Pierna",
+      repRange: "8-10 por pierna",
+      restSeconds: 90,
+      rir: "2",
+      note: "Estabilidad antes de subir carga."
+    },
+    {
+      id: "lib-hip-thrust",
+      name: "Hip thrust",
+      category: "Glúteo",
+      repRange: "10-12",
+      restSeconds: 90,
+      rir: "1",
+      note: "Pausa de un segundo arriba."
+    },
+    {
+      id: "lib-jalon-pecho",
+      name: "Jalón al pecho",
+      category: "Espalda",
+      repRange: "10-12",
+      restSeconds: 75,
+      rir: "2",
+      note: "Codos abajo y pecho arriba."
+    },
+    {
+      id: "lib-remo-maquina",
+      name: "Remo máquina",
+      category: "Espalda",
+      repRange: "8-10",
+      restSeconds: 75,
+      rir: "2",
+      note: "Pausa breve al final de la tracción."
+    }
+  ];
+}
+
+function buildRoutineBlockFromLibrary(
+  item: ExerciseLibraryItem,
+  suffix: string
+): RoutineExerciseBlock {
+  return {
+    id: `block-${suffix}`,
+    exerciseName: item.name,
+    sets: 4,
+    repRange: item.repRange,
+    restSeconds: item.restSeconds,
+    rir: item.rir,
+    note: item.note,
+    videoUrl: item.videoUrl,
+    mediaUrl: item.mediaUrl
+  };
+}
+
 export function PtDashboardPage() {
   const {
     state,
     addClient,
     inviteClientToApp,
     addProgressEntry,
+    createRoutineTemplate,
     duplicateRoutine,
+    updateRoutineTemplate,
     assignRoutineToClients,
     assignNutritionToClient,
     updateSubscriptionPlan,
@@ -153,6 +249,19 @@ export function PtDashboardPage() {
   const [clientFilter, setClientFilter] = useState<ClientFilter>("all");
   const [detailTab, setDetailTab] = useState<DetailTab>("summary");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [activeRoutineDayId, setActiveRoutineDayId] = useState("");
+  const [draggedExerciseId, setDraggedExerciseId] = useState("");
+  const [customExercise, setCustomExercise] = useState<ExerciseLibraryItem>({
+    id: "custom-exercise",
+    name: "",
+    category: "Personalizado",
+    repRange: "8-10",
+    restSeconds: 75,
+    rir: "2",
+    note: "",
+    videoUrl: "",
+    mediaUrl: ""
+  });
 
   useEffect(() => {
     if (!state.clients.find((client) => client.id === selectedClientId) && state.clients[0]) {
@@ -201,6 +310,15 @@ export function PtDashboardPage() {
     const haystack = `${routine.title} ${routine.goal} ${routine.level}`.toLowerCase();
     return !normalizedQuery || haystack.includes(normalizedQuery);
   });
+  const exerciseLibrary = useMemo(() => buildExerciseLibrary(), []);
+  const activeRoutineDay =
+    selectedRoutine?.days.find((day) => day.id === activeRoutineDayId) ?? selectedRoutine?.days[0];
+
+  useEffect(() => {
+    if (selectedRoutine?.days[0] && !selectedRoutine.days.find((day) => day.id === activeRoutineDayId)) {
+      setActiveRoutineDayId(selectedRoutine.days[0].id);
+    }
+  }, [activeRoutineDayId, selectedRoutine]);
 
   function handleAddClient(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -236,6 +354,112 @@ export function PtDashboardPage() {
     addProgressEntry(progressForm);
     setNotice("Seguimiento guardado correctamente.");
     setProgressForm(buildProgressInput(selectedClient.id));
+  }
+
+  function patchRoutine(nextRoutine: RoutineTemplate, message?: string) {
+    updateRoutineTemplate(nextRoutine);
+    if (message) setNotice(message);
+  }
+
+  function handleCreateRoutine() {
+    const routine = createRoutineTemplate();
+    setSelectedRoutineId(routine.id);
+    setActiveRoutineDayId(routine.days[0]?.id ?? "");
+    setNotice("Rutina editable creada.");
+  }
+
+  function updateSelectedRoutine(fields: Partial<RoutineTemplate>) {
+    if (!selectedRoutine) return;
+    patchRoutine({ ...selectedRoutine, ...fields });
+  }
+
+  function updateRoutineDay(
+    dayId: string,
+    updater: (day: RoutineTemplate["days"][number]) => RoutineTemplate["days"][number]
+  ) {
+    if (!selectedRoutine) return;
+    patchRoutine({
+      ...selectedRoutine,
+      days: selectedRoutine.days.map((day) => (day.id === dayId ? updater(day) : day))
+    });
+  }
+
+  function addBlockToActiveDay(block: RoutineExerciseBlock) {
+    if (!selectedRoutine || !activeRoutineDay) return;
+    updateRoutineDay(activeRoutineDay.id, (day) => ({
+      ...day,
+      blocks: [...day.blocks, block]
+    }));
+    setNotice(`Ejercicio añadido a ${activeRoutineDay.dayLabel}.`);
+  }
+
+  function handleDropExercise(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    if (!draggedExerciseId) return;
+    const item = exerciseLibrary.find((entry) => entry.id === draggedExerciseId);
+    if (!item) return;
+    addBlockToActiveDay(buildRoutineBlockFromLibrary(item, `${Date.now()}`));
+    setDraggedExerciseId("");
+  }
+
+  function handleCustomExerciseFile(file: File | null) {
+    if (!file) return;
+    setCustomExercise((current) => ({
+      ...current,
+      mediaUrl: URL.createObjectURL(file)
+    }));
+  }
+
+  function handleAddCustomExercise() {
+    if (!customExercise.name.trim()) {
+      setNotice("Escribe un nombre para el ejercicio.");
+      return;
+    }
+
+    addBlockToActiveDay(
+      buildRoutineBlockFromLibrary(
+        { ...customExercise, id: `custom-${Date.now()}`, name: customExercise.name.trim() },
+        `${Date.now()}`
+      )
+    );
+
+    setCustomExercise({
+      id: "custom-exercise",
+      name: "",
+      category: "Personalizado",
+      repRange: "8-10",
+      restSeconds: 75,
+      rir: "2",
+      note: "",
+      videoUrl: "",
+      mediaUrl: ""
+    });
+  }
+
+  function updateActiveDay(fields: Partial<RoutineTemplate["days"][number]>) {
+    if (!activeRoutineDay) return;
+    updateRoutineDay(activeRoutineDay.id, (day) => ({ ...day, ...fields }));
+  }
+
+  function updateRoutineBlock(
+    blockId: string,
+    fields: Partial<RoutineExerciseBlock>
+  ) {
+    if (!activeRoutineDay) return;
+    updateRoutineDay(activeRoutineDay.id, (day) => ({
+      ...day,
+      blocks: day.blocks.map((block) =>
+        block.id === blockId ? { ...block, ...fields } : block
+      )
+    }));
+  }
+
+  function removeRoutineBlock(blockId: string) {
+    if (!activeRoutineDay) return;
+    updateRoutineDay(activeRoutineDay.id, (day) => ({
+      ...day,
+      blocks: day.blocks.filter((block) => block.id !== blockId)
+    }));
   }
 
   function assignSelectedRoutineToCurrentClient() {
@@ -708,74 +932,448 @@ export function PtDashboardPage() {
 
   function renderRoutines() {
     return (
-      <div className="surface-card routine-layout">
-        <div className="card-head">
-          <div>
-            <h3>Biblioteca de rutinas</h3>
-            <p>Crea, duplica y asigna plantillas reutilizables a varios clientes.</p>
-          </div>
-        </div>
-        <div className="routine-columns">
-          <div className="routine-library">
-            {visibleRoutines.map((routine) => (
-              <button
-                key={routine.id}
-                className={`template-card ${
-                  selectedRoutine?.id === routine.id ? "is-selected" : ""
-                }`}
-                onClick={() => setSelectedRoutineId(routine.id)}
-              >
-                <div>
-                  <strong>{routine.title}</strong>
-                  <span>
-                    {routine.daysPerWeek} días · {routine.level}
-                  </span>
-                </div>
-                <span>{routine.assignmentsCount} asignaciones</span>
-                <p>{routine.notes}</p>
-                <div className="template-actions">
-                  <span>{routine.goal}</span>
-                  <button
-                    className="button button-secondary"
-                    type="button"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      duplicateRoutine(routine.id);
-                      setNotice("Plantilla duplicada.");
-                    }}
-                  >
-                    Duplicar
-                  </button>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          <div className="assign-panel">
-            <h4>Asignar a múltiples clientes</h4>
-            <p>
-              Plantilla seleccionada: <strong>{selectedRoutine?.title}</strong>
-            </p>
-            <div className="assign-client-list">
-              {visibleClients.map((client) => (
-                <label key={client.id} className="checkbox-row">
-                  <input
-                    type="checkbox"
-                    checked={checkedClientIds.includes(client.id)}
-                    onChange={() => toggleSelectedClient(client.id)}
-                  />
-                  <span>
-                    {client.name} {client.surname}
-                  </span>
-                  <ClientBadge type={client.type} connectionStatus={client.connectionStatus} />
-                </label>
-              ))}
+      <div className="routine-builder-stack">
+        <div className="surface-card routine-layout">
+          <div className="card-head">
+            <div>
+              <h3>Banco de rutinas</h3>
+              <p>Elige una base, crea una rutina editable y asígnala cuando esté lista.</p>
             </div>
-            <button className="button button-teal" onClick={handleAssignRoutine}>
-              Asignar rutina
+            <button className="button" onClick={handleCreateRoutine}>
+              Crear rutina
             </button>
           </div>
+          <div className="routine-columns">
+            <div className="routine-library">
+              {visibleRoutines.map((routine) => (
+                <button
+                  key={routine.id}
+                  className={`template-card ${
+                    selectedRoutine?.id === routine.id ? "is-selected" : ""
+                  }`}
+                  onClick={() => setSelectedRoutineId(routine.id)}
+                >
+                  <div>
+                    <strong>{routine.title}</strong>
+                    <span>
+                      {routine.daysPerWeek} días · {routine.level}
+                    </span>
+                  </div>
+                  <span>{routine.assignmentsCount} asignaciones</span>
+                  <p>{routine.notes}</p>
+                  <div className="template-actions">
+                    <span>{routine.goal}</span>
+                    <button
+                      className="button button-secondary"
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        duplicateRoutine(routine.id);
+                        setNotice("Rutina duplicada y lista para editar.");
+                      }}
+                    >
+                      Duplicar
+                    </button>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <div className="assign-panel">
+              <h4>Asignar a múltiples clientes</h4>
+              <p>
+                Rutina seleccionada: <strong>{selectedRoutine?.title ?? "Ninguna"}</strong>
+              </p>
+              <div className="assign-client-list">
+                {visibleClients.map((client) => (
+                  <label key={client.id} className="checkbox-row">
+                    <input
+                      type="checkbox"
+                      checked={checkedClientIds.includes(client.id)}
+                      onChange={() => toggleSelectedClient(client.id)}
+                    />
+                    <span>
+                      {client.name} {client.surname}
+                    </span>
+                    <ClientBadge type={client.type} connectionStatus={client.connectionStatus} />
+                  </label>
+                ))}
+              </div>
+              <button className="button button-teal" onClick={handleAssignRoutine}>
+                Asignar rutina
+              </button>
+            </div>
+          </div>
         </div>
+
+        {selectedRoutine ? (
+          <div className="routine-builder-layout">
+            <article
+              className="surface-card routine-draft-panel"
+              onDragOver={(event) => event.preventDefault()}
+              onDrop={handleDropExercise}
+            >
+              <div className="card-head">
+                <div>
+                  <h3>Rutina en desarrollo</h3>
+                  <p>
+                    Ajusta nombre, objetivo y estructura. Arrastra ejercicios del panel derecho o crea
+                    uno propio.
+                  </p>
+                </div>
+                <button
+                  className="button button-secondary"
+                  onClick={() => patchRoutine(selectedRoutine, "Rutina guardada correctamente.")}
+                >
+                  Guardar cambios
+                </button>
+              </div>
+
+              <div className="routine-meta-grid">
+                <label>
+                  Nombre
+                  <input
+                    value={selectedRoutine.title}
+                    onChange={(event) => updateSelectedRoutine({ title: event.target.value })}
+                  />
+                </label>
+                <label>
+                  Objetivo
+                  <input
+                    value={selectedRoutine.goal}
+                    onChange={(event) => updateSelectedRoutine({ goal: event.target.value })}
+                  />
+                </label>
+                <label>
+                  Nivel
+                  <input
+                    value={selectedRoutine.level}
+                    onChange={(event) => updateSelectedRoutine({ level: event.target.value })}
+                  />
+                </label>
+                <label>
+                  Días por semana
+                  <input
+                    type="number"
+                    min="1"
+                    max="7"
+                    value={selectedRoutine.daysPerWeek}
+                    onChange={(event) => updateSelectedRoutine({ daysPerWeek: Number(event.target.value) })}
+                  />
+                </label>
+              </div>
+
+              <label className="routine-notes-field">
+                Notas generales
+                <textarea
+                  value={selectedRoutine.notes}
+                  onChange={(event) => updateSelectedRoutine({ notes: event.target.value })}
+                />
+              </label>
+
+              {selectedRoutine.days.length ? (
+                <>
+                  <div className="routine-day-tabs">
+                    {selectedRoutine.days.map((day) => (
+                      <button
+                        key={day.id}
+                        className={activeRoutineDay?.id === day.id ? "is-active" : ""}
+                        onClick={() => setActiveRoutineDayId(day.id)}
+                      >
+                        {day.dayLabel}
+                      </button>
+                    ))}
+                  </div>
+
+                  {activeRoutineDay ? (
+                    <>
+                      <div className="routine-day-meta">
+                        <label>
+                          Etiqueta del día
+                          <input
+                            value={activeRoutineDay.dayLabel}
+                            onChange={(event) => updateActiveDay({ dayLabel: event.target.value })}
+                          />
+                        </label>
+                        <label>
+                          Foco
+                          <input
+                            value={activeRoutineDay.focus}
+                            onChange={(event) => updateActiveDay({ focus: event.target.value })}
+                          />
+                        </label>
+                        <label>
+                          Duración
+                          <input
+                            value={activeRoutineDay.durationMinutes}
+                            onChange={(event) => updateActiveDay({ durationMinutes: event.target.value })}
+                          />
+                        </label>
+                      </div>
+
+                      <div className="routine-dropzone">
+                        <strong>{activeRoutineDay.focus}</strong>
+                        <span>
+                          {activeRoutineDay.blocks.length
+                            ? `${activeRoutineDay.blocks.length} ejercicios preparados`
+                            : "Suelta aquí ejercicios del panel derecho o añade uno personalizado."}
+                        </span>
+                      </div>
+
+                      <div className="routine-block-list">
+                        {activeRoutineDay.blocks.map((block, index) => (
+                          <article key={block.id} className="routine-block-card">
+                            <div className="routine-block-head">
+                              <div>
+                                <small>Ejercicio {index + 1}</small>
+                                <strong>{block.exerciseName}</strong>
+                              </div>
+                              <button
+                                className="button button-outline"
+                                type="button"
+                                onClick={() => removeRoutineBlock(block.id)}
+                              >
+                                Quitar
+                              </button>
+                            </div>
+                            <div className="routine-block-grid">
+                              <label>
+                                Nombre
+                                <input
+                                  value={block.exerciseName}
+                                  onChange={(event) =>
+                                    updateRoutineBlock(block.id, {
+                                      exerciseName: event.target.value
+                                    })
+                                  }
+                                />
+                              </label>
+                              <label>
+                                Series
+                                <input
+                                  type="number"
+                                  min="1"
+                                  value={block.sets}
+                                  onChange={(event) =>
+                                    updateRoutineBlock(block.id, {
+                                      sets: Number(event.target.value)
+                                    })
+                                  }
+                                />
+                              </label>
+                              <label>
+                                Reps
+                                <input
+                                  value={block.repRange}
+                                  onChange={(event) =>
+                                    updateRoutineBlock(block.id, {
+                                      repRange: event.target.value
+                                    })
+                                  }
+                                />
+                              </label>
+                              <label>
+                                Descanso
+                                <input
+                                  type="number"
+                                  min="0"
+                                  value={block.restSeconds}
+                                  onChange={(event) =>
+                                    updateRoutineBlock(block.id, {
+                                      restSeconds: Number(event.target.value)
+                                    })
+                                  }
+                                />
+                              </label>
+                              <label>
+                                RIR / RPE
+                                <input
+                                  value={block.rir}
+                                  onChange={(event) =>
+                                    updateRoutineBlock(block.id, {
+                                      rir: event.target.value
+                                    })
+                                  }
+                                />
+                              </label>
+                              <label>
+                                Vídeo
+                                <input
+                                  value={block.videoUrl ?? ""}
+                                  onChange={(event) =>
+                                    updateRoutineBlock(block.id, {
+                                      videoUrl: event.target.value
+                                    })
+                                  }
+                                />
+                              </label>
+                            </div>
+                            <label className="routine-notes-field">
+                              Nota técnica
+                              <textarea
+                                value={block.note}
+                                onChange={(event) =>
+                                  updateRoutineBlock(block.id, {
+                                    note: event.target.value
+                                  })
+                                }
+                              />
+                            </label>
+                            {block.mediaUrl ? (
+                              <div className="routine-media-preview">
+                                <img src={block.mediaUrl} alt={block.exerciseName} />
+                              </div>
+                            ) : null}
+                          </article>
+                        ))}
+                      </div>
+                    </>
+                  ) : null}
+                </>
+              ) : null}
+            </article>
+
+            <aside className="surface-card routine-builder-sidebar">
+              <div className="card-head">
+                <div>
+                  <h3>Biblioteca de ejercicios</h3>
+                  <p>Añade movimientos base o prepara un ejercicio propio con foto o vídeo.</p>
+                </div>
+              </div>
+
+              <article className="surface-card nested-card custom-exercise-card">
+                <h4>Ejercicio propio</h4>
+                <div className="routine-block-grid">
+                  <label>
+                    Nombre
+                    <input
+                      value={customExercise.name}
+                      onChange={(event) =>
+                        setCustomExercise((current) => ({ ...current, name: event.target.value }))
+                      }
+                    />
+                  </label>
+                  <label>
+                    Categoría
+                    <input
+                      value={customExercise.category}
+                      onChange={(event) =>
+                        setCustomExercise((current) => ({
+                          ...current,
+                          category: event.target.value
+                        }))
+                      }
+                    />
+                  </label>
+                  <label>
+                    Reps
+                    <input
+                      value={customExercise.repRange}
+                      onChange={(event) =>
+                        setCustomExercise((current) => ({
+                          ...current,
+                          repRange: event.target.value
+                        }))
+                      }
+                    />
+                  </label>
+                  <label>
+                    Descanso
+                    <input
+                      type="number"
+                      min="0"
+                      value={customExercise.restSeconds}
+                      onChange={(event) =>
+                        setCustomExercise((current) => ({
+                          ...current,
+                          restSeconds: Number(event.target.value)
+                        }))
+                      }
+                    />
+                  </label>
+                  <label>
+                    RIR / RPE
+                    <input
+                      value={customExercise.rir}
+                      onChange={(event) =>
+                        setCustomExercise((current) => ({ ...current, rir: event.target.value }))
+                      }
+                    />
+                  </label>
+                  <label>
+                    Link de vídeo
+                    <input
+                      value={customExercise.videoUrl ?? ""}
+                      onChange={(event) =>
+                        setCustomExercise((current) => ({
+                          ...current,
+                          videoUrl: event.target.value
+                        }))
+                      }
+                    />
+                  </label>
+                </div>
+                <label className="routine-notes-field">
+                  Nota
+                  <textarea
+                    value={customExercise.note}
+                    onChange={(event) =>
+                      setCustomExercise((current) => ({ ...current, note: event.target.value }))
+                    }
+                  />
+                </label>
+                <label className="upload-field">
+                  Foto directa
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(event) => handleCustomExerciseFile(event.target.files?.[0] ?? null)}
+                  />
+                </label>
+                {customExercise.mediaUrl ? (
+                  <div className="routine-media-preview">
+                    <img src={customExercise.mediaUrl} alt="Vista previa ejercicio" />
+                  </div>
+                ) : null}
+                <button className="button button-teal" onClick={handleAddCustomExercise}>
+                  Añadir ejercicio propio
+                </button>
+              </article>
+
+              <div className="exercise-library-list">
+                {exerciseLibrary.map((exercise) => (
+                  <article
+                    key={exercise.id}
+                    className="exercise-library-card"
+                    draggable
+                    onDragStart={() => setDraggedExerciseId(exercise.id)}
+                    onDragEnd={() => setDraggedExerciseId("")}
+                  >
+                    <div>
+                      <small>{exercise.category}</small>
+                      <strong>{exercise.name}</strong>
+                    </div>
+                    <span>
+                      {exercise.repRange} · {exercise.restSeconds}s
+                    </span>
+                    <p>{exercise.note}</p>
+                    <button
+                      className="button button-secondary"
+                      type="button"
+                      onClick={() =>
+                        addBlockToActiveDay(
+                          buildRoutineBlockFromLibrary(exercise, `${Date.now()}-${exercise.id}`)
+                        )
+                      }
+                    >
+                      Añadir
+                    </button>
+                  </article>
+                ))}
+              </div>
+            </aside>
+          </div>
+        ) : null}
       </div>
     );
   }

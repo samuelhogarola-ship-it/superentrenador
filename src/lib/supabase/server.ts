@@ -17,6 +17,17 @@ export function getSupabaseServerClient() {
   });
 }
 
+/** Server-only client for narrowly scoped operations that must bypass RLS. */
+export function getSupabaseAdminClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceRoleKey) throw new Error("Falta la configuración privada de Supabase.");
+
+  return createClient<Database>(url, serviceRoleKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+}
+
 /**
  * Cookie-aware server client for Route Handlers and Server Actions that need
  * to read or write the user session (auth callback, middleware helper).

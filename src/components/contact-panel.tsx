@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Award, Globe2, LockKeyhole, MapPin, MessageSquare, Phone, ShieldCheck } from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { MessageForm } from "@/components/message-form";
+import { trackEvent } from "@/lib/analytics";
 
 interface ContactPanelProps {
   priceFrom: number;
@@ -18,11 +19,16 @@ interface ContactPanelProps {
 }
 
 async function fetchContactInfo(trainerSlug: string) {
-  const response = await fetch(`/api/trainer-contact?slug=${encodeURIComponent(trainerSlug)}`);
-  if (!response.ok) return "";
+  try {
+    const response = await fetch(`/api/trainer-contact?slug=${encodeURIComponent(trainerSlug)}`);
+    if (response.status === 429) return { contactInfo: "", rateLimited: true };
+    if (!response.ok) return { contactInfo: "", rateLimited: false };
 
-  const payload = (await response.json()) as { contactInfo?: string };
-  return payload.contactInfo ?? "";
+    const payload = (await response.json()) as { contactInfo?: string };
+    return { contactInfo: payload.contactInfo ?? "", rateLimited: false };
+  } catch {
+    return { contactInfo: "", rateLimited: false };
+  }
 }
 
 export function ContactPanel({
@@ -38,6 +44,7 @@ export function ContactPanel({
   const [loggedIn, setLoggedIn] = useState(false);
   const [checked, setChecked] = useState(false);
   const [contactInfo, setContactInfo] = useState<string | null>(null);
+  const [contactRateLimited, setContactRateLimited] = useState(false);
   const [currentUser, setCurrentUser] = useState<{ id: string; name: string } | null>(null);
   const [showMessageForm, setShowMessageForm] = useState(false);
   const profilePath = `/entrenadores/${trainerSlug}`;
@@ -57,24 +64,32 @@ export function ContactPanel({
           id: user.id,
           name: user.user_metadata?.full_name ?? user.email ?? "Usuario",
         });
-        setContactInfo(await fetchContactInfo(trainerSlug));
+        const { contactInfo, rateLimited } = await fetchContactInfo(trainerSlug);
+        setContactInfo(contactInfo);
+        setContactRateLimited(rateLimited);
       }
     }
 
-    checkAndFetch();
+    checkAndFetch().catch((error) => console.error("[contact-panel] failed to check session", error));
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       const isLoggedIn = Boolean(session);
       setLoggedIn(isLoggedIn);
       if (!isLoggedIn) {
         setContactInfo(null);
+        setContactRateLimited(false);
         setCurrentUser(null);
       } else if (session?.user) {
         setCurrentUser({
           id: session.user.id,
           name: session.user.user_metadata?.full_name ?? session.user.email ?? "Usuario",
         });
-        fetchContactInfo(trainerSlug).then(setContactInfo);
+        fetchContactInfo(trainerSlug)
+          .then(({ contactInfo, rateLimited }) => {
+            setContactInfo(contactInfo);
+            setContactRateLimited(rateLimited);
+          })
+          .catch((error) => console.error("[contact-panel] failed to fetch contact info", error));
       }
     });
 
@@ -82,18 +97,18 @@ export function ContactPanel({
   }, [trainerSlug]);
 
   return (
-    <div className="rounded-[28px] border border-[var(--line)] bg-[var(--text)] p-6 text-white shadow-[var(--shadow)]">
-      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-white/55">Desde</p>
-      <p className="font-heading text-4xl text-[var(--text)]">
-        <span className="text-white">{priceFrom}€</span>
-        <span className="text-base font-medium text-white/55"> /sesión</span>
+    <div className="border border-[#111214] bg-white p-6 text-[#111214]">
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#8a8a92]">Tarifa horaria</p>
+      <p className="font-heading text-4xl font-bold text-[#111214]">
+        <span>{priceFrom}€</span>
+        <span className="text-base font-medium text-[#8a8a92]"> /hora</span>
       </p>
-      <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-xs font-semibold text-white/78">
+      <p className="mt-3 inline-flex items-center gap-2 border border-[#111214]/15 bg-[#f7f7f7] px-3 py-1.5 text-xs font-semibold text-[#5b5b63]">
         <ShieldCheck size={13} />
         Contacto protegido por registro
       </p>
 
-      <div className="mt-6 grid gap-4 text-sm text-white/70">
+      <div className="mt-6 grid gap-4 text-sm text-[#68686f]">
         <span className="inline-flex items-center gap-3">
           <Award size={16} className="text-[var(--accent)]" />
           {yearsExperience} años de experiencia
@@ -108,25 +123,27 @@ export function ContactPanel({
         </span>
       </div>
 
-      <div className="mt-6 rounded-[22px] border border-white/10 bg-white p-5 text-[var(--text)]">
+      <div className="mt-6 border border-[#111214]/15 bg-white p-5 text-[#111214]">
         {!checked ? null : loggedIn && currentUser ? (
           <>
             {contactInfo ? (
               <>
-                <p className="app-kicker">Contacto directo</p>
-                <p className="mt-2 text-sm text-[var(--muted)]">
+                <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--accent)]">Contacto directo</p>
+                <p className="mt-2 text-sm text-[#5b5b63]">
                   Puedes contactar directamente con {trainerName}:
                 </p>
-                <div className="mt-4 flex items-center gap-3 rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3">
+                <div className="mt-4 flex items-center gap-3 border border-[#111214]/15 bg-[#f7f7f7] px-4 py-3">
                   <Phone size={16} className="shrink-0 text-[var(--accent)]" />
-                  <span className="text-sm font-semibold text-[var(--text)]">{contactInfo}</span>
+                  <span className="text-sm font-semibold text-[#111214]">{contactInfo}</span>
                 </div>
               </>
             ) : (
               <>
-                <p className="app-kicker">Contacto</p>
-                <p className="mt-2 text-sm text-[var(--muted)]">
-                  Envía un mensaje directo a {trainerName}.
+                <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--accent)]">Contacto</p>
+                <p className="mt-2 text-sm text-[#5b5b63]">
+                  {contactRateLimited
+                    ? "Has consultado el contacto demasiadas veces seguidas. Espera unos minutos o envía un mensaje directo."
+                    : `Envía un mensaje directo a ${trainerName}.`}
                 </p>
               </>
             )}
@@ -135,12 +152,18 @@ export function ContactPanel({
                 <MessageForm
                   trainerProfileId={trainerProfileId}
                   trainerName={trainerName}
-                  onSent={() => setShowMessageForm(false)}
+                  onSent={() => {
+                    // Tracked here rather than inside MessageForm: the same
+                    // form is reused in the dashboard for ongoing threads,
+                    // and only this first contact is a conversion.
+                    trackEvent("mensaje-enviado", { entrenador: trainerSlug });
+                    setShowMessageForm(false);
+                  }}
                 />
               ) : (
                 <button
                   onClick={() => setShowMessageForm(true)}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-[var(--line)] px-4 py-2.5 text-sm font-semibold text-[var(--text)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                  className="inline-flex w-full items-center justify-center gap-2 border border-[#111214]/15 px-4 py-2.5 text-sm font-semibold text-[#111214] transition-colors hover:border-[#111214]"
                 >
                   <MessageSquare size={15} />
                   Enviar mensaje
@@ -150,21 +173,25 @@ export function ContactPanel({
           </>
         ) : (
           <>
-            <p className="app-kicker">Contacto protegido</p>
-            <p className="mt-3 text-sm leading-7 text-[var(--text)]">
+            <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--accent)]">Contacto protegido</p>
+            <p className="mt-3 text-sm leading-7 text-[#5b5b63]">
               {hiddenContactHint} Te pediremos una cuenta para ordenar el primer mensaje y evitar conversaciones sin intención.
             </p>
             <div className="mt-5 grid gap-3">
               <Link
                 href={loginHref}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-bold text-[var(--ink)] transition-transform hover:-translate-y-0.5"
+                data-umami-event="contacto-iniciar-sesion"
+                data-umami-event-entrenador={trainerSlug}
+                className="inline-flex items-center justify-center gap-2 bg-[#111214] px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-[var(--accent)] hover:text-[#111214]"
               >
                 <MessageSquare size={16} />
                 Contactar con {trainerName}
               </Link>
               <Link
                 href={registerHref}
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--line)] px-4 py-3 text-sm font-semibold text-[var(--text)]"
+                data-umami-event="contacto-crear-cuenta"
+                data-umami-event-entrenador={trainerSlug}
+                className="inline-flex items-center justify-center gap-2 border border-[#111214]/15 px-4 py-3 text-sm font-semibold text-[#111214]"
               >
                 <LockKeyhole size={16} />
                 Crear cuenta para contactar

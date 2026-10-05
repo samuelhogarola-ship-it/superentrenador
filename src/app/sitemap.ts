@@ -3,6 +3,8 @@ import { listBlogPosts } from "@/lib/blog";
 import { listMarketplaceCities, listPublicTrainerProfiles } from "@/lib/repositories/trainers";
 import { siteConfig } from "@/lib/site";
 
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [cities, trainers] = await Promise.all([listMarketplaceCities(), listPublicTrainerProfiles()]);
   const posts = listBlogPosts();
@@ -48,8 +50,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     ...trainers.map((trainer) => ({
       url: `${siteConfig.url}/entrenadores/${trainer.slug}`,
+      ...(trainer.updatedAt ? { lastModified: trainer.updatedAt } : {}),
       changeFrequency: "weekly" as const,
       priority: 0.7,
     })),
+    {
+      url: `${siteConfig.url}/cookies`,
+      changeFrequency: "yearly",
+      priority: 0.1,
+    },
+    {
+      url: `${siteConfig.url}/politica-privacidad`,
+      changeFrequency: "yearly",
+      priority: 0.1,
+    },
+    {
+      url: `${siteConfig.url}/terminos`,
+      changeFrequency: "yearly",
+      priority: 0.1,
+    },
   ];
 }

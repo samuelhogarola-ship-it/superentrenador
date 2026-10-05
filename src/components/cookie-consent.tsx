@@ -11,7 +11,8 @@ export function CookieConsent() {
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
-      setVisible(window.localStorage.getItem(STORAGE_KEY) !== "accepted");
+      const consent = window.localStorage.getItem(STORAGE_KEY);
+      setVisible(consent !== "necessary" && consent !== "analytics");
     });
 
     return () => window.cancelAnimationFrame(frame);
@@ -29,7 +30,7 @@ export function CookieConsent() {
           <div>
             <p className="text-sm font-bold text-[var(--ink)]">Cookies técnicas</p>
             <p className="mt-1 text-xs leading-5 text-[var(--paper-muted)]">
-              Usamos lo necesario para sesión y preferencias. Sin analítica publicitaria en esta fase.{" "}
+              Usamos cookies necesarias para sesión y preferencias. Con tu permiso, activamos Google Analytics para medir el uso de la web.{" "}
               <Link href="/cookies" className="font-semibold text-[var(--accent)] hover:underline">
                 Ver política
               </Link>
@@ -37,16 +38,30 @@ export function CookieConsent() {
             </p>
           </div>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            window.localStorage.setItem(STORAGE_KEY, "accepted");
-            setVisible(false);
-          }}
-          className="inline-flex shrink-0 items-center justify-center rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-bold text-[var(--ink)] transition-colors hover:opacity-95"
-        >
-          Entendido
-        </button>
+        <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+          <button
+            type="button"
+            onClick={() => {
+              window.localStorage.setItem(STORAGE_KEY, "necessary");
+              window.dispatchEvent(new Event("super-entrenador-cookie-consent"));
+              setVisible(false);
+            }}
+            className="inline-flex items-center justify-center rounded-full border border-black/10 bg-white px-5 py-2.5 text-sm font-bold text-[var(--ink)] transition-colors hover:bg-black/[0.03]"
+          >
+            Solo necesarias
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              window.localStorage.setItem(STORAGE_KEY, "analytics");
+              window.dispatchEvent(new Event("super-entrenador-cookie-consent"));
+              setVisible(false);
+            }}
+            className="inline-flex items-center justify-center rounded-full bg-[var(--accent)] px-5 py-2.5 text-sm font-bold text-[var(--ink)] transition-colors hover:opacity-95"
+          >
+            Aceptar analíticas
+          </button>
+        </div>
       </div>
     </aside>
   );

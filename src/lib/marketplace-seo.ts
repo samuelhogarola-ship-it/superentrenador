@@ -49,6 +49,15 @@ export function trainerProfileJsonLd(trainer: PublicTrainerProfile) {
       addressCountry: "ES",
     },
     knowsAbout: trainer.specialties,
+    ...(trainer.reviewsCount > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: trainer.rating,
+            reviewCount: trainer.reviewsCount,
+          },
+        }
+      : {}),
     makesOffer: {
       "@type": "Offer",
       price: trainer.priceFrom,
@@ -61,6 +70,28 @@ export function trainerProfileJsonLd(trainer: PublicTrainerProfile) {
         serviceType: trainer.specialties.join(", "),
       },
     },
+  };
+}
+
+export function trainerBreadcrumbJsonLd(trainer: PublicTrainerProfile) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Entrenadores", item: `${siteConfig.url}/entrenadores` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: trainer.city,
+        item: `${siteConfig.url}/ciudades/${trainer.citySlug}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: trainer.displayName,
+        item: `${siteConfig.url}/entrenadores/${trainer.slug}`,
+      },
+    ],
   };
 }
 

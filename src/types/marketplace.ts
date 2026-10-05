@@ -1,3 +1,5 @@
+import type { ReviewStatus } from "@/lib/supabase/database.types";
+
 export interface MarketplaceCity {
   slug: string;
   name: string;
@@ -15,6 +17,7 @@ export interface PublicTrainerProfile {
   citySlug: string;
   city: string;
   region: string;
+  category?: string;
   headline: string;
   shortBio: string;
   longBio: string;
@@ -24,9 +27,13 @@ export interface PublicTrainerProfile {
   rating: number;
   reviewsCount: number;
   priceFrom: number;
+  priceUnit?: "hora" | "sesión";
   modalities: string[];
   languages: string[];
   hiddenContactHint: string;
   photoUrl: string | null;
-  reviewStatus: string;
+  /** "draft" only ever occurs on static demo data — real DB rows are constrained to ReviewStatus. */
+  reviewStatus: ReviewStatus | "draft";
+  /** ISO timestamp — undefined for static demo data, which has no real modification history. */
+  updatedAt?: string;
 }

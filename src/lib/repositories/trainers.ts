@@ -1,10 +1,13 @@
 import { hasSupabaseEnv } from "@/lib/supabase/client";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { marketplaceCities, publicTrainerProfiles } from "@/lib/marketplace-data";
-import { MARKETPLACE_MODALITIES, MARKETPLACE_SPECIALTIES } from "@/lib/marketplace-taxonomy";
+import { MARKETPLACE_CATEGORIES, MARKETPLACE_MODALITIES, MARKETPLACE_SPECIALTIES } from "@/lib/marketplace-taxonomy";
+import type { Tables } from "@/lib/supabase/database.types";
 import type { MarketplaceCity, PublicTrainerProfile } from "@/types/marketplace";
 
 export interface TrainerFilters {
+  q?: string;
+  category?: string;
   specialty?: string;
   citySlug?: string;
   modality?: string;
@@ -23,35 +26,27 @@ interface CityRow {
 
 // Rows returned by the trainer_profiles_public view (flat shape — cities joined).
 // contact_info, stripe_customer_id, user_id are excluded at the view level.
-interface TrainerRow {
-  id: string;
-  slug: string;
-  display_name: string;
-  city_slug: string;
+//
+// The generated view type marks every column nullable (accurate for an empty
+// view row), but a real published profile always has these populated — the
+// `as unknown as TrainerRow` casts below assert that business invariant.
+// Derived from the generated type instead of hand-restated so the two can't
+// drift out of sync again.
+type PublicTrainerViewRow = Tables<"trainer_profiles_public">;
+type TrainerRow = Omit<
+  { [K in keyof PublicTrainerViewRow]: NonNullable<PublicTrainerViewRow[K]> },
+  "city_name" | "city_region"
+> & {
   city_name: string | null;
   city_region: string | null;
-  headline: string;
-  short_bio: string;
-  long_bio: string;
-  specialties: string[];
-  verified: boolean;
-  years_experience: number;
-  rating: number;
-  reviews_count: number;
-  price_from: number;
-  modalities: string[];
-  languages: string[];
-  hidden_contact_hint: string;
-  photo_url: string | null;
-  review_status: string;
-}
+};
 
 // Columns to fetch from trainer_profiles_public view (no nested selects needed).
 const PUBLIC_VIEW_COLUMNS =
   "id, slug, display_name, city_slug, city_name, city_region, " +
   "headline, short_bio, long_bio, specialties, verified, years_experience, " +
   "rating, reviews_count, price_from, modalities, languages, " +
-  "hidden_contact_hint, photo_url, review_status";
+  "hidden_contact_hint, photo_url, review_status, updated_at";
 
 const DEMO_PROFILE_SLUGS = new Set(publicTrainerProfiles.map((trainer) => trainer.slug));
 
@@ -79,13 +74,6 @@ function mapCity(row: CityRow): MarketplaceCity {
   };
 }
 
-function mergeCitiesWithFallback(rows: CityRow[] = []) {
-  const bySlug = new Map<string, MarketplaceCity>();
-  marketplaceCities.forEach((city) => bySlug.set(city.slug, city));
-  rows.map(mapCity).forEach((city) => bySlug.set(city.slug, city));
-  return Array.from(bySlug.values()).sort((a, b) => a.name.localeCompare(b.name, "es"));
-}
-
 function mapTrainer(row: TrainerRow): PublicTrainerProfile {
   return {
     id: row.id,
@@ -108,6 +96,7 @@ function mapTrainer(row: TrainerRow): PublicTrainerProfile {
     hiddenContactHint: row.hidden_contact_hint,
     photoUrl: row.photo_url ?? null,
     reviewStatus: row.review_status ?? "pending",
+    updatedAt: row.updated_at,
   };
 }
 
@@ -133,6 +122,23 @@ function sortTrainers(trainers: PublicTrainerProfile[], sort: TrainerFilters["so
 function filterStaticTrainers(filters: TrainerFilters) {
   let trainers = getDemoTrainerProfiles();
 
+  if (filters.q) {
+    const query = filters.q.trim().toLocaleLowerCase("es");
+    trainers = trainers.filter((trainer) => [
+      trainer.displayName,
+      trainer.city,
+      trainer.category ?? "",
+      trainer.headline,
+      trainer.shortBio,
+      ...trainer.specialties,
+    ].join(" ").toLocaleLowerCase("es").includes(query));
+  }
+
+  if (filters.category) {
+    trainers = trainers.filter(
+      (trainer) => trainer.category === filters.category || trainer.specialties.includes(filters.category!),
+    );
+  }
   if (filters.specialty) {
     trainers = trainers.filter((trainer) => trainer.specialties.includes(filters.specialty!));
   }
@@ -156,10 +162,10 @@ export async function listMarketplaceCities(): Promise<MarketplaceCity[]> {
 
   if (error || !data) {
     console.error("[supabase] listMarketplaceCities failed", error);
-    return marketplaceCities;
+    return [];
   }
 
-  return mergeCitiesWithFallback(data as CityRow[]);
+  return (data as CityRow[]).map(mapCity);
 }
 
 export async function getMarketplaceCity(slug: string): Promise<MarketplaceCity | null> {
@@ -172,11 +178,11 @@ export async function getMarketplaceCity(slug: string): Promise<MarketplaceCity 
 
   if (error) {
     console.error("[supabase] getMarketplaceCity failed", error);
-    return marketplaceCities.find((city) => city.slug === slug) ?? null;
+    return null;
   }
 
   if (!data) {
-    return marketplaceCities.find((city) => city.slug === slug) ?? null;
+    return null;
   }
 
   return mapCity(data as CityRow);
@@ -192,6 +198,16 @@ export async function listPublicTrainerProfiles(filters: TrainerFilters = {}): P
     .from("trainer_profiles_public")
     .select(PUBLIC_VIEW_COLUMNS);
 
+  if (filters.category) {
+    // `category` (sport/discipline, e.g. "Fútbol") is a different taxonomy from
+    // `specialties` (e.g. "Fuerza") and has no dedicated column on the profile —
+    // match it against specialties and free-text bio fields instead of a column
+    // that can never contain it.
+    const term = filters.category.replace(/[%,()]/g, " ").trim();
+    query = query.or(
+      `specialties.cs.{${filters.category}},headline.ilike.%${term}%,short_bio.ilike.%${term}%,long_bio.ilike.%${term}%`,
+    );
+  }
   if (filters.specialty) {
     query = query.contains("specialties", [filters.specialty]);
   }
@@ -219,7 +235,22 @@ export async function listPublicTrainerProfiles(filters: TrainerFilters = {}): P
     return [];
   }
 
-  return (data as unknown as TrainerRow[]).filter((row) => !isProductionDemoProfile(row)).map(mapTrainer);
+  const profiles = (data as unknown as TrainerRow[]).filter((row) => !isProductionDemoProfile(row)).map(mapTrainer);
+  if (!filters.q) return profiles;
+
+  const queryText = filters.q.trim().toLocaleLowerCase("es");
+  return profiles.filter((trainer) => [
+    trainer.displayName,
+    trainer.city,
+    trainer.headline,
+    trainer.shortBio,
+    ...trainer.specialties,
+  ].join(" ").toLocaleLowerCase("es").includes(queryText));
+}
+
+export async function listAllCategories(): Promise<string[]> {
+  const set = new Set<string>(MARKETPLACE_CATEGORIES);
+  return Array.from(set);
 }
 
 export async function listFeaturedTrainerProfiles(): Promise<PublicTrainerProfile[]> {
@@ -244,6 +275,10 @@ export async function getPublicTrainerProfileBySlug(slug: string): Promise<Publi
     .maybeSingle();
 
   if (error || !data) {
+    if (isMarketplaceDemoMode()) {
+      return publicTrainerProfiles.find((profile) => profile.slug === slug) ?? null;
+    }
+
     console.error("[supabase] getPublicTrainerProfileBySlug failed", error);
     return null;
   }
@@ -325,7 +360,7 @@ export async function getMarketplaceStats() {
     (row) => !isProductionDemoProfile(row)
   );
   const totalTrainers = profiles.length;
-  const totalCities = Math.max(citiesCountRes.count ?? 0, marketplaceCities.length);
+  const totalCities = citiesCountRes.count ?? 0;
   const totalReviews = profiles.reduce((sum, row) => sum + (row.reviews_count ?? 0), 0);
   const avgRating = totalTrainers
     ? profiles.reduce((sum, row) => sum + (row.rating ?? 0), 0) / totalTrainers

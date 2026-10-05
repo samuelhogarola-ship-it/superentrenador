@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
 import { AdminEntrenadoresClient, type PendingTrainer } from "./admin-entrenadores-client";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Moderación | Super Entrenador",
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminEntrenadoresPage() {
   const supabase = await getSupabaseSessionServerClient();

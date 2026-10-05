@@ -8,7 +8,7 @@ import type {
   WorkoutLog
 } from "./types/coach";
 import type { Lead } from "./types/marketplace";
-import type { VerificationRequest } from "./types/platform";
+import type { ActivePlatformUser, AdminPanelAccess, VerificationRequest } from "./types/platform";
 import type { TrainerProfile, TrainerSubscription, UserAccount } from "./types/shared";
 
 export * from "./types/shared";
@@ -29,4 +29,6 @@ export interface AppState {
   exports: PDFExport[];
   leads: Lead[];
   verificationRequests: VerificationRequest[];
+  activeUsers: ActivePlatformUser[];
+  panelAccesses: AdminPanelAccess[];
 }

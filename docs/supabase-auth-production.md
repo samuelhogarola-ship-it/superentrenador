@@ -26,10 +26,18 @@ La CLI tambien necesita una sesion con permisos de Owner/Admin:
 supabase login
 ```
 
+Las plantillas del proyecto alojado se publican mediante Management API. Genera un
+token personal desde la cuenta con acceso al proyecto y expórtalo solo durante la
+operación:
+
+```bash
+export SUPABASE_ACCESS_TOKEN="..."
+```
+
 ## Aplicar configuracion
 
 ```bash
-scripts/push-supabase-auth-config.sh
+npm run supabase:auth:push
 ```
 
 El script ejecuta:
@@ -37,6 +45,28 @@ El script ejecuta:
 ```bash
 supabase config push --project-ref qxugymzyvtbxeyqcvtgk
 ```
+
+Antes del push, el script comprueba que `.env.local` apunta al mismo proyecto y aborta si detecta un enlace local a otro ref.
+
+Después, publica las plantillas versionadas de confirmación y Magic Link:
+
+```bash
+npm run supabase:auth:templates:push
+```
+
+Este comando tiene fijado el proyecto `qxugymzyvtbxeyqcvtgk`, valida que ambos HTML
+usen `TokenHash` y envía únicamente sus campos de asunto y contenido. No cambia SMTP,
+CAPTCHA, redirects ni la plantilla de recuperación.
+
+Tras el push:
+
+- Usar una cuenta confirmada para probar inicio de sesion y acceso a las rutas privadas.
+- Solicitar un correo nuevo y comprobar su enlace real; no reutilizar mensajes antiguos.
+- Confirmar que el callback crea sesión y permite entrar al panel protegido.
+- Verificar con una cuenta sin confirmar que no puede iniciar sesion en produccion.
+- Comprobar aparte la defensa de las rutas con un fixture autenticado cuyo
+  `email_confirmed_at` sea `null`; si produccion no puede emitir esa sesion, ejecutar
+  contacto y mensajes contra ese fixture en la suite de integracion.
 
 ## Dashboard checklist
 
@@ -51,15 +81,42 @@ En `Authentication > URL Configuration`:
 
 En `Authentication > Emails > Magic Link / OTP`:
 
-- Usar `{{ .ConfirmationURL }}`.
+- Confirm signup y Magic Link deben usar:
+  `{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=email`.
+- Abrir una pestaña nueva después de guardar y comprobar que el contenido persistió.
+- Confirmar que `Confirm email` esta activado; `supabase/config.toml` usa `enable_confirmations = true`.
 
 En `Authentication > Rate Limits`:
 
-- Email sent: `500` por hora.
-- Sign in / sign ups: `120` por 5 minutos.
-- OTP / magic link verifications: `120` por 5 minutos.
+- Email sent: `30` por hora.
+- Sign in / sign ups: `30` por 5 minutos y por IP.
+- OTP / magic link verifications: `30` por 5 minutos y por IP.
+- Reenvio de email: minimo `60s` entre solicitudes.
+
+## CAPTCHA preparado; activacion cloud pendiente
+
+Turnstile es el proveedor recomendado para registro, magic link y recuperacion. Login,
+magic link y registro ya montan desafios independientes cuando existe
+`NEXT_PUBLIC_TURNSTILE_SITE_KEY`, envian su `captchaToken` a Supabase Auth y reinician el
+desafio despues de cada intento. Sin esa variable, el frontend conserva el flujo actual.
+
+No activar `[auth.captcha]` hasta disponer de una clave real de produccion y haber validado
+el recorrido completo en Preview. Activarlo solo en Supabase, sin desplegar simultaneamente
+la clave publica del frontend, haria fallar todas las solicitudes legitimas.
+
+Orden de implantacion:
+
+1. Crear el sitio en Cloudflare Turnstile para produccion y localhost.
+2. Guardar la clave publica como `NEXT_PUBLIC_TURNSTILE_SITE_KEY` en Preview y desplegar el frontend preparado.
+3. Guardar la clave secreta solo en Supabase y habilitar `[auth.captcha]` con `provider = "turnstile"`.
+4. Probar registro, magic link, recuperacion, expiracion y token invalido en Preview.
+5. Aplicar la misma configuracion en Production y vigilar rechazos durante el lanzamiento.
 
 ## Estado actual
+
+La integracion frontend y la CSP estan implementadas y verificadas localmente con la clave
+publica oficial de pruebas de Cloudflare. Falta crear el widget real, guardar su clave publica
+en el entorno de despliegue y su secreto exclusivamente en Supabase antes de habilitar CAPTCHA.
 
 El intento de `supabase config push` desde Codex alcanzo el proyecto cloud, pero Supabase devolvio:
 
@@ -73,4 +130,7 @@ Tambien faltaba:
 SUPABASE_AUTH_SMTP_PASS
 ```
 
-Con una cuenta Supabase con permisos suficientes y SMTP real, la configuracion ya esta lista en `supabase/config.toml`.
+Con una cuenta Supabase con permisos suficientes y SMTP real, la configuracion ya esta lista en `supabase/config.toml`. La prueba de una cuenta sin confirmar valida el rechazo de inicio de sesion; la autorizacion defensiva de contacto y mensajes se valida por separado con el fixture descrito arriba.
+
+La recuperación de contraseña sigue siendo un flujo independiente: no se publica una
+plantilla `type=recovery` hasta que existan su callback y formulario de nueva contraseña.
