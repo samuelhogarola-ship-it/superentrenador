@@ -7,6 +7,7 @@ const COLUMNS = [
   {
     title: "Marketplace",
     links: [
+      { href: "/como-funciona", label: "Cómo funciona" },
       { href: "/entrenadores", label: "Todos los entrenadores" },
       { href: "/entrenadores?specialty=Hipertrofia", label: "Hipertrofia" },
       { href: "/entrenadores?specialty=Pérdida de grasa", label: "Pérdida de grasa" },

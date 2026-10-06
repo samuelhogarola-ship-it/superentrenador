@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
-import { getBlogPost, listBlogPosts } from "@/lib/blog";
+import { getBlogPost, getRelatedBlogPosts, listBlogPosts } from "@/lib/blog";
 import { getCategoryTheme } from "@/lib/blog-theme";
 import { siteConfig } from "@/lib/site";
 
@@ -37,6 +37,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       description: post.excerpt,
       url: `${siteConfig.url}/blog/${post.slug}`,
       publishedTime: post.publishedAt,
+      modifiedTime: post.updatedAt,
       authors: [siteConfig.name],
     },
   };
@@ -57,14 +58,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   const theme = getCategoryTheme(post.category);
-  const related = listBlogPosts().filter((item) => item.slug !== post.slug).slice(0, 2);
+  const related = getRelatedBlogPosts(post.slug);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
     description: post.excerpt,
     datePublished: post.publishedAt,
-    dateModified: post.publishedAt,
+    dateModified: post.updatedAt,
     author: {
       "@type": "Organization",
       name: siteConfig.name,
@@ -103,7 +104,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <h1 className="mt-6 font-heading text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
             {post.title}
           </h1>
-          <p className="mt-4 text-sm font-semibold opacity-70">{formatDate(post.publishedAt)}</p>
+          <p className="mt-4 text-sm font-semibold opacity-70">Publicado: {formatDate(post.publishedAt)} · Revisado: <time dateTime={post.reviewedAt}>{formatDate(post.reviewedAt)}</time></p>
         </div>
       </section>
 
@@ -124,6 +125,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             </section>
           ))}
         </div>
+
+        <section className="mt-12 border-t border-[#111214]/20 pt-8" aria-labelledby="sources-heading">
+          <h2 id="sources-heading" className="font-heading text-2xl font-bold">Fuentes y revisión</h2>
+          <p className="mt-3 text-sm leading-6 text-[#5b5b63]">Revisión editorial: <time dateTime={post.reviewedAt}>{formatDate(post.reviewedAt)}</time>. Consulta las fuentes para comprobar el alcance y los cambios posteriores.</p>
+          <ul className="mt-4 space-y-3 text-sm leading-6">
+            {post.sources.map((source) => <li key={source.href}><Link href={source.href} className="underline underline-offset-4">{source.label}</Link></li>)}
+          </ul>
+          <Link href="/como-funciona" className="mt-6 inline-block font-semibold underline underline-offset-4">Cómo funciona Superentrenador</Link>
+        </section>
 
         <div className={`mt-14 border border-[#111214] p-8 sm:p-10 ${theme.block} ${theme.onBlock}`}>
           <p className="text-xs font-bold uppercase tracking-[0.2em] opacity-80">Siguiente paso</p>
