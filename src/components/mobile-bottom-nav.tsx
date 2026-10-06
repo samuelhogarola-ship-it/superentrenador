@@ -22,7 +22,7 @@ export function MobileBottomNav() {
   return (
     <nav
       aria-label="Navegacion principal movil"
-      className="fixed inset-x-4 bottom-4 z-40 md:hidden"
+      className="mobile-bottom-nav fixed inset-x-4 bottom-4 z-40 md:hidden"
     >
       <div className="grid grid-cols-4 rounded-[20px] border border-[var(--line-strong)] bg-[color:rgba(255,255,255,0.94)] px-2 py-2 shadow-[var(--shadow-soft)] backdrop-blur-md">
         {navItems.map((item) => {
@@ -38,7 +38,7 @@ export function MobileBottomNav() {
               href={item.href}
               aria-current={isActive ? "page" : undefined}
               className={`flex flex-col items-center gap-1 rounded-[20px] px-2 py-3 text-[11px] font-semibold transition-colors ${
-                isActive ? "bg-[var(--accent-soft)] text-[var(--ink)]" : "text-[#5b5b63]"
+                isActive ? "bg-[var(--accent-soft)] text-[var(--ink)]" : "text-[var(--paper-muted)]"
               }`}
             >
               <Icon size={18} className={isActive ? "text-[var(--accent)]" : "text-current"} />
