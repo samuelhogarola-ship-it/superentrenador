@@ -38,6 +38,7 @@ export default function BlogPage() {
       headline: post.title,
       description: post.excerpt,
       datePublished: post.publishedAt,
+      dateModified: post.updatedAt,
       url: `${siteConfig.url}/blog/${post.slug}`,
     })),
   };
@@ -55,6 +56,22 @@ export default function BlogPage() {
           Sin relleno. Artículos concretos para clientes que quieren decidir mejor y entrenadores que
           quieren construir un negocio serio.
         </p>
+      </section>
+
+      <section aria-labelledby="trainer-guides" className="mx-auto max-w-6xl px-6 pb-14 lg:px-8">
+        <div className="border border-[#111214] bg-[#f5f5f0] p-6 sm:p-8">
+          <h2 id="trainer-guides" className="font-heading text-2xl font-bold">Prepara tu actividad y después tu perfil</h2>
+          <p className="mt-3 max-w-2xl leading-7 text-[#5b5b63]">Una ruta de lectura para entrenadores: trámites, cobertura y condiciones del primer servicio. Fuentes y fecha de revisión en cada guía.</p>
+          <ol className="mt-5 grid gap-3 sm:grid-cols-3">
+            <li><Link className="font-semibold underline underline-offset-4" href="/blog/necesito-ser-autonomo-entrenador-personal">1. Altas y trabajo por cuenta propia</Link></li>
+            <li><Link className="font-semibold underline underline-offset-4" href="/blog/seguro-responsabilidad-civil-entrenador-andalucia">2. Seguros y responsabilidad</Link></li>
+            <li><Link className="font-semibold underline underline-offset-4" href="/blog/preparar-primer-cliente-entrenador-andalucia">3. Preparar el primer cliente</Link></li>
+          </ol>
+          <div className="mt-7 flex flex-wrap gap-5">
+            <Link href="/registro?intent=trainer" className="border-2 border-[#111214] bg-[var(--accent)] px-5 py-3 font-bold">Preparar mi perfil</Link>
+            <Link href="/como-funciona" className="self-center font-semibold underline underline-offset-4">Cómo funciona el marketplace</Link>
+          </div>
+        </div>
       </section>
 
       {/* Featured article — full-bleed square card, bold category block */}

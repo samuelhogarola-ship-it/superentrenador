@@ -146,7 +146,7 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
             </div>
             <div className="border border-[#111214]/12 bg-[#fafafa] p-4">
               <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a8a92]">Desde</p>
-              <p className="mt-1 font-heading text-2xl font-bold text-[#111214]">{trainer.priceFrom}€</p>
+              <p className="mt-1 font-heading text-2xl font-bold text-[#111214]">{trainer.priceFrom > 0 ? `${trainer.priceFrom}€ /${trainer.priceUnit ?? "sesión"}` : "Consultar precio"}</p>
             </div>
             <div className="border border-[#111214]/12 bg-[#fafafa] p-4">
               <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a8a92]">Formato</p>
@@ -158,6 +158,7 @@ export default async function TrainerProfilePage({ params }: TrainerProfilePageP
         <aside className="lg:sticky lg:top-28 lg:self-start">
           <ContactPanel
             priceFrom={trainer.priceFrom}
+            priceUnit={trainer.priceUnit}
             yearsExperience={trainer.yearsExperience}
             modalities={trainer.modalities}
             languages={trainer.languages}

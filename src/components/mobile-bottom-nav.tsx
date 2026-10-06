@@ -38,7 +38,7 @@ export function MobileBottomNav() {
               href={item.href}
               aria-current={isActive ? "page" : undefined}
               className={`flex flex-col items-center gap-1 rounded-[20px] px-2 py-3 text-[11px] font-semibold transition-colors ${
-                isActive ? "bg-[var(--accent-soft)] text-[var(--ink)]" : "text-[var(--paper-muted)]"
+                isActive ? "bg-[var(--accent-soft)] text-[var(--ink)]" : "text-[#5b5b63]"
               }`}
             >
               <Icon size={18} className={isActive ? "text-[var(--accent)]" : "text-current"} />
