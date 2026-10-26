@@ -8,11 +8,10 @@ const loginSource = readFileSync(
   "utf8",
 );
 
-test("presents password as the only login method during password rollout", () => {
+test("presents password, Google, and magic-link login methods", () => {
   assert.match(loginSource, /type="password"/);
   assert.match(loginSource, /action="password_login"/);
-  assert.doesNotMatch(loginSource, /Continuar con Google/);
-  assert.doesNotMatch(loginSource, /Entrar con magic link/);
+  assert.match(loginSource, /AuthAlternativeMethods/);
 });
 
 test("returns safe Spanish messages for password login failures", () => {

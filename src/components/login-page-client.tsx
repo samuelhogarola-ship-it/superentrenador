@@ -7,6 +7,7 @@ import { ArrowRight, ShieldCheck } from "lucide-react";
 import { getPasswordLoginErrorMessage, signIn } from "@/lib/auth";
 import { getSafeInternalPath } from "@/lib/safe-navigation";
 import { TurnstileWidget } from "@/components/turnstile-widget";
+import { AuthAlternativeMethods } from "@/components/auth-alternative-methods";
 
 export function LoginPageClient() {
   return (
@@ -123,6 +124,20 @@ function LoginForm() {
                 className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
               />
             </label>
+
+            <AuthAlternativeMethods
+              email={email}
+              redirectPath={redirectTo}
+              mode="login"
+              captchaToken={passwordCaptchaToken}
+              captchaRequired={turnstileEnabled}
+            />
+
+            <div className="my-1 flex items-center gap-3 text-xs text-[var(--muted)]">
+              <span className="h-px flex-1 bg-[var(--line)]" />
+              <span>o continúa con contraseña</span>
+              <span className="h-px flex-1 bg-[var(--line)]" />
+            </div>
 
             <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--text)]">
               Contraseña
