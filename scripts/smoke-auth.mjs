@@ -78,7 +78,7 @@ async function run() {
       throw new Error("Magic-link login did not show success or rate-limit feedback.");
     }
 
-    await page.locator('input[type="email"]').nth(1).fill("nobody@example.com");
+    await page.locator('input[type="email"]').first().fill("nobody@example.com");
     await page.getByLabel("Contraseña").fill("wrongpass");
     await page.getByRole("button", { name: /iniciar sesión/i }).click();
     await page.waitForTimeout(1200);
@@ -97,7 +97,7 @@ async function run() {
     }
 
     await page.goto(`${baseUrl}/login`, { waitUntil: "networkidle" });
-    await page.locator('input[type="email"]').nth(1).fill(email);
+    await page.locator('input[type="email"]').first().fill(email);
     await page.getByLabel("Contraseña", { exact: true }).fill(password);
     await page.getByRole("button", { name: /iniciar sesión/i }).click();
     await page.waitForURL(/\/mi-perfil/, { timeout: 15000 });
