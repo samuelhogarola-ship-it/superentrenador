@@ -46,9 +46,16 @@ export function useCurrentUser() {
   return { user, checked };
 }
 
-function getAuthCallbackUrl(redirectPath: string) {
+export function buildAuthCallbackUrl(origin: string, redirectPath: string, intent?: AuthIntent) {
+  const url = new URL("/auth/callback", origin);
+  url.searchParams.set("next", redirectPath);
+  if (intent) url.searchParams.set("intent", intent);
+  return url.toString();
+}
+
+function getAuthCallbackUrl(redirectPath: string, intent?: AuthIntent) {
   const origin = process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin;
-  return `${origin}/auth/callback?next=${encodeURIComponent(redirectPath)}`;
+  return buildAuthCallbackUrl(origin, redirectPath, intent);
 }
 
 export function getAuthErrorMessage(message: string) {
@@ -58,13 +65,33 @@ export function getAuthErrorMessage(message: string) {
     return "Hemos alcanzado el límite temporal de emails de acceso. Inténtalo de nuevo en unos minutos.";
   }
   if (normalized.includes("signups not allowed")) {
-    return "No existe una cuenta con ese email. Crea una cuenta gratis primero.";
+    return "No se pudo completar el acceso con ese email. Inténtalo de nuevo o crea una cuenta.";
   }
   if (message === "Invalid login credentials") {
     return "Email o contraseña incorrectos.";
   }
 
   return message;
+}
+
+export function getMagicLinkFeedback(errorMessage: string | null, mode: "login" | "register") {
+  const successText = mode === "register"
+    ? "Te hemos enviado un enlace para confirmar tu cuenta."
+    : "Si hay una cuenta asociada a ese email, recibirás un enlace mágico.";
+
+  if (!errorMessage || (mode === "login" && errorMessage.toLowerCase().includes("signups not allowed"))) {
+    return { tone: "success" as const, text: successText };
+  }
+
+  return { tone: "error" as const, text: getAuthErrorMessage(errorMessage) };
+}
+
+export async function runCaptchaProtectedRequest<T>(request: () => Promise<T>, onConsumed: () => void) {
+  try {
+    return await request();
+  } finally {
+    onConsumed();
+  }
 }
 
 export function getPasswordLoginErrorMessage(message: string) {
@@ -139,12 +166,12 @@ export async function completePasswordRegistration(
   return result;
 }
 
-export async function signInWithGoogle(redirectPath = "/dashboard") {
+export async function signInWithGoogle(redirectPath = "/dashboard", intent?: AuthIntent) {
   const supabase = getSupabaseBrowserClient();
   return supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: getAuthCallbackUrl(redirectPath),
+      redirectTo: getAuthCallbackUrl(redirectPath, intent),
     },
   });
 }

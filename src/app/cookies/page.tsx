@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
+import { createSocialMetadata } from "@/lib/site";
+
+const COOKIES_DESCRIPTION =
+  "Información sobre las cookies técnicas, preferencias y analítica de Super Entrenador.";
 
 export const metadata: Metadata = {
   title: "Política de cookies",
-  description: "Información sobre las cookies técnicas, preferencias y analítica de Super Entrenador.",
+  description: COOKIES_DESCRIPTION,
   alternates: {
     canonical: "/cookies",
   },
+  ...createSocialMetadata("Política de cookies", COOKIES_DESCRIPTION, "/cookies"),
 };
 
 export default function CookiesPage() {

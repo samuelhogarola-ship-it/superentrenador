@@ -73,9 +73,9 @@ function LoginForm() {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-4 py-12 md:px-6">
       <div className="grid w-full gap-6 lg:grid-cols-[0.92fr_1.08fr]">
-        <section className="rounded-[28px] bg-[var(--panel-strong)] p-8 sm:p-10">
+        <section className="min-w-0 rounded-[28px] bg-[var(--panel-strong)] p-8 sm:p-10">
           <p className="app-kicker">Acceso seguro</p>
-          <h1 className="app-title mt-4 text-4xl text-[var(--text)] sm:text-5xl">Tus entrenadores y mensajes, en un solo lugar.</h1>
+          <h1 className="app-title mt-4 break-words text-3xl text-[var(--text)] sm:text-5xl">Tus entrenadores y mensajes, en un solo lugar.</h1>
           <p className="app-copy mt-4 max-w-md text-base">
             Accede a tus mensajes, desbloquea el contacto cuando corresponda y gestiona tu perfil desde una sola cuenta.
           </p>
@@ -94,7 +94,7 @@ function LoginForm() {
           </div>
         </section>
 
-        <div className="rounded-[28px] border border-[var(--line)] bg-[var(--surface)] p-8 shadow-[var(--shadow-soft)]">
+        <div className="min-w-0 rounded-[28px] border border-[var(--line)] bg-[var(--surface)] p-8 shadow-[var(--shadow-soft)]">
           <h2 className="app-title text-2xl text-[var(--text)]">Iniciar sesión</h2>
           <p className="app-copy mt-2 text-sm">
             ¿No tienes cuenta?{" "}
@@ -131,6 +131,7 @@ function LoginForm() {
               mode="login"
               captchaToken={passwordCaptchaToken}
               captchaRequired={turnstileEnabled}
+              onCaptchaConsumed={() => setPasswordCaptchaResetKey((value) => value + 1)}
             />
 
             <div className="my-1 flex items-center gap-3 text-xs text-[var(--muted)]">

@@ -15,6 +15,7 @@ import {
   listMarketplaceCities,
   listTrainerProfilesByCity,
 } from "@/lib/repositories/trainers";
+import { createSocialMetadata } from "@/lib/site";
 
 interface CityPageProps {
   params: Promise<{ city: string }>;
@@ -47,6 +48,11 @@ export async function generateMetadata({ params }: CityPageProps): Promise<Metad
     alternates: {
       canonical: `/ciudades/${currentCity.slug}`,
     },
+    ...createSocialMetadata(
+      currentCity.heroTitle,
+      currentCity.seoDescription,
+      `/ciudades/${currentCity.slug}`,
+    ),
     robots: hasPublishedSupply ? undefined : { index: false, follow: true },
   };
 }

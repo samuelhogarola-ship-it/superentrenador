@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { EDITORIAL_UPDATED_AT } from "@/lib/blog";
+import { createSocialMetadata } from "@/lib/site";
+
+const HOW_IT_WORKS_DESCRIPTION =
+  "Descubre, compara y contacta con entrenadores. Conoce cómo crear tu perfil y qué incluye el marketplace.";
 
 export const metadata: Metadata = {
   title: "Cómo funciona Superentrenador",
-  description: "Descubre, compara y contacta con entrenadores. Conoce cómo crear tu perfil y qué incluye el marketplace.",
+  description: HOW_IT_WORKS_DESCRIPTION,
   alternates: { canonical: "/como-funciona" },
+  ...createSocialMetadata("Cómo funciona Superentrenador", HOW_IT_WORKS_DESCRIPTION, "/como-funciona"),
 };
 
 const journeys = [

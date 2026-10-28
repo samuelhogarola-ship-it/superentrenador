@@ -54,6 +54,12 @@ Advisor muestra avisos de rendimiento por evaluar `auth.uid()`/`auth.jwt()` por 
 
 **Corrección segura:** mantener público solo lo que la interfaz necesita y revisar que no exista listado público de objetos ni nombres sensibles. No cambiar `coach-logos` sin su propietario funcional.
 
+### P2 — Respuesta pública diferente de Magic Link para cuentas inexistentes
+
+La diferencia se confirmó el 2026-10-28 mediante solicitudes realizadas desde la interfaz de producción con Turnstile y contrastadas en los logs de Supabase Auth: una dirección con cuenta devolvió `/otp` `200` y el evento `user_recovery_requested`; una dirección sin cuenta devolvió `/otp` `422`, código `otp_disabled` y el mensaje `Signups not allowed for otp`. No se registran aquí las direcciones utilizadas. La interfaz de Super Entrenador muestra el mismo mensaje en ambos casos, pero un cliente que inspeccione directamente la petición todavía puede distinguirlos.
+
+No existe una corrección local completa que preserve simultáneamente el Magic Link de solo acceso y bloquee el endpoint público de Supabase. Pasar la petición por una ruta propia no elimina el endpoint original, y usar `shouldCreateUser: true` convertiría el acceso en registro automático. Se mantiene la semántica segura de no crear usuarios. Turnstile quedó activado y comprobado en producción el 2026-10-28; los límites de frecuencia están versionados y deben volver a contrastarse en el panel después de cualquier cambio de configuración. El comportamiento de `/otp` se registra como riesgo residual dependiente de una corrección de Supabase Auth.
+
 ## Estado verificado
 
 - Dependencias locales: 0 vulnerabilidades en `npm audit`.

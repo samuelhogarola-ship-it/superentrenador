@@ -5,6 +5,10 @@ export interface EmailAuthCallbackClient {
   exchangeCodeForSession(code: string): Promise<AuthResult>;
 }
 
+interface AuthIntentUpdateClient {
+  updateUser(params: { data: { intent: "client" | "trainer" } }): Promise<AuthResult>;
+}
+
 export type EmailAuthCallbackResult =
   | { ok: true; flow: "magic-link" | "pkce" }
   | { ok: false; flow: "magic-link" | "pkce" | "invalid" };
@@ -28,4 +32,10 @@ export async function completeEmailAuthCallback(
   }
 
   return { ok: false, flow: "invalid" };
+}
+
+export async function applyAuthIntent(auth: AuthIntentUpdateClient, intent: string | null) {
+  if (intent !== "client" && intent !== "trainer") return false;
+  const { error } = await auth.updateUser({ data: { intent } });
+  return !error;
 }

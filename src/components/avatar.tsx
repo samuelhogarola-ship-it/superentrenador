@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const GRADIENTS = [
   "linear-gradient(135deg, #c9962f, #8a6418)",
   "linear-gradient(135deg, #2f6e5b, #163d31)",
@@ -12,6 +14,13 @@ const SIZES = {
   md: "h-14 w-14 text-lg",
   lg: "h-20 w-20 text-2xl",
   xl: "h-28 w-28 text-4xl",
+} as const;
+
+const IMAGE_SIZES = {
+  sm: 40,
+  md: 56,
+  lg: 80,
+  xl: 112,
 } as const;
 
 interface AvatarProps {
@@ -35,15 +44,32 @@ function getInitials(name: string) {
   return initials.join("");
 }
 
+export function isAllowedAvatarPhotoUrl(photoUrl: string) {
+  if (photoUrl.startsWith("/") && !photoUrl.startsWith("//")) return true;
+
+  try {
+    const url = new URL(photoUrl);
+    return (
+      url.protocol === "https:" &&
+      (url.hostname.endsWith(".supabase.co") || url.hostname.endsWith(".supabase.in"))
+    );
+  } catch {
+    return false;
+  }
+}
+
 export function Avatar({ name, photoUrl, size = "md", className = "" }: AvatarProps) {
   const baseClass = `shrink-0 rounded-full ring-4 ring-white shadow-[var(--shadow-soft)] ${SIZES[size]} ${className}`;
 
-  if (photoUrl) {
+  if (photoUrl && isAllowedAvatarPhotoUrl(photoUrl)) {
+    const imageSize = IMAGE_SIZES[size];
     return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
+      <Image
         src={photoUrl}
         alt={name}
+        width={imageSize}
+        height={imageSize}
+        sizes={`${imageSize}px`}
         className={`${baseClass} object-cover`}
       />
     );
