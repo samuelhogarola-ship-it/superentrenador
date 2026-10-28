@@ -18,7 +18,10 @@ export async function GET(request: NextRequest) {
       !(await applyAuthIntent(supabase.auth, requestedIntent))
     ) {
       console.error("[auth/callback] registration intent could not be applied");
-      return NextResponse.redirect(new URL("/login?error=auth_intent_update_failed", appUrl));
+      const retryUrl = new URL("/login", appUrl);
+      retryUrl.searchParams.set("error", "auth_intent_update_failed");
+      retryUrl.searchParams.set("redirectTo", next);
+      return NextResponse.redirect(retryUrl);
     }
     return NextResponse.redirect(new URL(next, appUrl));
   }

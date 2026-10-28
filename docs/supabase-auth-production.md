@@ -93,16 +93,16 @@ En `Authentication > Rate Limits`:
 - OTP / magic link verifications: `30` por 5 minutos y por IP.
 - Reenvio de email: minimo `60s` entre solicitudes.
 
-## CAPTCHA preparado; activacion cloud pendiente
+## CAPTCHA activado y verificado en produccion
 
 Turnstile es el proveedor recomendado para registro, magic link y recuperacion. Login,
 magic link y registro ya montan desafios independientes cuando existe
 `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, envian su `captchaToken` a Supabase Auth y reinician el
 desafio despues de cada intento. Sin esa variable, el frontend conserva el flujo actual.
 
-No activar `[auth.captcha]` hasta disponer de una clave real de produccion y haber validado
-el recorrido completo en Preview. Activarlo solo en Supabase, sin desplegar simultaneamente
-la clave publica del frontend, haria fallar todas las solicitudes legitimas.
+`[auth.captcha]` y la clave publica del frontend se desplegaron de forma coordinada. Mantener
+siempre ambas partes sincronizadas: activar solo Supabase o retirar solo la clave publica del
+frontend haria fallar todas las solicitudes legitimas.
 
 Orden de implantacion:
 
@@ -114,9 +114,10 @@ Orden de implantacion:
 
 ## Estado actual
 
-La integracion frontend y la CSP estan implementadas y verificadas localmente con la clave
-publica oficial de pruebas de Cloudflare. Falta crear el widget real, guardar su clave publica
-en el entorno de despliegue y su secreto exclusivamente en Supabase antes de habilitar CAPTCHA.
+La integracion frontend, la CSP y el widget real de Cloudflare estan desplegados. El 2026-10-28
+se comprobo en produccion que login, registro y Magic Link muestran un desafio valido y que
+Supabase acepta el token. La clave publica permanece en el entorno del frontend y el secreto
+exclusivamente en Supabase.
 
 El intento de `supabase config push` desde Codex alcanzo el proyecto cloud, pero Supabase devolvio:
 
@@ -130,7 +131,10 @@ Tambien faltaba:
 SUPABASE_AUTH_SMTP_PASS
 ```
 
-Con una cuenta Supabase con permisos suficientes y SMTP real, la configuracion ya esta lista en `supabase/config.toml`. La prueba de una cuenta sin confirmar valida el rechazo de inicio de sesion; la autorizacion defensiva de contacto y mensajes se valida por separado con el fixture descrito arriba.
+La configuracion reproducible permanece en `supabase/config.toml`; los cambios cloud que no se
+pudieron aplicar con la CLI se realizaron y comprobaron desde el panel. La prueba de una cuenta
+sin confirmar valida el rechazo de inicio de sesion; la autorizacion defensiva de contacto y
+mensajes se valida por separado con el fixture descrito arriba.
 
 La recuperación de contraseña sigue siendo un flujo independiente: no se publica una
 plantilla `type=recovery` hasta que existan su callback y formulario de nueva contraseña.

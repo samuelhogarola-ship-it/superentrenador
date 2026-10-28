@@ -103,4 +103,5 @@ test("OAuth callback does not report registration success when intent persistenc
 
   assert.match(routeSource, /auth_intent_update_failed/);
   assert.match(routeSource, /requestedIntent === "client" \|\| requestedIntent === "trainer"/);
+  assert.match(routeSource, /searchParams\.set\("redirectTo", next\)/);
 });

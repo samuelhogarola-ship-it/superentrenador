@@ -87,7 +87,8 @@ test("production auth runbook tracks CAPTCHA as a coordinated launch requirement
   assert.match(runbook, /CAPTCHA/);
   assert.match(runbook, /Turnstile/);
   assert.match(runbook, /captchaToken/);
-  assert.match(runbook, /no activar[\s\S]*sin[\s\S]*clave/i);
+  assert.match(runbook, /desplegaron[\s\S]*coordinada/i);
+  assert.match(runbook, /activar solo Supabase[\s\S]*retirar solo la clave publica/i);
 });
 
 test("production auth runbook separates sign-in and route authorization checks", async () => {
