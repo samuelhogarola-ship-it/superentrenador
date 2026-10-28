@@ -54,6 +54,12 @@ Advisor muestra avisos de rendimiento por evaluar `auth.uid()`/`auth.jwt()` por 
 
 **Corrección segura:** mantener público solo lo que la interfaz necesita y revisar que no exista listado público de objetos ni nombres sensibles. No cambiar `coach-logos` sin su propietario funcional.
 
+### P2 — Respuesta pública diferente de Magic Link para cuentas inexistentes
+
+Supabase Auth responde de forma diferente en su endpoint público `/otp` cuando `shouldCreateUser: false`: una cuenta existente puede devolver `200`, mientras que una dirección desconocida puede devolver `422 otp_disabled`. La interfaz de Super Entrenador muestra el mismo mensaje en ambos casos, pero un cliente que inspeccione directamente la petición todavía puede distinguirlos.
+
+No existe una corrección local completa que preserve simultáneamente el Magic Link de solo acceso y bloquee el endpoint público de Supabase. Pasar la petición por una ruta propia no elimina el endpoint original, y usar `shouldCreateUser: true` convertiría el acceso en registro automático. Se mantiene la semántica segura de no crear usuarios, con Turnstile y límites de frecuencia activos, y se registra como riesgo residual dependiente de una corrección de Supabase Auth.
+
 ## Estado verificado
 
 - Dependencias locales: 0 vulnerabilidades en `npm audit`.

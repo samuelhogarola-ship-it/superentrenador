@@ -13,8 +13,12 @@ export async function GET(request: NextRequest) {
 
   if (result.ok) {
     const requestedIntent = searchParams.get("intent");
-    if (requestedIntent && !(await applyAuthIntent(supabase.auth, requestedIntent))) {
+    if (
+      (requestedIntent === "client" || requestedIntent === "trainer") &&
+      !(await applyAuthIntent(supabase.auth, requestedIntent))
+    ) {
       console.error("[auth/callback] registration intent could not be applied");
+      return NextResponse.redirect(new URL("/login?error=auth_intent_update_failed", appUrl));
     }
     return NextResponse.redirect(new URL(next, appUrl));
   }

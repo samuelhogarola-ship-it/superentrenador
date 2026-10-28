@@ -60,7 +60,8 @@ test("versioned Supabase auth documents the Google OAuth credentials", async () 
     readSource("../scripts/push-supabase-auth-config.sh"),
   ]);
 
-  assert.match(config, /\[auth\.external\.google\][\s\S]*enabled = true/);
+  const googleSection = config.match(/\[auth\.external\.google\]([\s\S]*?)(?=\n\[|$)/)?.[1] ?? "";
+  assert.match(googleSection, /enabled\s*=\s*true/);
   assert.match(config, /SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID/);
   assert.match(config, /SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET/);
   assert.match(env, /SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID=/);

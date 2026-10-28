@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import * as callbackModule from "../src/lib/email-auth-callback";
 
@@ -92,4 +93,14 @@ test("applies only a validated registration intent to the OAuth user", async () 
   assert.equal(await applyAuthIntent!(auth, "trainer"), true);
   assert.equal(await applyAuthIntent!(auth, "administrator"), false);
   assert.deepEqual(updates, [{ data: { intent: "trainer" } }]);
+});
+
+test("OAuth callback does not report registration success when intent persistence fails", () => {
+  const routeSource = readFileSync(
+    new URL("../src/app/auth/callback/route.ts", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(routeSource, /auth_intent_update_failed/);
+  assert.match(routeSource, /requestedIntent === "client" \|\| requestedIntent === "trainer"/);
 });

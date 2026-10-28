@@ -16,6 +16,7 @@ const registrationSource = readFileSync(
   new URL("../src/components/registro-page-client.tsx", import.meta.url),
   "utf8",
 );
+const smokeSource = readFileSync(new URL("../scripts/smoke-auth.mjs", import.meta.url), "utf8");
 
 test("renders Google OAuth and login magic-link actions", () => {
   assert.match(componentSource, /Continuar con Google/);
@@ -99,6 +100,23 @@ test("Turnstile switches to compact mode below its 300px flexible-width minimum"
   assert.equal(typeof getTurnstileSize, "function");
   assert.equal(getTurnstileSize!(299), "compact");
   assert.equal(getTurnstileSize!(300), "flexible");
+
+  const shouldRerenderTurnstile = (
+    turnstileModule as unknown as Record<string, unknown>
+  ).shouldRerenderTurnstile as
+    | ((currentSize: "compact" | "flexible" | null, containerWidth: number) => boolean)
+    | undefined;
+  assert.equal(typeof shouldRerenderTurnstile, "function");
+  assert.equal(shouldRerenderTurnstile!("compact", 299), false);
+  assert.equal(shouldRerenderTurnstile!("compact", 300), true);
+  assert.equal(shouldRerenderTurnstile!("flexible", 299), true);
+});
+
+test("auth smoke waits for hydration and the optional Turnstile iframe", () => {
+  assert.doesNotMatch(smokeSource, /waitUntil:\s*"domcontentloaded"/);
+  assert.match(smokeSource, /waitUntil:\s*"load"/);
+  assert.match(smokeSource, /challenges\.cloudflare\.com/);
+  assert.match(smokeSource, /iframe/);
 });
 
 test("Google registration carries trainer intent through the OAuth callback", () => {

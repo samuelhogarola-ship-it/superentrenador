@@ -142,3 +142,16 @@ test("trainer photos use Next image optimization with intrinsic dimensions", () 
   assert.match(markup, /width="112"/);
   assert.match(markup, /height="112"/);
 });
+
+test("unapproved legacy avatar hosts fall back safely instead of crashing Next image", () => {
+  const markup = renderToStaticMarkup(
+    createElement(Avatar, {
+      name: "Legacy Trainer",
+      photoUrl: "https://unapproved.example.com/avatar.jpg",
+      size: "md",
+    }),
+  );
+
+  assert.doesNotMatch(markup, /unapproved\.example\.com/);
+  assert.match(markup, />LT<\/span>/);
+});

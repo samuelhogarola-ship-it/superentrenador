@@ -44,10 +44,24 @@ function getInitials(name: string) {
   return initials.join("");
 }
 
+export function isAllowedAvatarPhotoUrl(photoUrl: string) {
+  if (photoUrl.startsWith("/") && !photoUrl.startsWith("//")) return true;
+
+  try {
+    const url = new URL(photoUrl);
+    return (
+      url.protocol === "https:" &&
+      (url.hostname.endsWith(".supabase.co") || url.hostname.endsWith(".supabase.in"))
+    );
+  } catch {
+    return false;
+  }
+}
+
 export function Avatar({ name, photoUrl, size = "md", className = "" }: AvatarProps) {
   const baseClass = `shrink-0 rounded-full ring-4 ring-white shadow-[var(--shadow-soft)] ${SIZES[size]} ${className}`;
 
-  if (photoUrl) {
+  if (photoUrl && isAllowedAvatarPhotoUrl(photoUrl)) {
     const imageSize = IMAGE_SIZES[size];
     return (
       <Image

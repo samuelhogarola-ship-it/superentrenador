@@ -16,7 +16,7 @@ const baseUrl = (process.env.SMOKE_BASE_URL ?? "http://127.0.0.1:3000").replace(
 const executablePath = process.env.PLAYWRIGHT_EXECUTABLE_PATH;
 
 async function assertAuthControls(page, path) {
-  await page.goto(`${baseUrl}${path}`, { waitUntil: "domcontentloaded" });
+  await page.goto(`${baseUrl}${path}`, { waitUntil: "load" });
   await page.getByRole("button", { name: "Continuar con Google", exact: true }).waitFor();
   await page.getByRole("textbox", { name: "Email", exact: true }).waitFor();
 
@@ -24,6 +24,14 @@ async function assertAuthControls(page, path) {
     ? "Crear cuenta con magic link"
     : "Entrar con magic link";
   await page.getByRole("button", { name: magicLinkLabel, exact: true }).waitFor();
+
+  const turnstile = page.getByLabel("Verificación anti-bots");
+  if (await turnstile.count()) {
+    await turnstile.locator('iframe[src*="challenges.cloudflare.com"]').waitFor({
+      state: "attached",
+      timeout: 15_000,
+    });
+  }
 
   const layout = await page.evaluate(() => ({
     viewportWidth: window.innerWidth,
@@ -58,8 +66,10 @@ async function run() {
 
     if (process.env.SMOKE_SKIP_OAUTH !== "true") {
       const oauthPage = await browser.newPage({ viewport: { width: 1280, height: 900 } });
-      await oauthPage.goto(`${baseUrl}/login`, { waitUntil: "domcontentloaded" });
-      await oauthPage.getByRole("button", { name: "Continuar con Google", exact: true }).click();
+      await oauthPage.goto(`${baseUrl}/login`, { waitUntil: "load" });
+      const googleButton = oauthPage.getByRole("button", { name: "Continuar con Google", exact: true });
+      await googleButton.waitFor();
+      await googleButton.click();
       await oauthPage.waitForURL(/accounts\.google\.com/, { timeout: 15_000 });
       report.push({ googleOAuthHost: new URL(oauthPage.url()).host });
       await oauthPage.close();
