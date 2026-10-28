@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { createSocialMetadata } from "@/lib/site";
+
+const PRIVACY_DESCRIPTION =
+  "Cómo recopilamos, usamos y protegemos tus datos en el marketplace de entrenadores personales Super Entrenador.";
 
 export const metadata: Metadata = {
   title: "Política de privacidad",
-  description: "Cómo recopilamos, usamos y protegemos tus datos en el marketplace de entrenadores personales Super Entrenador.",
+  description: PRIVACY_DESCRIPTION,
   alternates: {
     canonical: "/politica-privacidad",
   },
+  ...createSocialMetadata("Política de privacidad", PRIVACY_DESCRIPTION, "/politica-privacidad"),
 };
 
 export default function PoliticaPrivacidadPage() {

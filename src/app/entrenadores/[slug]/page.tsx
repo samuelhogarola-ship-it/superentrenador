@@ -8,7 +8,7 @@ import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { trainerBreadcrumbJsonLd, trainerProfileJsonLd } from "@/lib/marketplace-seo";
 import { getPublicTrainerProfileBySlug, listPublicTrainerProfiles } from "@/lib/repositories/trainers";
-import { siteConfig } from "@/lib/site";
+import { createSocialMetadata } from "@/lib/site";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -32,16 +32,21 @@ export async function generateMetadata({ params }: TrainerProfilePageProps): Pro
     };
   }
 
+  const social = createSocialMetadata(
+    `${trainer.displayName} | Super Entrenador`,
+    trainer.shortBio,
+    `/entrenadores/${trainer.slug}`,
+  );
+
   return {
     title: `${trainer.displayName} | Entrenador personal en ${trainer.city}`,
     description: trainer.shortBio,
     alternates: {
       canonical: `/entrenadores/${trainer.slug}`,
     },
+    ...social,
     openGraph: {
-      title: `${trainer.displayName} | Super Entrenador`,
-      description: trainer.shortBio,
-      url: `${siteConfig.url}/entrenadores/${trainer.slug}`,
+      ...social.openGraph,
       type: "profile",
     },
   };

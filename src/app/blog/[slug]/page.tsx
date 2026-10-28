@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
 import { getBlogPost, getRelatedBlogPosts, listBlogPosts } from "@/lib/blog";
 import { getCategoryTheme } from "@/lib/blog-theme";
-import { siteConfig } from "@/lib/site";
+import { createSocialMetadata, siteConfig } from "@/lib/site";
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
@@ -25,17 +25,18 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     };
   }
 
+  const social = createSocialMetadata(post.title, post.excerpt, `/blog/${post.slug}`);
+
   return {
     title: post.title,
     description: post.excerpt,
     alternates: {
       canonical: `/blog/${post.slug}`,
     },
+    ...social,
     openGraph: {
+      ...social.openGraph,
       type: "article",
-      title: post.title,
-      description: post.excerpt,
-      url: `${siteConfig.url}/blog/${post.slug}`,
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt,
       authors: [siteConfig.name],

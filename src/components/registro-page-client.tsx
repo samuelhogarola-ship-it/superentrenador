@@ -107,9 +107,9 @@ function RegistroForm() {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-4 py-12 md:px-6">
       <div className="grid w-full gap-6 lg:grid-cols-[1.02fr_0.98fr]">
-        <section className="rounded-[28px] bg-[var(--panel-strong)] p-8 sm:p-10">
+        <section className="min-w-0 rounded-[28px] bg-[var(--panel-strong)] p-8 sm:p-10">
           <p className="app-kicker">{isTrainer ? "Para entrenadores" : "Para clientes"}</p>
-          <h1 className="app-title mt-4 text-4xl text-[var(--text)] sm:text-5xl">
+          <h1 className="app-title mt-4 break-words text-3xl text-[var(--text)] sm:text-5xl">
             {isTrainer ? "Publica tu perfil y recibe nuevos clientes." : "Encuentra y contacta con tu entrenador."}
           </h1>
           <p className="app-copy mt-4 max-w-md text-base">
@@ -140,7 +140,7 @@ function RegistroForm() {
           </div>
         </section>
 
-        <div className="rounded-[28px] border border-[var(--line)] bg-[var(--surface)] p-8 shadow-[var(--shadow-soft)]">
+        <div className="min-w-0 rounded-[28px] border border-[var(--line)] bg-[var(--surface)] p-8 shadow-[var(--shadow-soft)]">
           <h2 className="app-title text-2xl text-[var(--text)]">Crear cuenta</h2>
           <p className="app-copy mt-2 text-sm">
             ¿Ya tienes cuenta?{" "}
@@ -195,6 +195,7 @@ function RegistroForm() {
               intent={intent}
               captchaToken={captchaToken}
               captchaRequired={turnstileEnabled}
+              onCaptchaConsumed={() => setCaptchaResetKey((value) => value + 1)}
             />
 
             <div className="my-1 flex items-center gap-3 text-xs text-[var(--muted)]">

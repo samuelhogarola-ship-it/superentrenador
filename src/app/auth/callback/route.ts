@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
 import { getSafeInternalPath } from "@/lib/safe-navigation";
-import { completeEmailAuthCallback } from "@/lib/email-auth-callback";
+import { applyAuthIntent, completeEmailAuthCallback } from "@/lib/email-auth-callback";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -12,6 +12,10 @@ export async function GET(request: NextRequest) {
   const result = await completeEmailAuthCallback(supabase.auth, searchParams);
 
   if (result.ok) {
+    const requestedIntent = searchParams.get("intent");
+    if (requestedIntent && !(await applyAuthIntent(supabase.auth, requestedIntent))) {
+      console.error("[auth/callback] registration intent could not be applied");
+    }
     return NextResponse.redirect(new URL(next, appUrl));
   }
 

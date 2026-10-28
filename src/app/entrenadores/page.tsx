@@ -8,7 +8,7 @@ import { MarketplaceEmptyState } from "@/components/marketplace-empty-state";
 import { Reveal } from "@/components/reveal";
 import { TrainerListItem } from "@/components/trainer-list-item";
 import { trainerCollectionJsonLd } from "@/lib/marketplace-seo";
-import { siteConfig } from "@/lib/site";
+import { createSocialMetadata, siteConfig } from "@/lib/site";
 import {
   listAllModalities,
   listAllCategories,
@@ -24,15 +24,17 @@ interface TrainersPageProps {
 export async function generateMetadata(): Promise<Metadata> {
   const trainers = await listPublicTrainerProfiles();
   const hasPublishedSupply = trainers.length > 0;
+  const description = hasPublishedSupply
+    ? "Explora perfiles públicos de entrenadores por categoría, ciudad, especialidad y formato antes de contactar."
+    : "Explora perfiles locales de entrenadores por categoría, ciudad y modalidad.";
 
   return {
     title: "Entrenadores por categoría",
-    description: hasPublishedSupply
-      ? "Explora perfiles públicos de entrenadores por categoría, ciudad, especialidad y formato antes de contactar."
-      : "Explora perfiles locales de entrenadores por categoría, ciudad y modalidad.",
+    description,
     alternates: {
       canonical: "/entrenadores",
     },
+    ...createSocialMetadata("Entrenadores por categoría", description, "/entrenadores"),
     robots: hasPublishedSupply ? undefined : { index: false, follow: true },
   };
 }

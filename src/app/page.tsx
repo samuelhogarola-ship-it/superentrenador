@@ -25,7 +25,7 @@ import { TrainerCard } from "@/components/trainer-card";
 import { marketplaceWebsiteJsonLd } from "@/lib/marketplace-seo";
 import { listAllCategories, listFeaturedTrainerProfiles, listMarketplaceCities } from "@/lib/repositories/trainers";
 import { MARKETPLACE_CATEGORIES, PERSONAL_TRAINER_SERVICES, PERSONAL_TRAINER_SUBCATEGORIES } from "@/lib/marketplace-taxonomy";
-import { siteConfig } from "@/lib/site";
+import { createSocialMetadata, siteConfig } from "@/lib/site";
 import type { PublicTrainerProfile } from "@/types/marketplace";
 
 export const dynamic = "force-dynamic";
@@ -36,13 +36,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
-  openGraph: {
-    type: "website",
-    title: "Super Entrenador | Marketplace de entrenadores personales",
-    description: siteConfig.description,
-    url: siteConfig.url,
-    siteName: siteConfig.name,
-  },
+  ...createSocialMetadata(
+    "Super Entrenador | Marketplace de entrenadores personales",
+    siteConfig.description,
+    "/",
+  ),
 };
 
 const CATEGORY_ICONS = [

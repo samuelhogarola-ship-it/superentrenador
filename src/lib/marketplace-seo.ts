@@ -58,18 +58,28 @@ export function trainerProfileJsonLd(trainer: PublicTrainerProfile) {
           },
         }
       : {}),
-    makesOffer: {
-      "@type": "Offer",
-      price: trainer.priceFrom,
-      priceCurrency: "EUR",
-      availability: "https://schema.org/InStock",
-      itemOffered: {
-        "@type": "Service",
-        name: `Entrenamiento personal con ${trainer.displayName}`,
-        areaServed: trainer.city,
-        serviceType: trainer.specialties.join(", "),
-      },
-    },
+    ...(trainer.priceFrom > 0
+      ? {
+          makesOffer: {
+            "@type": "Offer",
+            price: trainer.priceFrom,
+            priceCurrency: "EUR",
+            priceSpecification: {
+              "@type": "UnitPriceSpecification",
+              price: trainer.priceFrom,
+              priceCurrency: "EUR",
+              unitText: trainer.priceUnit === "hora" ? "HOUR" : "SESSION",
+            },
+            availability: "https://schema.org/InStock",
+            itemOffered: {
+              "@type": "Service",
+              name: `Entrenamiento personal con ${trainer.displayName}`,
+              areaServed: trainer.city,
+              serviceType: trainer.specialties.join(", "),
+            },
+          },
+        }
+      : {}),
   };
 }
 

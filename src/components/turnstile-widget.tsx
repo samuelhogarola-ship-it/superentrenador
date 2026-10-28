@@ -10,7 +10,7 @@ interface TurnstileApi {
       sitekey: string;
       action: string;
       theme: "auto";
-      size: "flexible";
+      size: "compact" | "flexible";
       callback: (token: string) => void;
       "error-callback": () => void;
       "expired-callback": () => void;
@@ -34,6 +34,10 @@ interface TurnstileWidgetProps {
 }
 
 const TURNSTILE_SCRIPT = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+
+export function getTurnstileSize(containerWidth: number): "compact" | "flexible" {
+  return containerWidth < 300 ? "compact" : "flexible";
+}
 
 export function TurnstileWidget({ action, onToken, resetKey }: TurnstileWidgetProps) {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
@@ -76,7 +80,7 @@ export function TurnstileWidget({ action, onToken, resetKey }: TurnstileWidgetPr
       sitekey: siteKey,
       action,
       theme: "auto",
-      size: "flexible",
+      size: getTurnstileSize(containerRef.current.getBoundingClientRect().width),
       callback: (token) => onTokenRef.current(token),
       "error-callback": clearToken,
       "expired-callback": clearToken,
@@ -105,7 +109,7 @@ export function TurnstileWidget({ action, onToken, resetKey }: TurnstileWidgetPr
   return (
     <div className="min-h-16" aria-label="Verificación anti-bots">
       <Script src={TURNSTILE_SCRIPT} strategy="afterInteractive" onReady={() => setScriptReady(true)} />
-      <div ref={containerRef} />
+      <div ref={containerRef} className="flex justify-center" />
     </div>
   );
 }

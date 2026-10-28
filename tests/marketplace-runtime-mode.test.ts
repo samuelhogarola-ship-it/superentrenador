@@ -62,7 +62,7 @@ test("configured Supabase city reads do not merge static fallback data", async (
   const source = await readSource("../src/lib/repositories/trainers.ts");
 
   assert.doesNotMatch(source, /mergeCitiesWithFallback/);
-  assert.match(source, /listMarketplaceCities failed[\s\S]*return \[\]/);
-  assert.match(source, /getMarketplaceCity failed[\s\S]*return null/);
+  assert.match(source, /requireRepositoryData\("listMarketplaceCities"/);
+  assert.match(source, /requireRepositoryData<never>\("getMarketplaceCity"/);
   assert.doesNotMatch(source, /Math\.max\(citiesCountRes\.count/);
 });

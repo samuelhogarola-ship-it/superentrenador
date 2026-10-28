@@ -50,6 +50,23 @@ test("local Supabase auth requires email confirmation", async () => {
   const emailSection = config.match(/\[auth\.email\]([\s\S]*?)(?=\n\[|$)/)?.[1] ?? "";
 
   assert.match(emailSection, /enable_confirmations\s*=\s*true/);
+  assert.match(config, /minimum_password_length\s*=\s*8/);
+});
+
+test("versioned Supabase auth documents the Google OAuth credentials", async () => {
+  const [config, env, pushScript] = await Promise.all([
+    readSource("../supabase/config.toml"),
+    readSource("../.env.example"),
+    readSource("../scripts/push-supabase-auth-config.sh"),
+  ]);
+
+  assert.match(config, /\[auth\.external\.google\][\s\S]*enabled = true/);
+  assert.match(config, /SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID/);
+  assert.match(config, /SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET/);
+  assert.match(env, /SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID=/);
+  assert.match(env, /SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET=/);
+  assert.match(pushScript, /SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID/);
+  assert.match(pushScript, /SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET/);
 });
 
 test("local Supabase auth throttles email and credential abuse", async () => {

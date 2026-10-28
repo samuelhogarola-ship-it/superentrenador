@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { createSocialMetadata } from "@/lib/site";
+
+const TERMS_DESCRIPTION =
+  "Condiciones de uso de Super Entrenador para usuarios, entrenadores y visitantes.";
 
 export const metadata: Metadata = {
   title: "Términos y condiciones",
-  description: "Condiciones de uso de Super Entrenador para usuarios, entrenadores y visitantes.",
+  description: TERMS_DESCRIPTION,
   alternates: {
     canonical: "/terminos",
   },
+  ...createSocialMetadata("Términos y condiciones", TERMS_DESCRIPTION, "/terminos"),
 };
 
 const SECTIONS = [

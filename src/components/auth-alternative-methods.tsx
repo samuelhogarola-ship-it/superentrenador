@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Globe2, Mail } from "lucide-react";
 import {
   getAuthErrorMessage,
+  getMagicLinkFeedback,
+  runCaptchaProtectedRequest,
   signInWithGoogle,
   signInWithMagicLink,
   signUpWithMagicLink,
@@ -17,6 +19,7 @@ interface AuthAlternativeMethodsProps {
   intent?: AuthIntent;
   captchaToken?: string | null;
   captchaRequired?: boolean;
+  onCaptchaConsumed?: () => void;
 }
 
 function isValidEmail(email: string) {
@@ -30,6 +33,7 @@ export function AuthAlternativeMethods({
   intent = "client",
   captchaToken,
   captchaRequired = false,
+  onCaptchaConsumed,
 }: AuthAlternativeMethodsProps) {
   const [loading, setLoading] = useState<"google" | "magic" | null>(null);
   const [feedback, setFeedback] = useState<{ tone: "error" | "success"; text: string } | null>(null);
@@ -40,7 +44,7 @@ export function AuthAlternativeMethods({
     setLoading("google");
 
     try {
-      const { error } = await signInWithGoogle(redirectPath);
+      const { error } = await signInWithGoogle(redirectPath, isRegistration ? intent : undefined);
       if (error) {
         setFeedback({ tone: "error", text: getAuthErrorMessage(error.message) });
       }
@@ -67,20 +71,14 @@ export function AuthAlternativeMethods({
     setLoading("magic");
 
     try {
-      const result = isRegistration
-        ? await signUpWithMagicLink(normalizedEmail, redirectPath, intent, captchaToken ?? undefined)
-        : await signInWithMagicLink(normalizedEmail, redirectPath, captchaToken ?? undefined);
+      const result = await runCaptchaProtectedRequest(
+        () => isRegistration
+          ? signUpWithMagicLink(normalizedEmail, redirectPath, intent, captchaToken ?? undefined)
+          : signInWithMagicLink(normalizedEmail, redirectPath, captchaToken ?? undefined),
+        () => onCaptchaConsumed?.(),
+      );
 
-      if (result.error) {
-        setFeedback({ tone: "error", text: getAuthErrorMessage(result.error.message) });
-      } else {
-        setFeedback({
-          tone: "success",
-          text: isRegistration
-            ? "Te hemos enviado un enlace para confirmar tu cuenta."
-            : "Te hemos enviado un enlace mágico.",
-        });
-      }
+      setFeedback(getMagicLinkFeedback(result.error?.message ?? null, mode));
     } catch {
       setFeedback({ tone: "error", text: "No se pudo enviar el enlace. Inténtalo de nuevo." });
     } finally {

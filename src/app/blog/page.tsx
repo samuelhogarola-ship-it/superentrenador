@@ -4,15 +4,18 @@ import { ArrowRight, Clock } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
 import { listBlogPosts } from "@/lib/blog";
 import { getCategoryTheme } from "@/lib/blog-theme";
-import { siteConfig } from "@/lib/site";
+import { createSocialMetadata, siteConfig } from "@/lib/site";
+
+const BLOG_DESCRIPTION =
+  "Guías para elegir entrenador personal, publicar perfiles que convierten y entender el marketplace de Super Entrenador.";
 
 export const metadata: Metadata = {
   title: "Blog",
-  description:
-    "Guías para elegir entrenador personal, publicar perfiles que convierten y entender el marketplace de Super Entrenador.",
+  description: BLOG_DESCRIPTION,
   alternates: {
     canonical: "/blog",
   },
+  ...createSocialMetadata("Blog", BLOG_DESCRIPTION, "/blog"),
 };
 
 function formatDate(iso: string) {
