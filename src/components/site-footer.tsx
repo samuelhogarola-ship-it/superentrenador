@@ -9,8 +9,6 @@ const COLUMNS = [
     links: [
       { href: "/como-funciona", label: "Cómo funciona" },
       { href: "/entrenadores", label: "Todos los entrenadores" },
-      { href: "/entrenadores?specialty=Hipertrofia", label: "Hipertrofia" },
-      { href: "/entrenadores?specialty=Pérdida de grasa", label: "Pérdida de grasa" },
     ],
   },
   {
@@ -25,17 +23,19 @@ const COLUMNS = [
   {
     title: "Entrenadores",
     links: [
-      { href: "/registro?intent=trainer", label: "Crear perfil público" },
-      { href: "/login", label: "Iniciar sesión" },
       { href: coachStudioUrl, label: "Coach Studio", external: true },
+      { href: "/login", label: "Iniciar sesión" },
+      { href: "/registro?intent=trainer", label: "Crear perfil" },
+      { href: "/premium", label: "Planes y precios" },
     ],
   },
   {
-    title: "Blog",
+    title: "Biblioteca",
     links: [
       { href: "/blog", label: "Todas las guías" },
       { href: "/blog/como-elegir-entrenador-personal-con-criterio", label: "Elegir entrenador" },
-      { href: "/blog/como-publicar-perfil-entrenador-que-convierte", label: "Publicar perfil" },
+      { href: "/blog/preparar-primer-cliente-entrenador-andalucia", label: "Preparar tu primer cliente" },
+      { href: "/blog/necesito-ser-autonomo-entrenador-personal", label: "Trabajar como entrenador" },
     ],
   },
 ];
@@ -96,6 +96,14 @@ export function SiteFooter() {
             <Link href="/terminos" className="hover:text-[var(--accent)]">Términos</Link>
             <Link href="/cookies" className="hover:text-[var(--accent)]">Cookies</Link>
           </div>
+          <a
+            href="https://webfuengirola.com/"
+            target="_blank"
+            rel="noreferrer"
+            className="w-fit font-semibold transition-colors hover:text-[var(--accent)]"
+          >
+            Desarrollado y mantenido por WF Studio
+          </a>
         </div>
       </div>
     </footer>
