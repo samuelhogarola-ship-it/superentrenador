@@ -60,14 +60,6 @@ a {
   text-decoration: none;
 }
 
-.mobile-bottom-nav a {
-  color: #5b5b63;
-}
-
-.mobile-bottom-nav a[aria-current="page"] {
-  color: var(--ink);
-}
-
 ::selection {
   background: rgba(225, 25, 49, 0.28);
   color: var(--text);
@@ -172,7 +164,10 @@ button {
 .marketplace-hero {
   position: relative;
   overflow: hidden;
-  background: #ffe9e8;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(0, 148, 255, 0.08), transparent 26rem),
+    radial-gradient(circle at 92% 14%, rgba(245, 166, 35, 0.1), transparent 24rem),
+    #f3f4f6;
   color: var(--ink);
 }
 

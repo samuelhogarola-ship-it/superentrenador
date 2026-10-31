@@ -46,26 +46,24 @@ export function HeroSearchBar({ categories, cities }: HeroSearchBarProps) {
         <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[var(--gold-soft)] text-[var(--accent)]">
           <MapPin size={19} />
         </span>
-        <span className="relative min-w-0 flex-1 pr-6">
+        <span className="relative min-w-0 flex-1">
           <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--paper-muted)]">
-            Lugar
+            Ciudad
           </span>
-          <select
+          <input
             name="city"
-            defaultValue=""
-            aria-label="Filtrar por ciudad"
-            className={selectClass}
-          >
-            <option value="">¿Dónde entrenas?</option>
-            {cities.map((city) => (
-              <option key={city.slug} value={city.slug}>
-                {city.name}
-              </option>
-            ))}
-          </select>
-          <ChevronDown size={18} className="pointer-events-none absolute bottom-1.5 right-0 text-[var(--paper-muted)]" />
+            list="marketplace-city-options"
+            placeholder="¿Dónde entrenas?"
+            aria-label="Ciudad donde quieres entrenar"
+            autoComplete="address-level2"
+            className={inputClass}
+          />
         </span>
       </label>
+
+      <datalist id="marketplace-city-options">
+        {cities.map((city) => <option key={city.slug} value={city.name} />)}
+      </datalist>
 
       <label className={fieldClass}>
         <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[var(--gold-soft)] text-[var(--accent)]">

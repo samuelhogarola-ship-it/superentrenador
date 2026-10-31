@@ -5,7 +5,7 @@ import { coachStudioUrl } from "@/lib/coach-studio";
 
 const COLUMNS = [
   {
-    title: "Marketplace",
+    title: "Buscar entrenador",
     links: [
       { href: "/como-funciona", label: "Cómo funciona" },
       { href: "/entrenadores", label: "Todos los entrenadores" },
@@ -42,7 +42,7 @@ const COLUMNS = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-[var(--line)] px-4 pb-24 pt-12 md:px-6 md:pb-10 lg:px-8">
+    <footer className="border-t border-[var(--line)] px-4 pb-10 pt-12 md:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[1.1fr_2fr]">
           <div>

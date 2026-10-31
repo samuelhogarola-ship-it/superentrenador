@@ -76,7 +76,7 @@ export function SiteHeader() {
         </nav>
       </div>
       {!isAuthPage ? (
-        <nav aria-label="Navegación del marketplace" className="mx-auto flex max-w-7xl flex-wrap gap-x-6 gap-y-2 px-4 pb-3 text-sm font-semibold text-[var(--text)] md:px-6 lg:px-8">
+        <nav aria-label="Navegación para buscar entrenador" className="mx-auto flex max-w-7xl flex-wrap gap-x-6 gap-y-2 px-4 pb-3 text-sm font-semibold text-[var(--text)] md:px-6 lg:px-8">
           <Link href="/entrenadores" className="hover:underline">Buscar entrenador</Link>
           <Link href="/blog" className="hover:underline">Guías</Link>
           <Link href="/como-funciona" className="hover:underline">Cómo funciona</Link>

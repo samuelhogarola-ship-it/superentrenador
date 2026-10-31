@@ -21,6 +21,15 @@ interface TrainersPageProps {
   searchParams: Promise<{ q?: string; category?: string; specialty?: string; city?: string; modality?: string; sort?: string }>;
 }
 
+function citySlug(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("es")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const trainers = await listPublicTrainerProfiles();
   const hasPublishedSupply = trainers.length > 0;
@@ -41,26 +50,30 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function TrainersPage({ searchParams }: TrainersPageProps) {
   const params = await searchParams;
-  const [trainers, categories, specialties, modalities, cities] = await Promise.all([
-    listPublicTrainerProfiles({
-      q: params.q,
-      category: params.category,
-      specialty: params.specialty,
-      citySlug: params.city,
-      modality: params.modality,
-      sort: params.sort as "featured" | "rating" | "price-asc" | "price-desc" | undefined,
-    }),
+  const [categories, specialties, modalities, cities] = await Promise.all([
     listAllCategories(),
     listAllSpecialties(),
     listAllModalities(),
     listMarketplaceCities(),
   ]);
-  const selectedCity = cities.find((city) => city.slug === params.city);
+  const requestedCity = params.city?.trim();
+  const selectedCity = requestedCity
+    ? cities.find((city) => city.slug === requestedCity || city.name.toLocaleLowerCase("es") === requestedCity.toLocaleLowerCase("es"))
+    : undefined;
+  const requestedCitySlug = requestedCity ? selectedCity?.slug ?? citySlug(requestedCity) : undefined;
+  const trainers = await listPublicTrainerProfiles({
+    q: params.q,
+    category: params.category,
+    specialty: params.specialty,
+    citySlug: requestedCitySlug,
+    modality: params.modality,
+    sort: params.sort as "featured" | "rating" | "price-asc" | "price-desc" | undefined,
+  });
   const activeFilters = [
     params.q ? `Búsqueda: ${params.q}` : null,
     params.category ? `Categoría: ${params.category}` : null,
     params.specialty ? `Objetivo: ${params.specialty}` : null,
-    selectedCity ? `Ciudad: ${selectedCity.name}` : null,
+    requestedCity ? `Ciudad: ${selectedCity?.name ?? requestedCity}` : null,
     params.modality ? `Modalidad: ${params.modality}` : null,
   ].filter(Boolean);
 
@@ -69,7 +82,7 @@ export default async function TrainersPage({ searchParams }: TrainersPageProps) 
       <JsonLd data={trainerCollectionJsonLd(trainers, `${siteConfig.url}/entrenadores`, "Entrenadores por categoría")} />
       <section className="grid gap-5 border border-[#111214] px-6 py-7 sm:px-8 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--accent)]">Marketplace</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--accent)]">Entrenadores</p>
           <h1 className="mt-2 font-heading text-3xl font-bold text-[#111214] sm:text-5xl">
             {trainers.length > 0
               ? `${trainers.length} entrenador${trainers.length === 1 ? "" : "es"} para comparar`

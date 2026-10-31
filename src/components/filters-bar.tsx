@@ -18,6 +18,8 @@ export function FiltersBar({ categories, specialties, modalities, cities, basePa
   const router = useRouter();
   const searchParams = useSearchParams();
   const hasActiveFilters = searchParams.toString().length > 0;
+  const cityParam = searchParams.get("city") ?? "";
+  const cityValue = cities.find((city) => city.slug === cityParam)?.name ?? cityParam;
 
   function updateParam(key: string, value: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -84,20 +86,24 @@ export function FiltersBar({ categories, specialties, modalities, cities, basePa
 
         {lockCity ? null : (
           <span className={selectWrapClass}>
-            <select
+            <input
+              key={cityParam}
+              list="filter-city-options"
+              defaultValue={cityValue}
+              placeholder="Cualquier ciudad"
               aria-label="Filtrar por ciudad"
-              value={searchParams.get("city") ?? ""}
-              onChange={(event) => updateParam("city", event.target.value)}
+              autoComplete="address-level2"
+              onBlur={(event) => updateParam("city", event.currentTarget.value.trim())}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  updateParam("city", event.currentTarget.value.trim());
+                }
+              }}
               className={selectClass}
-            >
-              <option value="">Todas las ciudades</option>
-              {cities.map((city) => (
-                <option key={city.slug} value={city.slug}>
-                  {city.name}
-                </option>
-              ))}
-            </select>
-            <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#8a8a92]" />
+            />
+            <datalist id="filter-city-options">
+              {cities.map((city) => <option key={city.slug} value={city.name} />)}
+            </datalist>
           </span>
         )}
 

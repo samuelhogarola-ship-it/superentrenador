@@ -12,7 +12,6 @@ import {
   Mountain,
   MapPin,
   PersonStanding,
-  Search,
   Star,
   Trophy,
   Volleyball,
@@ -31,13 +30,13 @@ import type { PublicTrainerProfile } from "@/types/marketplace";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Super Entrenador | Marketplace de entrenadores personales",
+  title: "Super Entrenador | Encuentra tu entrenador personal",
   description: siteConfig.description,
   alternates: {
     canonical: "/",
   },
   ...createSocialMetadata(
-    "Super Entrenador | Marketplace de entrenadores personales",
+    "Super Entrenador | Encuentra tu entrenador personal",
     siteConfig.description,
     "/",
   ),
@@ -153,11 +152,7 @@ export default async function Home() {
       <section className="marketplace-hero px-5 py-12 sm:px-8 lg:px-12">
         <div className="marketplace-hero-inner mx-auto grid w-full max-w-7xl items-center gap-10 lg:grid-cols-[1fr_0.85fr]">
           <div className="relative z-10">
-          <p className="app-kicker inline-flex items-center gap-2">
-            <Search size={13} />
-            Marketplace de entrenadores
-          </p>
-          <h1 className="app-title marketplace-hero-title mt-5 max-w-3xl text-4xl leading-[0.98] sm:text-6xl">
+          <h1 className="app-title marketplace-hero-title max-w-3xl text-4xl leading-[0.98] sm:text-6xl">
             Encuentra tu entrenador ideal
           </h1>
           <p className="marketplace-hero-points mt-6 max-w-xl text-base sm:text-lg">

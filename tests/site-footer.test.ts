@@ -7,8 +7,8 @@ const source = readFileSync(
   "utf8",
 );
 
-test("organizes the footer without mixing marketplace filters and editorial guides", () => {
-  assert.match(source, /title: "Marketplace"/);
+test("organizes the footer without mixing search links and editorial guides", () => {
+  assert.match(source, /title: "Buscar entrenador"/);
   assert.match(source, /title: "Biblioteca"/);
   assert.match(source, /title: "Entrenadores"/);
   assert.doesNotMatch(source, /title: "Blog"/);
