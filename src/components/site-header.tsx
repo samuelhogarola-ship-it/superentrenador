@@ -6,7 +6,7 @@ import { BrandMark } from "@/components/brand-mark";
 import { signOut, useCurrentUser } from "@/lib/auth";
 
 export function SiteHeader() {
-  const { user, checked } = useCurrentUser();
+  const { user } = useCurrentUser();
   const router = useRouter();
 
   async function handleSignOut() {
@@ -17,11 +17,11 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-[var(--line)] bg-[color:rgba(8,9,15,0.86)] backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 md:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 md:px-6 lg:px-8">
         <BrandMark />
 
         <nav aria-label="Acceso principal" className="flex items-center gap-2 sm:gap-3">
-          {!checked ? null : user ? (
+          {user ? (
             <>
               <Link
                 href="/dashboard"
@@ -57,6 +57,11 @@ export function SiteHeader() {
           )}
         </nav>
       </div>
+      <nav aria-label="Navegación del marketplace" className="mx-auto flex max-w-7xl flex-wrap gap-x-6 gap-y-2 px-4 pb-3 text-sm font-semibold text-[var(--text)] md:px-6 lg:px-8">
+        <Link href="/entrenadores" className="hover:underline">Buscar entrenador</Link>
+        <Link href="/blog" className="hover:underline">Guías</Link>
+        <Link href="/como-funciona" className="hover:underline">Cómo funciona</Link>
+      </nav>
     </header>
   );
 }

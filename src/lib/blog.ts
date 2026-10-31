@@ -5,6 +5,10 @@ export interface BlogPost {
   category: string;
   audience: "Clientes" | "Entrenadores" | "Marketplace";
   publishedAt: string;
+  updatedAt: string;
+  reviewedAt: string;
+  sources: Array<{ label: string; href: string }>;
+  relatedSlugs: string[];
   readingMinutes: number;
   hero: string;
   sections: Array<{
@@ -17,302 +21,509 @@ export interface BlogPost {
   };
 }
 
+export const EDITORIAL_UPDATED_AT = "2026-10-06";
+
 export const blogPosts: BlogPost[] = [
   {
-    slug: "como-elegir-entrenador-personal-con-criterio",
-    title: "Cómo elegir entrenador personal con criterio antes de contactar",
-    excerpt:
-      "Una guía práctica para comparar entrenadores por objetivo, ciudad, modalidad y señales profesionales sin caer en perfiles inflados.",
-    category: "Guía de compra",
-    audience: "Clientes",
-    publishedAt: "2026-07-16",
-    readingMinutes: 5,
-    hero:
-      "Elegir entrenador no debería depender de una foto potente o una promesa imposible. Debería parecerse más a tomar una decisión profesional: comparar señales, detectar encaje y contactar cuando hay intención real.",
-    sections: [
+    "slug": "como-elegir-entrenador-personal-con-criterio",
+    "title": "Cómo elegir entrenador personal con criterio antes de contactar",
+    "excerpt": "Una guía práctica para comparar entrenadores por objetivo, ciudad, modalidad y señales profesionales sin caer en perfiles inflados.",
+    "category": "Guía de compra",
+    "audience": "Clientes",
+    "publishedAt": "2026-07-16",
+    "readingMinutes": 5,
+    "hero": "Elegir entrenador no debería depender de una foto potente o una promesa imposible. Debería parecerse más a tomar una decisión profesional: comparar señales, detectar encaje y contactar cuando hay intención real.",
+    "sections": [
       {
-        heading: "Empieza por el objetivo, no por el físico del entrenador",
-        body: [
+        "heading": "Empieza por el objetivo, no por el físico del entrenador",
+        "body": [
           "El primer filtro útil es tu objetivo: fuerza, pérdida de grasa, recomposición, salud, posparto, rendimiento o seguimiento online. Un buen perfil debe explicar para quién trabaja mejor y qué tipo de proceso suele diseñar.",
-          "Si un entrenador intenta servir a todo el mundo con el mismo mensaje, falta una señal de especialización. No siempre es mala señal, pero sí conviene comparar con más calma.",
-        ],
+          "Si un entrenador intenta servir a todo el mundo con el mismo mensaje, falta una señal de especialización. No siempre es mala señal, pero sí conviene comparar con más calma."
+        ]
       },
       {
-        heading: "Compara modalidad, precio de entrada y experiencia",
-        body: [
+        "heading": "Compara modalidad, precio de entrada y experiencia",
+        "body": [
           "La modalidad cambia mucho la experiencia: presencial, online o híbrida. También cambia el precio razonable, la frecuencia de contacto y el tipo de seguimiento que vas a recibir.",
-          "Un marketplace útil debe enseñarte esos datos antes de que tengas que escribir. Así evitas conversaciones largas que terminan descubriendo una incompatibilidad básica.",
-        ],
+          "Un marketplace útil debe enseñarte esos datos antes de que tengas que escribir. Así evitas conversaciones largas que terminan descubriendo una incompatibilidad básica."
+        ]
       },
       {
-        heading: "Busca claridad, no promesas absolutas",
-        body: [
+        "heading": "Busca claridad, no promesas absolutas",
+        "body": [
           "Desconfía de garantías universales, resultados extremos o mensajes que prometen una transformación sin contexto. El entrenamiento depende de historial, adherencia, descanso, alimentación y salud.",
-          "Los mejores perfiles suelen ser concretos: explican método, límites, especialidades y qué esperan de ti como cliente.",
-        ],
-      },
+          "Los mejores perfiles suelen ser concretos: explican método, límites, especialidades y qué esperan de ti como cliente."
+        ]
+      }
     ],
-    cta: {
-      label: "Comparar entrenadores",
-      href: "/entrenadores",
+    "cta": {
+      "label": "Comparar entrenadores",
+      "href": "/entrenadores"
     },
+    "updatedAt": "2026-10-06",
+    "reviewedAt": "2026-10-06",
+    "sources": [
+      {
+        "label": "Superentrenador: funcionamiento y límites del servicio",
+        "href": "/como-funciona"
+      }
+    ],
+    "relatedSlugs": [
+      "contacto-protegido-marketplace-entrenadores",
+      "preparar-primer-cliente-entrenador-andalucia"
+    ]
   },
   {
-    slug: "como-publicar-perfil-entrenador-que-convierte",
-    title: "Cómo publicar un perfil de entrenador que convierte",
-    excerpt:
-      "Para entrenadores: cómo explicar especialidad, ciudad, precios y método para que un cliente entienda rápido si encajas.",
-    category: "Captación",
-    audience: "Entrenadores",
-    publishedAt: "2026-07-16",
-    readingMinutes: 4,
-    hero:
-      "Un perfil público no es una bio decorativa. Es una página de venta breve: tiene que explicar a quién ayudas, cómo trabajas y por qué merece la pena escribirte.",
-    sections: [
+    "slug": "como-publicar-perfil-entrenador-que-convierte",
+    "title": "Cómo publicar un perfil de entrenador que convierte",
+    "excerpt": "Para entrenadores: cómo explicar especialidad, ciudad, precios y método para que un cliente entienda rápido si encajas.",
+    "category": "Captación",
+    "audience": "Entrenadores",
+    "publishedAt": "2026-07-16",
+    "readingMinutes": 4,
+    "hero": "Un perfil público no es una bio decorativa. Es una página de venta breve: tiene que explicar a quién ayudas, cómo trabajas y por qué merece la pena escribirte.",
+    "sections": [
       {
-        heading: "Empieza por ciudad, objetivo y especialidad",
-        body: [
+        "heading": "Empieza por ciudad, objetivo y especialidad",
+        "body": [
           "La búsqueda de entrenador suele ser local: ciudad, barrio, modalidad y objetivo. Si esos datos no aparecen claros, el cliente no sabe si debe seguir leyendo.",
-          "No prometas resultados imposibles. Explica para qué tipo de persona eres una buena opción y qué problema concreto sabes resolver.",
-        ],
+          "No prometas resultados imposibles. Explica para qué tipo de persona eres una buena opción y qué problema concreto sabes resolver."
+        ]
       },
       {
-        heading: "Un perfil claro vende mejor que una bio genérica",
-        body: [
+        "heading": "Un perfil claro vende mejor que una bio genérica",
+        "body": [
           "Los clientes no necesitan leer una autobiografía completa para dar el primer paso. Necesitan entender especialidad, precio de entrada, formato de trabajo, experiencia y tipo de cliente al que ayudas.",
-          "Cuanto más fácil sea compararte, más fácil será que una persona con intención real decida escribirte.",
-        ],
+          "Cuanto más fácil sea compararte, más fácil será que una persona con intención real decida escribirte."
+        ]
       },
       {
-        heading: "Ajusta el mensaje con datos reales",
-        body: [
+        "heading": "Ajusta el mensaje con datos reales",
+        "body": [
           "Un buen perfil se mejora con preguntas reales: qué dudas repiten los clientes, qué especialidad genera más interés y qué oferta se entiende más rápido.",
-          "El objetivo no es llenar una ficha: es construir una presencia comercial que puedas mejorar con datos reales.",
-        ],
+          "El objetivo no es llenar una ficha: es construir una presencia comercial que puedas mejorar con datos reales."
+        ]
       },
+      {
+        "heading": "Envía el perfil a revisión",
+        "body": [
+          "Necesitas una cuenta y el correo confirmado para guardar tu perfil profesional. El alta y las ediciones quedan pendientes de revisión antes de publicarse. Completa información comprobable: una ficha publicada no garantiza visitas ni clientes."
+        ]
+      }
     ],
-    cta: {
-      label: "Publicar perfil",
-      href: "/registro?intent=trainer",
+    "cta": {
+      "label": "Publicar perfil",
+      "href": "/registro?intent=trainer"
     },
+    "updatedAt": "2026-10-06",
+    "reviewedAt": "2026-10-06",
+    "sources": [
+      {
+        "label": "Superentrenador: funcionamiento y límites del servicio",
+        "href": "/como-funciona"
+      }
+    ],
+    "relatedSlugs": [
+      "preparar-primer-cliente-entrenador-andalucia",
+      "necesito-web-entrenador-personal"
+    ]
   },
   {
-    slug: "andalucia-primer-mercado-entrenadores-personales",
-    title: "Andalucía como primer mercado para entrenadores personales",
-    excerpt:
-      "Por qué activar una región completa, con capitales y Costa del Sol, es mejor que lanzar una web generalista sin foco.",
-    category: "Mercado",
-    audience: "Marketplace",
-    publishedAt: "2026-07-16",
-    readingMinutes: 4,
-    hero:
-      "Un marketplace no gana por estar en todas partes desde el primer día. Gana cuando concentra oferta, demanda y mensajes locales en un territorio que puede validar.",
-    sections: [
+    "slug": "andalucia-primer-mercado-entrenadores-personales",
+    "title": "Andalucía como primer mercado para entrenadores personales",
+    "excerpt": "Por qué activar una región completa, con capitales y Costa del Sol, es mejor que lanzar una web generalista sin foco.",
+    "category": "Mercado",
+    "audience": "Marketplace",
+    "publishedAt": "2026-07-16",
+    "readingMinutes": 4,
+    "hero": "Un marketplace no gana por estar en todas partes desde el primer día. Gana cuando concentra oferta, demanda y mensajes locales en un territorio que puede validar.",
+    "sections": [
       {
-        heading: "Una región completa crea más contexto",
-        body: [
+        "heading": "Una región completa crea más contexto",
+        "body": [
           "Andalucía permite combinar capitales, ciudades medianas y zonas de alta demanda como la Costa del Sol. Eso hace posible comparar patrones de búsqueda sin dispersar demasiado el producto.",
-          "La estrategia regional ayuda a construir páginas de ciudad, categorías y mensajes comerciales con una narrativa coherente.",
-        ],
+          "La estrategia regional ayuda a construir páginas de ciudad, categorías y mensajes comerciales con una narrativa coherente."
+        ]
       },
       {
-        heading: "Las ciudades vacías deben tratarse con cuidado",
-        body: [
+        "heading": "Las ciudades vacías deben tratarse con cuidado",
+        "body": [
           "Publicar páginas de ciudad sin perfiles puede ser útil para preparar el mercado, pero no siempre aporta valor al usuario desde el primer día.",
-          "Por eso cada ciudad debe abrirse con una experiencia mínima: perfiles reales, filtros claros y una razón concreta para seguir navegando.",
-        ],
+          "Por eso cada ciudad debe abrirse con una experiencia mínima: perfiles reales, filtros claros y una razón concreta para seguir navegando."
+        ]
       },
       {
-        heading: "El siguiente paso natural es España por oleadas",
-        body: [
+        "heading": "El siguiente paso natural es España por oleadas",
+        "body": [
           "Cuando Andalucía tenga oferta real, el sistema puede replicarse por regiones: Madrid, Comunidad Valenciana, Cataluña, País Vasco y el resto de España.",
-          "La clave es mantener el mismo estándar: perfiles comparables, contacto protegido y contenido local útil.",
-        ],
-      },
+          "La clave es mantener el mismo estándar: perfiles comparables, contacto protegido y contenido local útil."
+        ]
+      }
     ],
-    cta: {
-      label: "Ver cobertura Andalucía",
-      href: "/andalucia",
+    "cta": {
+      "label": "Ver cobertura Andalucía",
+      "href": "/andalucia"
     },
+    "updatedAt": "2026-10-06",
+    "reviewedAt": "2026-10-06",
+    "sources": [
+      {
+        "label": "Superentrenador: funcionamiento y límites del servicio",
+        "href": "/como-funciona"
+      }
+    ],
+    "relatedSlugs": [
+      "como-elegir-entrenador-personal-con-criterio",
+      "como-publicar-perfil-entrenador-que-convierte"
+    ]
   },
   {
-    slug: "contacto-protegido-marketplace-entrenadores",
-    title: "Contacto protegido: menos ruido para clientes y entrenadores",
-    excerpt:
-      "Cómo un flujo de contacto ordenado mejora la calidad de las conversaciones y evita perder tiempo con mensajes sin intención.",
-    category: "Producto",
-    audience: "Marketplace",
-    publishedAt: "2026-07-16",
-    readingMinutes: 3,
-    hero:
-      "En fitness, el problema no siempre es conseguir más mensajes. A veces es conseguir mejores conversaciones: con contexto, intención y expectativas razonables.",
-    sections: [
+    "slug": "contacto-protegido-marketplace-entrenadores",
+    "title": "Cómo contactar con un entrenador en Superentrenador",
+    "excerpt": "De la comparación de perfiles al primer mensaje, con cuenta y correo confirmado.",
+    "category": "Producto",
+    "audience": "Marketplace",
+    "publishedAt": "2026-07-16",
+    "readingMinutes": 3,
+    "hero": "Revisa primero si el perfil encaja con tu objetivo, modalidad y zona. Después entra en tu cuenta para consultar las opciones de contacto disponibles y explicar qué necesitas.",
+    "sections": [
       {
-        heading: "El contacto directo sin contexto genera fricción",
-        body: [
-          "Cuando un usuario escribe sin haber comparado objetivo, precio, modalidad y experiencia, la conversación empieza demasiado pronto. El entrenador tiene que filtrar a mano lo que la plataforma podría aclarar antes.",
-          "El contacto protegido no bloquea el negocio: ordena el momento en el que aparece.",
-        ],
+        "heading": "Compara antes de escribir",
+        "body": [
+          "El directorio permite filtrar perfiles. En cada ficha puedes consultar la información publicada por el entrenador, como especialidades, modalidad, experiencia y precio orientativo. Un precio sin importe se presenta como «Consultar precio»."
+        ]
       },
       {
-        heading: "El cliente también gana control",
-        body: [
-          "Un cliente puede revisar varias fichas, entender diferencias y contactar cuando tiene una shortlist clara. Eso reduce presión y mejora la sensación de decisión.",
-          "La confianza no depende solo de reseñas. También depende de que el producto no empuje a contactar a ciegas.",
-        ],
+        "heading": "Cuenta y correo confirmado",
+        "body": [
+          "Para acceder al contacto protegido o enviar un mensaje necesitas iniciar sesión y tener el correo confirmado. Las opciones dependen de la información disponible en cada perfil; no todos tienen que ofrecer el mismo canal.",
+          "Puedes seguir los mensajes de la plataforma desde tu panel. Presenta tu objetivo, ciudad o preferencia online y disponibilidad aproximada, sin incluir datos de salud sensibles en el primer contacto."
+        ]
       },
       {
-        heading: "La calidad del lead importa más que el volumen bruto",
-        body: [
-          "Para un entrenador, diez conversaciones desordenadas pueden valer menos que dos mensajes con objetivo, ciudad y modalidad bien definidos.",
-          "Un marketplace premium debe optimizar para esa calidad de señal.",
-        ],
-      },
+        "heading": "Acordad el servicio directamente",
+        "body": [
+          "La plataforma no confirma reservas ni procesa pagos de sesiones. Precio definitivo, disponibilidad, condiciones y forma de pago se acuerdan con el profesional. No hay una promesa de respuesta inmediata.",
+          "Comprueba las credenciales y las condiciones del servicio antes de contratar. La publicación de una ficha no garantiza un resultado deportivo ni sustituye esa comprobación."
+        ]
+      }
     ],
-    cta: {
-      label: "Entrar al marketplace",
-      href: "/entrenadores",
+    "cta": {
+      "label": "Entrar al marketplace",
+      "href": "/entrenadores"
     },
+    "updatedAt": "2026-10-06",
+    "reviewedAt": "2026-10-06",
+    "sources": [
+      {
+        "label": "Superentrenador: funcionamiento y límites del servicio",
+        "href": "/como-funciona"
+      }
+    ],
+    "relatedSlugs": [
+      "como-elegir-entrenador-personal-con-criterio",
+      "preparar-primer-cliente-entrenador-andalucia"
+    ]
   },
   {
-    slug: "necesito-ser-autonomo-entrenador-personal",
-    title: "¿Necesito darme de alta como autónomo para ser entrenador personal?",
-    excerpt:
-      "Cuándo es obligatorio darse de alta en Hacienda y en el RETA para entrenar por tu cuenta, y qué pasa si cobras sin estar dado de alta.",
-    category: "Autónomos",
-    audience: "Entrenadores",
-    publishedAt: "2026-08-05",
-    readingMinutes: 6,
-    hero:
-      "Si cobras por entrenar a alguien de forma habitual, la ley te considera autónomo aunque sea a tiempo parcial o como complemento a otro trabajo. Esto es lo que suele determinar si toca darte de alta y qué implica cada paso.",
-    sections: [
+    "slug": "necesito-ser-autonomo-entrenador-personal",
+    "title": "¿Necesito ser autónomo para trabajar como entrenador personal?",
+    "excerpt": "Distingue el alta censal en Hacienda del alta en Seguridad Social y prepara los trámites antes de empezar.",
+    "category": "Autónomos",
+    "audience": "Entrenadores",
+    "publishedAt": "2026-08-05",
+    "readingMinutes": 6,
+    "hero": "Publicar un perfil no sustituye los trámites para ejercer. Si vas a trabajar por tu cuenta, revisa por separado tus obligaciones fiscales, de Seguridad Social y profesionales antes de prestar servicios.",
+    "sections": [
       {
-        heading: "La regla no es cuánto cobras, es si es una actividad habitual",
-        body: [
-          "Hacienda no mide el alta por la cantidad facturada, sino por si ejerces la actividad de forma habitual, personal y directa a cambio de una contraprestación económica. Dar clases sueltas a un amigo por dinero, una vez, es distinto a tener clientes fijos cada semana.",
-          "En la práctica, si entrenas a personas a cambio de dinero de forma recurrente —aunque sea solo los fines de semana o combinado con un contrato por cuenta ajena—, se considera actividad económica habitual y hay que darse de alta.",
-          "La 'tarifa plana' de autónomos reduce la cuota de la Seguridad Social durante los primeros meses, así que empezar de alta cuesta menos de lo que mucha gente cree.",
-        ],
+        "heading": "Hacienda y Seguridad Social: dos trámites distintos",
+        "body": [
+          "El alta censal comunica a Hacienda tu actividad y tus obligaciones fiscales. Se presenta mediante el modelo 036 antes del inicio de la actividad u operaciones que lo requieren; no conviene esperar a emitir la primera factura. El modelo 037 fue suprimido el 3 de febrero de 2025.",
+          "El alta en el RETA corresponde a la Seguridad Social. La regla general comprende la actividad económica o profesional realizada de forma habitual, personal, directa, por cuenta propia y con ánimo de lucro. Estar de alta en Hacienda no implica estar de alta en el RETA, ni al revés."
+        ]
       },
       {
-        heading: "Qué altas hacen falta en concreto",
-        body: [
-          "Dos trámites, no uno: alta censal en Hacienda (modelo 036 o 037, declarando el epígrafe del IAE correspondiente a actividades deportivas) y alta en el Régimen Especial de Trabajadores Autónomos (RETA) de la Seguridad Social.",
-          "Ambos trámites se pueden hacer online y, en la mayoría de casos, entran en vigor desde el mismo día que los presentas. No hace falta un gestor para darse de alta, aunque muchos entrenadores prefieren delegar la parte fiscal recurrente (IVA, IRPF trimestral) para no llevarla a mano.",
-        ],
+        "heading": "No decidas solo por cuánto ingresas",
+        "body": [
+          "Ingresar menos que el salario mínimo no crea por sí solo una exención automática del RETA. Si tu actividad es ocasional, la valoración depende de las circunstancias: evita aplicar un umbral como permiso general para trabajar sin alta.",
+          "La Seguridad Social indica que el alta debe tramitarse antes de empezar y puede solicitarse hasta 60 días antes. Si vas a trabajar contratado por un gimnasio, distingue la relación laboral de una actividad propia real antes de elegir el régimen."
+        ]
       },
       {
-        heading: "Qué riesgo hay si cobras sin estar dado de alta",
-        body: [
-          "Trabajar cobrando sin alta expone a sanciones de Hacienda y de la Seguridad Social, y además deja sin cobertura (baja médica, accidente, jubilación) el tiempo trabajado en esa situación.",
-          "También es un problema para crecer: sin factura no puedes justificar ingresos ante un banco, ni deducir gastos (material, formación, seguro de responsabilidad civil, la propia suscripción a un marketplace), ni construir un historial de cotización.",
-        ],
-      },
-      {
-        heading: "Esto no es asesoría fiscal personalizada",
-        body: [
-          "Cada situación cambia según si combinas el entrenamiento con un contrato por cuenta ajena, si trabajas para un gimnasio como autónomo o si facturas directamente a particulares. Antes de darte de alta, una consulta breve con una gestoría te ahorra errores caros en los primeros meses.",
-        ],
-      },
+        "heading": "Prepara la actividad antes del primer cliente",
+        "body": [
+          "Define qué servicios prestarás, dónde y bajo qué condiciones. Confirma el epígrafe fiscal, los impuestos aplicables y la documentación con la administración o una asesoría; no todos los entrenadores tienen la misma situación.",
+          "Revisa también la titulación o habilitación que corresponda al servicio y territorio, el seguro y las condiciones del centro. Conserva los justificantes de tus altas. Esta guía orienta sobre trámites generales en España; no resuelve un caso individual."
+        ]
+      }
     ],
-    cta: {
-      label: "Publicar mi perfil",
-      href: "/registro?intent=trainer",
+    "cta": {
+      "label": "Publicar mi perfil",
+      "href": "/registro?intent=trainer"
     },
+    "updatedAt": "2026-10-06",
+    "reviewedAt": "2026-10-06",
+    "sources": [
+      {
+        "label": "AEAT: supresión del modelo 037 desde el 3 de febrero de 2025",
+        "href": "https://sede.agenciatributaria.gob.es/Sede/ayuda/manuales-videos-folletos/manuales-practicos/manual-iva-2025/capitulo-01-novedades-destacar-2025/modelo-037.html"
+      },
+      {
+        "label": "AEAT: plazo de la declaración de alta censal",
+        "href": "https://sede.agenciatributaria.gob.es/Sede/ayuda/manuales-videos-folletos/manuales-practicos/guia-practica-cumplimentacion-modelo-censal-036/anexos/anexo-03-instrucciones-modelo-036/plazo-presentacion/declaracion-alta.html"
+      },
+      {
+        "label": "Seguridad Social: guía del trabajo autónomo",
+        "href": "https://portal.seg-social.gob.es/wps/portal/importass/importass/Colectivos/Trabajo%2BAutonomo/guia"
+      }
+    ],
+    "relatedSlugs": [
+      "como-facturar-entrenador-personal",
+      "seguro-responsabilidad-civil-entrenador-andalucia"
+    ]
   },
   {
-    slug: "como-facturar-entrenador-personal",
-    title: "Cómo facturar como entrenador personal: la guía completa",
-    excerpt:
-      "Qué debe llevar una factura de entrenamiento personal, cómo va el IVA, cuándo se aplica retención de IRPF y qué errores hacen que Hacienda la rechace.",
-    category: "Fiscalidad",
-    audience: "Entrenadores",
-    publishedAt: "2026-08-05",
-    readingMinutes: 7,
-    hero:
-      "Facturar bien no es opcional ni un detalle administrativo: es lo que te permite cobrar de forma legal, deducir gastos y no llevarte un susto en la declaración trimestral. Esto es lo mínimo que necesitas entender.",
-    sections: [
+    "slug": "como-facturar-entrenador-personal",
+    "title": "Cómo facturar como entrenador personal: IVA, IRPF y datos básicos",
+    "excerpt": "Qué revisar antes de emitir una factura, sin aplicar el mismo impuesto o retención a todos los servicios.",
+    "category": "Fiscalidad",
+    "audience": "Entrenadores",
+    "publishedAt": "2026-08-05",
+    "readingMinutes": 7,
+    "hero": "Una factura debe reflejar el servicio real y su tratamiento fiscal. El tipo de actividad, quién la presta, el cliente y el territorio pueden cambiar las obligaciones.",
+    "sections": [
       {
-        heading: "Qué debe llevar sí o sí una factura",
-        body: [
-          "Número de factura correlativo (sin saltos ni duplicados dentro del mismo año), fecha de emisión, tus datos fiscales completos (nombre, NIF, dirección) y los del cliente, descripción clara del servicio (por ejemplo 'sesiones de entrenamiento personal, mes de agosto'), base imponible, tipo y cuota de IVA, y el total.",
-          "Si facturas a un particular, basta con estos datos. Si facturas a una empresa o a otro autónomo, revisa además si aplica retención de IRPF (ver más abajo).",
-        ],
+        "heading": "Identifica el servicio y el destinatario",
+        "body": [
+          "Antes de facturar, comprueba tu alta censal y la clasificación de la actividad. La obligación general de expedir factura tiene excepciones y reglas para facturas simplificadas; no elijas un formato solo porque el importe sea pequeño.",
+          "En una factura completa, revisa numeración correlativa dentro de cada serie, fecha de expedición, identificación y datos fiscales exigibles de emisor y destinatario, descripción del servicio, base imponible, tipo y cuota del impuesto cuando proceda. Si la fecha de la operación es distinta, también debe constar. Conserva copia y utiliza el procedimiento de rectificación si hay un error."
+        ]
       },
       {
-        heading: "El IVA de las clases de entrenamiento personal",
-        body: [
-          "Los servicios de entrenamiento personal y preparación física tributan, con carácter general, al tipo general de IVA (21%). No es un servicio educativo exento como sí lo son ciertas clases regladas impartidas por centros autorizados, así que la mayoría de entrenadores personales que facturan a particulares deben repercutir IVA en sus facturas.",
-          "Hay matices según cómo esté organizada la actividad (por ejemplo, si trabajas dentro de un centro deportivo con un régimen distinto), así que conviene confirmar el epígrafe y el tratamiento de IVA con una gestoría al darte de alta.",
-        ],
+        "heading": "IVA: practicar deporte no implica exención",
+        "body": [
+          "En operaciones sujetas al IVA español en Península y Baleares, el tipo general es el 21 %, salvo que corresponda otro tratamiento. No apliques automáticamente una exención por llamar al servicio deportivo, educativo o de salud.",
+          "La exención de determinados servicios deportivos depende, entre otros requisitos, de la entidad que los presta: la ley contempla organismos públicos, federaciones y determinadas entidades deportivas de carácter social. No es una exención general para cualquier entrenador autónomo. Las operaciones en otros territorios o con clientes del extranjero requieren una revisión específica."
+        ]
       },
       {
-        heading: "Cuándo hay que aplicar retención de IRPF",
-        body: [
-          "Si facturas a otro profesional o empresa (por ejemplo, un gimnasio que te subcontrata), normalmente esa factura sí lleva retención de IRPF (habitualmente el 15%, o el 7% durante los primeros años de actividad si cumples los requisitos). Esa retención la ingresa el pagador directamente a Hacienda a cuenta de tu IRPF.",
-          "Si facturas a un particular (tu alumno de toda la vida, por ejemplo), no se aplica retención: la factura lleva IVA pero no retención.",
-        ],
+        "heading": "IRPF: depende de la actividad y de quién paga",
+        "body": [
+          "Cuando son rendimientos de una actividad profesional y el pagador está obligado a retener, el tipo general es el 15 %. El 7 % para inicio de actividad profesional exige requisitos y comunicación al pagador; no se aplica a todo nuevo autónomo.",
+          "Un consumidor particular que contrata para su uso personal no practica esta retención por esa condición. Tampoco debe asumirse que toda actividad de entrenamiento está clasificada como profesional: confirma tu caso antes de añadir una retención a cada factura."
+        ]
       },
       {
-        heading: "Qué gastos puedes deducir con factura",
-        body: [
-          "Material deportivo usado para el trabajo, formación y certificaciones, seguro de responsabilidad civil profesional, parte proporcional del alquiler de un espacio si entrenas en local propio, herramientas de gestión y suscripciones profesionales, entre otros —siempre que estén afectos a la actividad y tengas la factura correspondiente.",
-          "Sin factura correcta no hay deducción posible, así que el mismo cuidado que pones en cobrar hay que ponerlo en pedir factura de lo que gastas.",
-        ],
-      },
-      {
-        heading: "Errores que más se repiten",
-        body: [
-          "Numeración de facturas desordenada o repetida, olvidar el NIF del cliente en facturas a empresas, no guardar copia de las facturas emitidas y recibidas (obligatorio conservarlas varios años), y confundir el tratamiento de IVA entre particulares y empresas.",
-          "Un programa de facturación sencillo (o una gestoría) evita la mayoría de estos errores desde el primer trimestre.",
-        ],
-      },
+        "heading": "Antes de enviar la factura",
+        "body": [
+          "Comprueba datos, concepto, impuestos, total y condiciones acordadas. Una factura correcta no convierte por sí sola un gasto en deducible: la deducción tiene sus propios requisitos y justificantes.",
+          "Superentrenador permite descubrir perfiles y contactar. No emite tus facturas ni calcula tus impuestos, y no incorpora el cobro o la reserva de sesiones. Consulta las fuentes y revisa tu caso con una asesoría cuando haya dudas."
+        ]
+      }
     ],
-    cta: {
-      label: "Publicar mi perfil",
-      href: "/registro?intent=trainer",
+    "cta": {
+      "label": "Publicar mi perfil",
+      "href": "/registro?intent=trainer"
     },
+    "updatedAt": "2026-10-06",
+    "reviewedAt": "2026-10-06",
+    "sources": [
+      {
+        "label": "BOE: Reglamento de facturación, artículos 6 y 7",
+        "href": "https://www.boe.es/buscar/act.php?id=BOE-A-2012-14696"
+      },
+      {
+        "label": "AEAT: exenciones deportivas del IVA",
+        "href": "https://sede.agenciatributaria.gob.es/Sede/ayuda/manuales-videos-folletos/manuales-practicos/manual-iva-2026/capitulo-03-entregas-realizadas-empresarios-profesionales/entregas-bienes-servic-realizadas-empresarios-profesionales/operaciones-exentas/exenciones-operaciones-interiores/exenciones-sociales-culturales-deportivas.html"
+      },
+      {
+        "label": "BOE: Ley del IVA, artículos 20 y 90",
+        "href": "https://www.boe.es/buscar/act.php?id=BOE-A-1992-28740"
+      },
+      {
+        "label": "BOE: Reglamento del IRPF, artículos 76 y 95",
+        "href": "https://www.boe.es/buscar/act.php?id=BOE-A-2007-6820"
+      }
+    ],
+    "relatedSlugs": [
+      "necesito-ser-autonomo-entrenador-personal",
+      "preparar-primer-cliente-entrenador-andalucia"
+    ]
   },
   {
-    slug: "necesito-web-entrenador-personal",
-    title: "¿Necesito una página web siendo entrenador personal?",
-    excerpt:
-      "Lo que realmente aporta una web propia frente a estar solo en redes o en un marketplace, y cuándo tiene sentido invertir en ella.",
-    category: "Marketing digital",
-    audience: "Entrenadores",
-    publishedAt: "2026-08-05",
-    readingMinutes: 5,
-    hero:
-      "La pregunta no es 'web sí o no' en abstracto. Es qué necesitas resolver ahora mismo: que te encuentren, que confíen en ti, o que te contacten sin fricción. Cada una pide una herramienta distinta.",
-    sections: [
+    "slug": "necesito-web-entrenador-personal",
+    "title": "¿Necesito una web propia como entrenador personal?",
+    "excerpt": "Perfil en un marketplace, web propia y recomendaciones: canales distintos para explicar tus servicios.",
+    "category": "Marketing digital",
+    "audience": "Entrenadores",
+    "publishedAt": "2026-08-05",
+    "readingMinutes": 5,
+    "hero": "Elige un canal que puedas mantener con información útil y actualizada. Tener una página o un perfil no garantiza visitas, posicionamiento ni nuevos clientes.",
+    "sections": [
       {
-        heading: "Lo que una web resuelve y las redes sociales no",
-        body: [
-          "Instagram o TikTok son buenos para mostrar trabajo y construir marca personal, pero dependen del algoritmo y no son tuyos: un cambio de política o una cuenta bloqueada te deja sin nada. Una web es un activo propio que no depende de un tercero para existir.",
-          "Una web también es lo primero que revisa alguien que ya te vio en redes o te recomendaron, antes de escribirte: quiere confirmar que eres real, ver precios orientativos, especialidad y alguna prueba social (reseñas, casos, certificaciones).",
-        ],
+        "heading": "Empieza por una oferta comprensible",
+        "body": [
+          "Explica a quién ayudas, en qué ciudad o modalidad trabajas, tu experiencia y cómo es tu servicio. Publica precios con su unidad o indica que deben consultarse. Una descripción concreta facilita que alguien valore si encajas con lo que busca."
+        ]
       },
       {
-        heading: "Lo que una web NO resuelve sola",
-        body: [
-          "Una web bonita sin tráfico no genera clientes. Si nadie la visita, da igual el diseño: no aparece en las búsquedas locales que hace la gente cuando busca 'entrenador personal en [tu ciudad]', y construir ese posicionamiento SEO lleva meses de contenido y enlaces, no es automático.",
-          "Aquí es donde un marketplace especializado adelanta trabajo: agrupa la demanda que ya busca activamente entrenador por ciudad y especialidad, en vez de depender de que tu web sola compita por ese tráfico desde cero.",
-        ],
+        "heading": "Qué aporta un perfil en Superentrenador",
+        "body": [
+          "Un perfil aprobado puede aparecer en el directorio y facilitar la comparación por ciudad, modalidad y especialidad. El alta y las ediciones pasan por revisión; enviar el formulario no equivale a publicar de inmediato.",
+          "No garantizamos tráfico, una posición en buscadores ni contactos. La demanda y la visibilidad dependen de factores que no controla por completo el marketplace."
+        ]
       },
       {
-        heading: "Un orden razonable para la mayoría de entrenadores",
-        body: [
-          "Si estás empezando: perfil completo en un marketplace (visibilidad inmediata, sin coste de mantenimiento técnico) + redes sociales activas (para mostrar trabajo y generar confianza). Es la combinación con menos fricción y menos gasto fijo.",
-          "Cuando ya tienes un flujo estable de clientes y quieres reforzar marca propia, controlar mejor el mensaje o vender productos digitales propios (programas, membresías), ahí sí una web dedicada empieza a justificar la inversión de tiempo y dinero.",
-          "No son excluyentes: muchos entrenadores acaban con las tres cosas a la vez, cada una cumpliendo un papel distinto en el proceso de captación.",
-        ],
-      },
+        "heading": "Cuándo puede ayudarte una web propia",
+        "body": [
+          "Una web permite desarrollar tu método, contenidos y presentación con más detalle, pero requiere mantenimiento. Puedes combinarla con tu perfil y otros canales sin duplicar promesas ni información desactualizada.",
+          "Google explica que las mejoras de SEO pueden tardar en reflejarse y que no hay garantías de indexación o posicionamiento. Prioriza información útil para tus clientes y mide consultas reales antes de invertir más."
+        ]
+      }
     ],
-    cta: {
-      label: "Publicar mi perfil gratis",
-      href: "/registro?intent=trainer",
+    "cta": {
+      "label": "Preparar mi perfil",
+      "href": "/registro?intent=trainer"
     },
+    "updatedAt": "2026-10-06",
+    "reviewedAt": "2026-10-06",
+    "sources": [
+      {
+        "label": "Superentrenador: funcionamiento y límites del servicio",
+        "href": "/como-funciona"
+      },
+      {
+        "label": "Google Search Central: guía de SEO para principiantes",
+        "href": "https://developers.google.com/search/docs/fundamentals/seo-starter-guide?hl=es"
+      }
+    ],
+    "relatedSlugs": [
+      "como-publicar-perfil-entrenador-que-convierte",
+      "contacto-protegido-marketplace-entrenadores"
+    ]
   },
+  {
+    "slug": "seguro-responsabilidad-civil-entrenador-andalucia",
+    "title": "Seguro de responsabilidad civil, salud y accidentes: qué revisar como entrenador en Andalucía",
+    "excerpt": "Tres coberturas distintas y el alcance de la normativa andaluza sobre servicios deportivos.",
+    "category": "Profesión",
+    "audience": "Entrenadores",
+    "readingMinutes": 6,
+    "hero": "Un seguro de salud no sustituye a un seguro de responsabilidad civil. Antes de comenzar, identifica qué riesgos cubre cada póliza, quién figura como asegurado y qué actividad has declarado.",
+    "sections": [
+      {
+        "heading": "Tres seguros, tres preguntas",
+        "body": [
+          "La responsabilidad civil cubre, dentro del contrato, la obligación de indemnizar daños causados a terceros por hechos previstos en la póliza. El seguro de accidentes cubre las consecuencias de una lesión accidental según lo contratado. El de enfermedad o asistencia sanitaria atiende prestaciones sanitarias o económicas pactadas.",
+          "Una lesión durante una sesión no implica automáticamente responsabilidad del entrenador ni cobertura de cualquier póliza. Revisa actividad, personas aseguradas, límites, franquicias y exclusiones con la entidad aseguradora."
+        ]
+      },
+      {
+        "heading": "Qué dice la ley andaluza",
+        "body": [
+          "El artículo 45 de la Ley 5/2016 del Deporte de Andalucía establece la obligación de seguro de responsabilidad civil para la prestación de servicios deportivos. Su apartado 3 contempla el turismo activo con cobertura equivalente para evitar exigir un seguro específico adicional. Esta referencia territorial no debe extenderse sin más a toda España.",
+          "El artículo 97 prevé un seguro para el ejercicio de las profesiones reguladas en ese título y excepciones para quienes prestan servicios a la Administración mediante relación administrativa o laboral, para actividad exclusivamente por cuenta ajena ya cubierta y para los supuestos de cobertura colegial previstos. Sin embargo, la disposición final quinta condiciona la entrada en vigor del título VII a su desarrollo reglamentario. En la fecha de revisión, la Junta mantiene el proyecto de ordenación profesional en elaboración. No presentamos el artículo 97 como una obligación universal ya operativa ni sus excepciones como una exención general de toda responsabilidad o seguro.",
+          "Esa situación no elimina la obligación del artículo 45. Si trabajas para un centro, pide confirmación de que su póliza cubre tu actividad y relación concreta; no basta con que el centro diga que tiene seguro. La cobertura colegial exige comprobar la condición profesional y las condiciones de la póliza, no solo estar colegiado."
+        ]
+      },
+      {
+        "heading": "Qué pedir antes de contratar o renovar",
+        "body": [
+          "Describe las sesiones presenciales y online, el lugar de trabajo, las actividades y si colaboras con otros profesionales. Solicita por escrito qué queda cubierto, el ámbito territorial, capitales, franquicia, exclusiones y procedimiento ante un incidente.",
+          "El seguro de accidentes ligado a licencias y competiciones oficiales del artículo 42 tiene su propio ámbito: no equivale a afirmar que todas las sesiones particulares estén cubiertas. Guarda la documentación y revisa la póliza cuando cambies de actividad. Esta guía no valora un siniestro ni sustituye revisar tu contrato."
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "label": "BOE: Ley 5/2016 del Deporte de Andalucía, artículos 42, 45, 97 y disposición final quinta",
+        "href": "https://www.boe.es/buscar/act.php?id=BOE-A-2016-7566"
+      },
+      {
+        "label": "Junta de Andalucía: proyecto de ordenación de profesiones del deporte",
+        "href": "https://www.juntadeandalucia.es/servicios/normativa/normas-elaboracion/detalle/238945.html"
+      },
+      {
+        "label": "BOE: Ley de Contrato de Seguro, artículos 73, 100 y 105",
+        "href": "https://www.boe.es/buscar/act.php?id=BOE-A-1980-22501"
+      }
+    ],
+    "publishedAt": "2026-10-06",
+    "updatedAt": "2026-10-06",
+    "reviewedAt": "2026-10-06",
+    "cta": {
+      "label": "Preparar mi perfil",
+      "href": "/registro?intent=trainer"
+    },
+    "relatedSlugs": [
+      "preparar-primer-cliente-entrenador-andalucia",
+      "necesito-ser-autonomo-entrenador-personal"
+    ]
+  },
+  {
+    "slug": "preparar-primer-cliente-entrenador-andalucia",
+    "title": "Cómo preparar tu primer cliente como entrenador en Andalucía",
+    "excerpt": "Una lista práctica para llegar a la primera sesión con servicio, condiciones y documentación claros.",
+    "category": "Profesión",
+    "audience": "Entrenadores",
+    "readingMinutes": 5,
+    "hero": "Conseguir un contacto es el comienzo de una conversación. Antes de aceptar una primera sesión, comprueba que puedes prestar el servicio y que ambas partes entienden qué están acordando.",
+    "sections": [
+      {
+        "heading": "Define el servicio que puedes prestar",
+        "body": [
+          "Explica el objetivo, formato, lugar, duración y material necesario. Comprueba la titulación o habilitación que corresponda a las funciones concretas y al territorio; no conviertas el nombre comercial «entrenador personal» en una autorización para cualquier actividad.",
+          "En Andalucía, la Ley 5/2016 contiene regulación profesional con condiciones de desarrollo reglamentario. Consulta su estado y el supuesto concreto con la administración competente. Evita prometer diagnósticos, rehabilitación o resultados que excedan tu preparación y funciones."
+        ]
+      },
+      {
+        "heading": "Revisa altas, cobertura y espacio",
+        "body": [
+          "Si trabajas por cuenta propia, revisa las altas censal y de Seguridad Social antes de empezar. Si trabajas contratado, aclara tus funciones y condiciones con el centro. Guarda justificantes y confirma la cobertura de responsabilidad civil aplicable al servicio.",
+          "Comprueba que puedes usar el espacio previsto y qué normas, permisos y medidas de seguridad corresponden. Un parque, un gimnasio ajeno y una sesión online no plantean las mismas condiciones."
+        ]
+      },
+      {
+        "heading": "Acordad las condiciones antes de la sesión",
+        "body": [
+          "Confirma por escrito precio y unidad —hora, sesión o programa—, duración, lugar o enlace, disponibilidad, cancelaciones y forma de pago. Explica qué incluye el servicio y cuándo revisaréis el progreso.",
+          "No solicites historias clínicas por un mensaje inicial. Recoge solo la información necesaria por un canal y procedimiento adecuados; si el caso requiere valoración sanitaria, remite al profesional competente."
+        ]
+      },
+      {
+        "heading": "Usa el perfil para facilitar una conversación útil",
+        "body": [
+          "En Superentrenador puedes preparar tu ficha y enviarla a revisión tras confirmar tu correo. Mantén ciudad, modalidad, experiencia y precio coherentes con lo que vas a ofrecer. Las ediciones también pasan por revisión.",
+          "El cliente puede descubrir y comparar perfiles y contactar con su cuenta confirmada. Las reservas, pagos y condiciones de la sesión se acuerdan directamente: publicar un perfil no equivale a tener una cita confirmada ni garantiza contactos."
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "label": "BOE: Ley 5/2016 del Deporte de Andalucía",
+        "href": "https://www.boe.es/buscar/act.php?id=BOE-A-2016-7566"
+      },
+      {
+        "label": "Seguridad Social: guía del trabajo autónomo",
+        "href": "https://portal.seg-social.gob.es/wps/portal/importass/importass/Colectivos/Trabajo%2BAutonomo/guia"
+      },
+      {
+        "label": "Superentrenador: funcionamiento y límites del servicio",
+        "href": "/como-funciona"
+      }
+    ],
+    "publishedAt": "2026-10-06",
+    "updatedAt": "2026-10-06",
+    "reviewedAt": "2026-10-06",
+    "cta": {
+      "label": "Preparar mi perfil",
+      "href": "/registro?intent=trainer"
+    },
+    "relatedSlugs": [
+      "seguro-responsabilidad-civil-entrenador-andalucia",
+      "como-facturar-entrenador-personal"
+    ]
+  }
 ];
 
 export function listBlogPosts() {
@@ -321,4 +532,11 @@ export function listBlogPosts() {
 
 export function getBlogPost(slug: string) {
   return blogPosts.find((post) => post.slug === slug) ?? null;
+}
+
+export function getRelatedBlogPosts(slug: string): BlogPost[] {
+  return (getBlogPost(slug)?.relatedSlugs ?? []).flatMap((relatedSlug) => {
+    const post = getBlogPost(relatedSlug);
+    return post ? [post] : [];
+  });
 }

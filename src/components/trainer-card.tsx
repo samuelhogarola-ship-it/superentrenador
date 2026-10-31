@@ -45,9 +45,10 @@ export function TrainerCard({ trainer, featured = false }: TrainerCardProps) {
           </div>
         ) : null}
         <p className="mt-4 line-clamp-2 text-sm leading-6 text-[#656565]">{trainer.headline}</p>
+        <p className="mb-4 mt-2 text-sm text-[#656565]">{trainer.yearsExperience} años de experiencia</p>
         <div className="mt-auto flex items-end justify-between gap-4 border-t border-[#ededed] pt-5">
           <p className="font-heading text-2xl text-[var(--ink)]">
-            {trainer.priceFrom > 0 ? `${trainer.priceFrom}€` : ""}
+            {trainer.priceFrom > 0 ? `Desde ${trainer.priceFrom}€` : "Consultar precio"}
             {trainer.priceFrom > 0 ? <span className="ml-1 text-sm font-medium text-[#656565]">/ {trainer.priceUnit ?? "sesión"}</span> : null}
           </p>
           <Link

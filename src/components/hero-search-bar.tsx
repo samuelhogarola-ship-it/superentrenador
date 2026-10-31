@@ -1,4 +1,4 @@
-import { ChevronDown, Dumbbell, MapPin, Search } from "lucide-react";
+import { ChevronDown, Dumbbell, MapPin, MonitorSmartphone, Search } from "lucide-react";
 import type { MarketplaceCity } from "@/types/marketplace";
 
 interface HeroSearchBarProps {
@@ -8,7 +8,7 @@ interface HeroSearchBarProps {
 
 export function HeroSearchBar({ categories, cities }: HeroSearchBarProps) {
   const paperClass =
-    "grid gap-3 rounded-[28px] border border-black/5 bg-white p-3 text-[var(--ink)] shadow-[0_18px_45px_rgba(123,65,71,0.14)] lg:grid-cols-[1fr_1fr_auto] lg:items-stretch";
+    "grid gap-3 rounded-[28px] border border-black/5 bg-white p-3 text-[var(--ink)] shadow-[0_18px_45px_rgba(123,65,71,0.14)] sm:grid-cols-2 sm:items-stretch";
   const fieldClass =
     "relative flex min-w-0 items-center gap-4 rounded-[22px] border border-black/10 bg-white/75 px-5 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85),0_12px_30px_rgba(7,9,14,0.06)] transition focus-within:-translate-y-0.5 focus-within:border-[rgba(240,160,0,0.55)] focus-within:shadow-[0_0_0_4px_rgba(240,160,0,0.14),0_18px_42px_rgba(7,9,14,0.10)] sm:min-h-[76px]";
   const inputClass = "w-full border-0 bg-transparent text-base font-semibold text-[var(--ink)] outline-none placeholder:text-[#8a8588] sm:text-lg";
@@ -62,6 +62,22 @@ export function HeroSearchBar({ categories, cities }: HeroSearchBarProps) {
                 {city.name}
               </option>
             ))}
+          </select>
+          <ChevronDown size={18} className="pointer-events-none absolute bottom-1.5 right-0 text-[var(--paper-muted)]" />
+        </span>
+      </label>
+
+      <label className={fieldClass}>
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[var(--gold-soft)] text-[var(--accent)]">
+          <MonitorSmartphone size={19} />
+        </span>
+        <span className="relative min-w-0 flex-1 pr-6">
+          <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--paper-muted)]">Modalidad</span>
+          <select name="modality" defaultValue="" aria-label="Filtrar por modalidad" className={selectClass}>
+            <option value="">Cualquier modalidad</option>
+            <option value="Presencial">Presencial</option>
+            <option value="Online">Online</option>
+            <option value="Híbrido">Híbrido</option>
           </select>
           <ChevronDown size={18} className="pointer-events-none absolute bottom-1.5 right-0 text-[var(--paper-muted)]" />
         </span>

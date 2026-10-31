@@ -10,7 +10,7 @@ interface TurnstileApi {
       sitekey: string;
       action: string;
       theme: "auto";
-      size: "flexible";
+      size: "compact" | "flexible";
       callback: (token: string) => void;
       "error-callback": () => void;
       "expired-callback": () => void;
@@ -35,10 +35,22 @@ interface TurnstileWidgetProps {
 
 const TURNSTILE_SCRIPT = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 
+export function getTurnstileSize(containerWidth: number): "compact" | "flexible" {
+  return containerWidth < 300 ? "compact" : "flexible";
+}
+
+export function shouldRerenderTurnstile(
+  currentSize: "compact" | "flexible" | null,
+  containerWidth: number,
+) {
+  return currentSize !== getTurnstileSize(containerWidth);
+}
+
 export function TurnstileWidget({ action, onToken, resetKey }: TurnstileWidgetProps) {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
+  const widgetSizeRef = useRef<"compact" | "flexible" | null>(null);
   const onTokenRef = useRef(onToken);
   const previousResetKeyRef = useRef(resetKey);
   const [scriptReady, setScriptReady] = useState(false);
@@ -71,23 +83,45 @@ export function TurnstileWidget({ action, onToken, resetKey }: TurnstileWidgetPr
   useEffect(() => {
     if (!siteKey || !scriptReady || !containerRef.current || !window.turnstile) return;
 
+    const container = containerRef.current;
+    const turnstile = window.turnstile;
     const clearToken = () => onTokenRef.current(null);
-    widgetIdRef.current = window.turnstile.render(containerRef.current, {
-      sitekey: siteKey,
-      action,
-      theme: "auto",
-      size: "flexible",
-      callback: (token) => onTokenRef.current(token),
-      "error-callback": clearToken,
-      "expired-callback": clearToken,
-      "timeout-callback": clearToken,
+    const renderForWidth = (width: number) => {
+      if (!shouldRerenderTurnstile(widgetSizeRef.current, width)) return;
+
+      if (widgetIdRef.current) {
+        turnstile.remove(widgetIdRef.current);
+        widgetIdRef.current = null;
+      }
+
+      clearToken();
+      const size = getTurnstileSize(width);
+      widgetSizeRef.current = size;
+      widgetIdRef.current = turnstile.render(container, {
+        sitekey: siteKey,
+        action,
+        theme: "auto",
+        size,
+        callback: (token) => onTokenRef.current(token),
+        "error-callback": clearToken,
+        "expired-callback": clearToken,
+        "timeout-callback": clearToken,
+      });
+    };
+
+    renderForWidth(container.getBoundingClientRect().width);
+    const resizeObserver = new ResizeObserver(([entry]) => {
+      renderForWidth(entry?.contentRect.width ?? container.getBoundingClientRect().width);
     });
+    resizeObserver.observe(container);
 
     return () => {
-      if (widgetIdRef.current && window.turnstile) {
-        window.turnstile.remove(widgetIdRef.current);
+      resizeObserver.disconnect();
+      if (widgetIdRef.current) {
+        turnstile.remove(widgetIdRef.current);
       }
       widgetIdRef.current = null;
+      widgetSizeRef.current = null;
     };
   }, [action, scriptReady, siteKey]);
 
@@ -105,7 +139,7 @@ export function TurnstileWidget({ action, onToken, resetKey }: TurnstileWidgetPr
   return (
     <div className="min-h-16" aria-label="Verificación anti-bots">
       <Script src={TURNSTILE_SCRIPT} strategy="afterInteractive" onReady={() => setScriptReady(true)} />
-      <div ref={containerRef} />
+      <div ref={containerRef} className="flex justify-center" />
     </div>
   );
 }

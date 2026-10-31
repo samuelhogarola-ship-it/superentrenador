@@ -4,9 +4,9 @@ import { ArrowRight, MapPin, ShieldCheck } from "lucide-react";
 import { JsonLd } from "@/components/json-ld";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
-import { isAndaluciaCity, sortCitiesByName } from "@/lib/coverage";
+import { getActiveAndaluciaCities } from "@/lib/coverage";
 import { listMarketplaceCities, listPublicTrainerProfiles } from "@/lib/repositories/trainers";
-import { siteConfig } from "@/lib/site";
+import { createSocialMetadata, siteConfig } from "@/lib/site";
 
 const ANDALUCIA_DESCRIPTION =
   "Marketplace de entrenadores personales en Andalucía. Compara perfiles por ciudad, especialidad, modalidad, experiencia y precio antes de contactar.";
@@ -14,7 +14,8 @@ const ANDALUCIA_DESCRIPTION =
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const trainers = await listPublicTrainerProfiles();
+  const [allCities, trainers] = await Promise.all([listMarketplaceCities(), listPublicTrainerProfiles()]);
+  const cities = getActiveAndaluciaCities(allCities, trainers);
 
   return {
     title: "Entrenadores personales en Andalucía",
@@ -22,12 +23,14 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: {
       canonical: "/andalucia",
     },
-    robots: trainers.length > 0 ? undefined : { index: false, follow: true },
+    ...createSocialMetadata("Entrenadores personales en Andalucía", ANDALUCIA_DESCRIPTION, "/andalucia"),
+    robots: cities.length > 0 ? undefined : { index: false, follow: true },
   };
 }
 
 export default async function AndaluciaPage() {
-  const cities = sortCitiesByName((await listMarketplaceCities()).filter(isAndaluciaCity));
+  const [allCities, trainers] = await Promise.all([listMarketplaceCities(), listPublicTrainerProfiles()]);
+  const cities = getActiveAndaluciaCities(allCities, trainers);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -56,7 +59,7 @@ export default async function AndaluciaPage() {
           <aside className="premium-card rounded-[24px] p-5">
             <p className="app-kicker">Estado actual</p>
             <strong className="mt-4 block font-heading text-5xl text-[var(--text)]">{cities.length}</strong>
-            <p className="app-copy mt-2 text-sm">ciudades andaluzas preparadas para comparar perfiles, captar entrenadores y validar demanda.</p>
+            <p className="app-copy mt-2 text-sm">ciudades andaluzas con perfiles publicados para comparar y contactar.</p>
           </aside>
         </div>
       </section>

@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
-import { completeEmailAuthCallback } from "../src/lib/email-auth-callback";
+import * as callbackModule from "../src/lib/email-auth-callback";
+
+const { completeEmailAuthCallback } = callbackModule;
 
 type Call =
   | { method: "verifyOtp"; payload: { token_hash: string; type: "email" } }
@@ -69,4 +72,36 @@ test("returns a safe failure when Supabase rejects the token", async () => {
 
   assert.deepEqual(result, { ok: false, flow: "magic-link" });
   assert.equal("error" in result, false);
+});
+
+test("applies only a validated registration intent to the OAuth user", async () => {
+  const applyAuthIntent = (
+    callbackModule as unknown as Record<string, unknown>
+  ).applyAuthIntent as
+    | ((auth: { updateUser(input: { data: { intent: "client" | "trainer" } }): Promise<{ error: unknown }> }, intent: string | null) => Promise<boolean>)
+    | undefined;
+  assert.equal(typeof applyAuthIntent, "function");
+
+  const updates: unknown[] = [];
+  const auth = {
+    async updateUser(input: { data: { intent: "client" | "trainer" } }) {
+      updates.push(input);
+      return { error: null };
+    },
+  };
+
+  assert.equal(await applyAuthIntent!(auth, "trainer"), true);
+  assert.equal(await applyAuthIntent!(auth, "administrator"), false);
+  assert.deepEqual(updates, [{ data: { intent: "trainer" } }]);
+});
+
+test("OAuth callback does not report registration success when intent persistence fails", () => {
+  const routeSource = readFileSync(
+    new URL("../src/app/auth/callback/route.ts", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(routeSource, /auth_intent_update_failed/);
+  assert.match(routeSource, /requestedIntent === "client" \|\| requestedIntent === "trainer"/);
+  assert.match(routeSource, /searchParams\.set\("redirectTo", next\)/);
 });

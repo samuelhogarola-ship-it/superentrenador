@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
-import { listBlogPosts } from "@/lib/blog";
+import { EDITORIAL_UPDATED_AT, listBlogPosts } from "@/lib/blog";
+import { getActiveAndaluciaCities } from "@/lib/coverage";
 import { listMarketplaceCities, listPublicTrainerProfiles } from "@/lib/repositories/trainers";
 import { siteConfig } from "@/lib/site";
 
@@ -10,6 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = listBlogPosts();
   const activeCitySlugs = new Set(trainers.map((trainer) => trainer.citySlug));
   const activeCities = cities.filter((city) => activeCitySlugs.has(city.slug));
+  const activeAndaluciaCities = getActiveAndaluciaCities(cities, trainers);
   const hasPublishedSupply = trainers.length > 0;
 
   return [
@@ -20,12 +22,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${siteConfig.url}/blog`,
+      lastModified: EDITORIAL_UPDATED_AT,
       changeFrequency: "weekly",
       priority: 0.75,
     },
+    { url: `${siteConfig.url}/como-funciona`, lastModified: EDITORIAL_UPDATED_AT, changeFrequency: "monthly", priority: 0.7 },
     ...posts.map((post) => ({
       url: `${siteConfig.url}/blog/${post.slug}`,
-      lastModified: post.publishedAt,
+      lastModified: post.updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.65,
     })),
@@ -36,11 +40,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: "daily" as const,
             priority: 0.9,
           },
-          {
-            url: `${siteConfig.url}/andalucia`,
-            changeFrequency: "weekly" as const,
-            priority: 0.85,
-          },
+          ...(activeAndaluciaCities.length > 0
+            ? [{
+                url: `${siteConfig.url}/andalucia`,
+                changeFrequency: "weekly" as const,
+                priority: 0.85,
+              }]
+            : []),
         ]
       : []),
     ...activeCities.map((city) => ({

@@ -9,6 +9,7 @@ import { trackEvent } from "@/lib/analytics";
 
 interface ContactPanelProps {
   priceFrom: number;
+  priceUnit?: "hora" | "sesión";
   yearsExperience: number;
   modalities: string[];
   languages: string[];
@@ -33,6 +34,7 @@ async function fetchContactInfo(trainerSlug: string) {
 
 export function ContactPanel({
   priceFrom,
+  priceUnit = "sesión",
   yearsExperience,
   modalities,
   languages,
@@ -98,10 +100,9 @@ export function ContactPanel({
 
   return (
     <div className="border border-[#111214] bg-white p-6 text-[#111214]">
-      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#8a8a92]">Tarifa horaria</p>
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#8a8a92]">Precio orientativo</p>
       <p className="font-heading text-4xl font-bold text-[#111214]">
-        <span>{priceFrom}€</span>
-        <span className="text-base font-medium text-[#8a8a92]"> /hora</span>
+        {priceFrom > 0 ? <><span>{priceFrom}€</span><span className="text-base font-medium text-[#8a8a92]"> /{priceUnit}</span></> : <span className="text-2xl">Consultar precio</span>}
       </p>
       <p className="mt-3 inline-flex items-center gap-2 border border-[#111214]/15 bg-[#f7f7f7] px-3 py-1.5 text-xs font-semibold text-[#5b5b63]">
         <ShieldCheck size={13} />

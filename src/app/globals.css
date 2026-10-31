@@ -60,6 +60,14 @@ a {
   text-decoration: none;
 }
 
+.mobile-bottom-nav a {
+  color: #5b5b63;
+}
+
+.mobile-bottom-nav a[aria-current="page"] {
+  color: var(--ink);
+}
+
 ::selection {
   background: rgba(225, 25, 49, 0.28);
   color: var(--text);

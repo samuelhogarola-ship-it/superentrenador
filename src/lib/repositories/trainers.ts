@@ -100,6 +100,14 @@ function mapTrainer(row: TrainerRow): PublicTrainerProfile {
   };
 }
 
+export function requireRepositoryData<T>(operation: string, data: T | null, error: unknown): T {
+  if (error || data === null) {
+    throw new Error(`${operation} failed`, { cause: error });
+  }
+
+  return data;
+}
+
 function sortTrainers(trainers: PublicTrainerProfile[], sort: TrainerFilters["sort"]) {
   if (sort === "price-asc") {
     return [...trainers].sort((a, b) => a.priceFrom - b.priceFrom);
@@ -160,12 +168,7 @@ export async function listMarketplaceCities(): Promise<MarketplaceCity[]> {
   const supabase = getSupabaseServerClient();
   const { data, error } = await supabase.from("cities").select("*").order("name");
 
-  if (error || !data) {
-    console.error("[supabase] listMarketplaceCities failed", error);
-    return [];
-  }
-
-  return (data as CityRow[]).map(mapCity);
+  return (requireRepositoryData("listMarketplaceCities", data, error) as CityRow[]).map(mapCity);
 }
 
 export async function getMarketplaceCity(slug: string): Promise<MarketplaceCity | null> {
@@ -177,8 +180,7 @@ export async function getMarketplaceCity(slug: string): Promise<MarketplaceCity 
   const { data, error } = await supabase.from("cities").select("*").eq("slug", slug).maybeSingle();
 
   if (error) {
-    console.error("[supabase] getMarketplaceCity failed", error);
-    return null;
+    requireRepositoryData<never>("getMarketplaceCity", null, error);
   }
 
   if (!data) {
@@ -230,12 +232,8 @@ export async function listPublicTrainerProfiles(filters: TrainerFilters = {}): P
 
   const { data, error } = await query;
 
-  if (error || !data) {
-    console.error("[supabase] listPublicTrainerProfiles failed", error);
-    return [];
-  }
-
-  const profiles = (data as unknown as TrainerRow[]).filter((row) => !isProductionDemoProfile(row)).map(mapTrainer);
+  const rows = requireRepositoryData("listPublicTrainerProfiles", data, error);
+  const profiles = (rows as unknown as TrainerRow[]).filter((row) => !isProductionDemoProfile(row)).map(mapTrainer);
   if (!filters.q) return profiles;
 
   const queryText = filters.q.trim().toLocaleLowerCase("es");
@@ -274,12 +272,18 @@ export async function getPublicTrainerProfileBySlug(slug: string): Promise<Publi
     .eq("slug", slug)
     .maybeSingle();
 
-  if (error || !data) {
+  if (error) {
     if (isMarketplaceDemoMode()) {
       return publicTrainerProfiles.find((profile) => profile.slug === slug) ?? null;
     }
 
-    console.error("[supabase] getPublicTrainerProfileBySlug failed", error);
+    requireRepositoryData<never>("getPublicTrainerProfileBySlug", null, error);
+  }
+
+  if (!data) {
+    if (isMarketplaceDemoMode()) {
+      return publicTrainerProfiles.find((profile) => profile.slug === slug) ?? null;
+    }
     return null;
   }
 
