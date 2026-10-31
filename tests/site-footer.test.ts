@@ -11,6 +11,7 @@ test("organizes the footer without mixing search links and editorial guides", ()
   assert.match(source, /title: "Buscar entrenador"/);
   assert.match(source, /title: "Biblioteca"/);
   assert.match(source, /title: "Entrenadores"/);
+  assert.match(source, /href: "\/biblioteca", label: "Biblioteca"/);
   assert.doesNotMatch(source, /title: "Blog"/);
   assert.doesNotMatch(source, /specialty=Hipertrofia/);
   assert.doesNotMatch(source, /specialty=Pérdida de grasa/);

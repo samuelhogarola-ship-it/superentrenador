@@ -156,6 +156,30 @@ export type Database = {
         }
         Relationships: []
       }
+      student_passes: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          status: SubscriptionStatus
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          status?: SubscriptionStatus
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          status?: SubscriptionStatus
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       trainer_profiles: {
         Row: {
           city_slug: string
@@ -374,6 +398,10 @@ export type Database = {
       get_own_trainer_subscription_status: {
         Args: Record<PropertyKey, never>
         Returns: SubscriptionStatus | null
+      }
+      has_active_student_pass: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
       get_public_trainer_contact_info: {
         Args: {

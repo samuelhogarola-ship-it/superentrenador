@@ -33,7 +33,9 @@ export function MessageForm({ trainerProfileId, trainerName, clientId, onSent }:
         }),
       });
 
-      if (!response.ok) {
+      if (response.status === 402) {
+        setError("Necesitas un Pase alumno activo para contactar con entrenadores.");
+      } else if (!response.ok) {
         setError("No se pudo enviar el mensaje. Inténtalo de nuevo.");
       } else {
         setSent(true);

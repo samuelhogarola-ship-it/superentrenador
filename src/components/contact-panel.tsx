@@ -22,13 +22,14 @@ interface ContactPanelProps {
 async function fetchContactInfo(trainerSlug: string) {
   try {
     const response = await fetch(`/api/trainer-contact?slug=${encodeURIComponent(trainerSlug)}`);
-    if (response.status === 429) return { contactInfo: "", rateLimited: true };
-    if (!response.ok) return { contactInfo: "", rateLimited: false };
+    if (response.status === 402) return { contactInfo: "", rateLimited: false, passRequired: true };
+    if (response.status === 429) return { contactInfo: "", rateLimited: true, passRequired: false };
+    if (!response.ok) return { contactInfo: "", rateLimited: false, passRequired: false };
 
     const payload = (await response.json()) as { contactInfo?: string };
-    return { contactInfo: payload.contactInfo ?? "", rateLimited: false };
+    return { contactInfo: payload.contactInfo ?? "", rateLimited: false, passRequired: false };
   } catch {
-    return { contactInfo: "", rateLimited: false };
+    return { contactInfo: "", rateLimited: false, passRequired: false };
   }
 }
 
@@ -47,6 +48,7 @@ export function ContactPanel({
   const [checked, setChecked] = useState(false);
   const [contactInfo, setContactInfo] = useState<string | null>(null);
   const [contactRateLimited, setContactRateLimited] = useState(false);
+  const [studentPassRequired, setStudentPassRequired] = useState(false);
   const [currentUser, setCurrentUser] = useState<{ id: string; name: string } | null>(null);
   const [showMessageForm, setShowMessageForm] = useState(false);
   const profilePath = `/entrenadores/${trainerSlug}`;
@@ -66,9 +68,10 @@ export function ContactPanel({
           id: user.id,
           name: user.user_metadata?.full_name ?? user.email ?? "Usuario",
         });
-        const { contactInfo, rateLimited } = await fetchContactInfo(trainerSlug);
+        const { contactInfo, rateLimited, passRequired } = await fetchContactInfo(trainerSlug);
         setContactInfo(contactInfo);
         setContactRateLimited(rateLimited);
+        setStudentPassRequired(passRequired);
       }
     }
 
@@ -80,6 +83,7 @@ export function ContactPanel({
       if (!isLoggedIn) {
         setContactInfo(null);
         setContactRateLimited(false);
+        setStudentPassRequired(false);
         setCurrentUser(null);
       } else if (session?.user) {
         setCurrentUser({
@@ -87,9 +91,10 @@ export function ContactPanel({
           name: session.user.user_metadata?.full_name ?? session.user.email ?? "Usuario",
         });
         fetchContactInfo(trainerSlug)
-          .then(({ contactInfo, rateLimited }) => {
+          .then(({ contactInfo, rateLimited, passRequired }) => {
             setContactInfo(contactInfo);
             setContactRateLimited(rateLimited);
+            setStudentPassRequired(passRequired);
           })
           .catch((error) => console.error("[contact-panel] failed to fetch contact info", error));
       }
@@ -106,7 +111,7 @@ export function ContactPanel({
       </p>
       <p className="mt-3 inline-flex items-center gap-2 border border-[#111214]/15 bg-[#f7f7f7] px-3 py-1.5 text-xs font-semibold text-[#5b5b63]">
         <ShieldCheck size={13} />
-        Contacto protegido por registro
+        Contacto disponible con Pase alumno
       </p>
 
       <div className="mt-6 grid gap-4 text-sm text-[#68686f]">
@@ -125,7 +130,21 @@ export function ContactPanel({
       </div>
 
       <div className="mt-6 border border-[#111214]/15 bg-white p-5 text-[#111214]">
-        {!checked ? null : loggedIn && currentUser ? (
+        {!checked ? null : loggedIn && currentUser ? studentPassRequired ? (
+          <>
+            <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--accent)]">Pase alumno necesario</p>
+            <p className="mt-3 text-sm leading-7 text-[#5b5b63]">
+              Para contactar con {trainerName} necesitas el Pase alumno de 10 € al mes.
+            </p>
+            <Link
+              href="/premium#pase-alumno"
+              className="mt-5 inline-flex w-full items-center justify-center gap-2 bg-[#111214] px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-[var(--accent)] hover:text-[#111214]"
+            >
+              <LockKeyhole size={16} />
+              Ver Pase alumno
+            </Link>
+          </>
+        ) : (
           <>
             {contactInfo ? (
               <>
@@ -176,7 +195,7 @@ export function ContactPanel({
           <>
             <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--accent)]">Contacto protegido</p>
             <p className="mt-3 text-sm leading-7 text-[#5b5b63]">
-              {hiddenContactHint} Te pediremos una cuenta para ordenar el primer mensaje y evitar conversaciones sin intención.
+              {hiddenContactHint} Necesitarás una cuenta y un Pase alumno activo de 10 € al mes para contactar.
             </p>
             <div className="mt-5 grid gap-3">
               <Link
@@ -186,7 +205,7 @@ export function ContactPanel({
                 className="inline-flex items-center justify-center gap-2 bg-[#111214] px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-[var(--accent)] hover:text-[#111214]"
               >
                 <MessageSquare size={16} />
-                Contactar con {trainerName}
+                Iniciar sesión para contactar
               </Link>
               <Link
                 href={registerHref}
@@ -195,7 +214,7 @@ export function ContactPanel({
                 className="inline-flex items-center justify-center gap-2 border border-[#111214]/15 px-4 py-3 text-sm font-semibold text-[#111214]"
               >
                 <LockKeyhole size={16} />
-                Crear cuenta para contactar
+                Crear cuenta de alumno
               </Link>
             </div>
           </>

@@ -19,7 +19,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-[var(--line)] bg-[color:rgba(8,9,15,0.92)] backdrop-blur-md">
-      <div className={`flex flex-wrap items-center justify-between gap-4 px-4 md:px-6 lg:px-8 ${isAuthPage ? "py-3" : "mx-auto max-w-7xl py-4"}`}>
+      <div className={`flex items-center justify-between gap-2 px-3 [&>a>span]:hidden sm:gap-4 sm:px-4 sm:[&>a>span]:flex md:px-6 lg:px-8 ${isAuthPage ? "py-3" : "mx-auto w-full max-w-7xl py-3"}`}>
         <BrandMark compact={isAuthPage} />
 
         <nav aria-label="Acceso principal" className="flex items-center gap-2 sm:gap-3">
@@ -27,14 +27,14 @@ export function SiteHeader() {
             <>
               <Link
                 href="/dashboard"
-                className="inline-flex min-h-10 items-center justify-center rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-bold text-[var(--ink)] transition-transform hover:-translate-y-0.5 sm:px-5"
+                className="inline-flex min-h-10 items-center justify-center whitespace-nowrap rounded-full bg-[var(--accent)] px-3 py-2 text-xs font-bold text-[var(--ink)] transition-transform hover:-translate-y-0.5 sm:px-5 sm:text-sm"
               >
                 Mi panel
               </Link>
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="brand-super inline-flex min-h-10 items-center justify-center rounded-full px-3 py-2 text-sm font-semibold transition-opacity hover:opacity-80 sm:px-4"
+                className="brand-super inline-flex min-h-10 items-center justify-center whitespace-nowrap rounded-full px-2 py-2 text-xs font-semibold transition-opacity hover:opacity-80 sm:px-4 sm:text-sm"
               >
                 Cerrar sesión
               </button>
@@ -61,13 +61,13 @@ export function SiteHeader() {
                 href="/registro?intent=trainer"
                 data-umami-event="entrenador-publicar-anuncio"
                 data-umami-event-origen="header"
-                className="inline-flex min-h-10 items-center justify-center rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-bold text-[var(--ink)] transition-transform hover:-translate-y-0.5 sm:px-5"
+                className="inline-flex min-h-10 items-center justify-center whitespace-nowrap rounded-full bg-[var(--accent)] px-3 py-2 text-xs font-bold text-[var(--ink)] transition-transform hover:-translate-y-0.5 sm:px-5 sm:text-sm"
               >
                 Publica tu anuncio
               </Link>
               <Link
                 href="/login"
-                className="brand-super inline-flex min-h-10 items-center justify-center rounded-full px-3 py-2 text-sm font-semibold transition-opacity hover:opacity-80 sm:px-4"
+                className="brand-super inline-flex min-h-10 items-center justify-center whitespace-nowrap rounded-full px-2 py-2 text-xs font-semibold transition-opacity hover:opacity-80 sm:px-4 sm:text-sm"
               >
                 Iniciar sesión
               </Link>
@@ -75,13 +75,6 @@ export function SiteHeader() {
           )}
         </nav>
       </div>
-      {!isAuthPage ? (
-        <nav aria-label="Navegación para buscar entrenador" className="mx-auto flex max-w-7xl flex-wrap gap-x-6 gap-y-2 px-4 pb-3 text-sm font-semibold text-[var(--text)] md:px-6 lg:px-8">
-          <Link href="/entrenadores" className="hover:underline">Buscar entrenador</Link>
-          <Link href="/blog" className="hover:underline">Guías</Link>
-          <Link href="/como-funciona" className="hover:underline">Cómo funciona</Link>
-        </nav>
-      ) : null}
     </header>
   );
 }

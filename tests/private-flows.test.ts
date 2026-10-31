@@ -128,6 +128,24 @@ test("manual premium access is noindex and absent from the sitemap", async () =>
     readSource("../src/app/sitemap.ts"),
   ]);
   assert.match(page, /robots:\s*\{\s*index:\s*false,\s*follow:\s*false\s*\}/);
+  assert.match(page, /get_own_trainer_subscription_status/);
+  assert.match(page, /isCurrentPlan[\s\S]*Tu plan actual/);
+  assert.match(page, /viewerPlan === "trainer-free"/);
+  assert.match(page, /Crear cuenta gratis/);
+  assert.match(page, /Perfil público en el marketplace/);
+  assert.match(page, /Recepción de contactos de alumnos con pase/);
+  assert.match(page, /className="mt-auto pt-8"/);
+  assert.match(page, /Perfil verificado/);
+  assert.match(page, /Insignia Pro en tu ficha/);
+  assert.match(page, /Coach Studio completo para hasta 3 clientes/);
+  assert.match(page, /Rutinas creadas con IA y revisión humana/);
+  assert.match(page, /Acceso al banco de rutinas/);
+  assert.match(page, /Pase alumno/);
+  assert.match(page, /price: 10/);
+  assert.match(page, /Participación en la comunidad/);
+  assert.match(page, /1 pregunta a expertos al mes/);
+  assert.match(page, /Hasta 10 consultas a expertos al mes/);
+  assert.doesNotMatch(page, /Acceso anticipado/);
   assert.doesNotMatch(sitemap, /siteConfig\.url\}\/premium/);
 });
 

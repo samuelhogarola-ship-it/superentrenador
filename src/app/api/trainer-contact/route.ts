@@ -25,6 +25,14 @@ export async function GET(request: Request) {
     return NextResponse.json({ contactInfo: "", error: "email_not_verified" }, { status: 403 });
   }
 
+  const { data: hasStudentPass, error: passError } = await supabase.rpc("has_active_student_pass");
+  if (passError) {
+    return NextResponse.json({ contactInfo: "" }, { status: 500 });
+  }
+  if (!hasStudentPass) {
+    return NextResponse.json({ contactInfo: "", error: "student_pass_required" }, { status: 402 });
+  }
+
   const { data, error } = await supabase.rpc("get_public_trainer_contact_info", {
     trainer_slug: slug,
   });

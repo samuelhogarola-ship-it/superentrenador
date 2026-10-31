@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { getSupabaseBrowserClient, hasSupabaseEnv } from "@/lib/supabase/client";
 
 export type AuthIntent = "client" | "trainer";
 
@@ -23,9 +23,11 @@ function toCurrentUser(user: { id: string; email?: string | null; user_metadata?
 /** Tracks the logged-in user client-side so shared UI (header, nav) can react to auth state. */
 export function useCurrentUser() {
   const [user, setUser] = useState<CurrentUser | null>(null);
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(() => !hasSupabaseEnv());
 
   useEffect(() => {
+    if (!hasSupabaseEnv()) return;
+
     const supabase = getSupabaseBrowserClient();
 
     supabase.auth.getUser().then(({ data }) => {

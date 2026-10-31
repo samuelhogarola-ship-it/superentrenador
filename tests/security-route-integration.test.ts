@@ -10,6 +10,8 @@ test("contact access requires a confirmed email and the protected database RPC",
   const source = await readSource("../src/app/api/trainer-contact/route.ts");
 
   assert.match(source, /hasVerifiedEmail\(user\)/);
+  assert.match(source, /rpc\("has_active_student_pass"/);
+  assert.match(source, /student_pass_required/);
   assert.match(source, /rpc\("get_public_trainer_contact_info"/);
   assert.doesNotMatch(source, /getClientIp/);
 });
@@ -19,6 +21,8 @@ test("message mutations require same origin and confirmed email", async () => {
 
   assert.match(source, /isSameOriginRequest\(request\)/);
   assert.match(source, /hasVerifiedEmail\(user\)/);
+  assert.match(source, /rpc\("has_active_student_pass"/);
+  assert.match(source, /student_pass_required/);
   assert.doesNotMatch(source, /getClientIp/);
 });
 

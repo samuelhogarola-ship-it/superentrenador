@@ -6,16 +6,23 @@ const source = readFileSync(new URL("../src/components/hero-search-bar.tsx", imp
 const filtersSource = readFileSync(new URL("../src/components/filters-bar.tsx", import.meta.url), "utf8");
 
 test("lets visitors choose a known city or type any other location", () => {
-  assert.match(source, /list="marketplace-city-options"/);
-  assert.match(source, /marketplace-city-options/);
-  assert.match(source, /value=\{city\.name\}/);
+  assert.match(source, /list="hero-city-options"/);
+  assert.match(source, /id="hero-city-options"/);
+  assert.match(source, /value=\{item\.name\}/);
   assert.doesNotMatch(source, /<select[\s\S]*name="city"/);
 });
 
-test("keeps category, city and modality in the same visual field system", () => {
-  assert.match(source, /const fieldClass/);
-  assert.match(source, /const inputClass/);
-  assert.match(source, /const selectClass/);
+test("keeps category, city and modality in one progressive search flow", () => {
+  assert.match(source, /type SearchStep = "idle" \| "category" \| "city" \| "modality"/);
+  assert.match(source, /setStep\("city"\)/);
+  assert.match(source, /setStep\("modality"\)/);
+  assert.match(source, /role="search"/);
+});
+
+test("builds category suggestions from the supplied data", () => {
+  assert.match(source, /categories\.filter/);
+  assert.match(source, /visibleCategories\.map/);
+  assert.doesNotMatch(source, /const CATEGORIES/);
 });
 
 test("keeps free city entry available in the results filters", () => {

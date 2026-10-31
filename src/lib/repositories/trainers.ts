@@ -11,6 +11,7 @@ export interface TrainerFilters {
   specialty?: string;
   citySlug?: string;
   modality?: string;
+  maxPrice?: number;
   sort?: "featured" | "price-asc" | "price-desc" | "rating";
 }
 
@@ -156,6 +157,9 @@ function filterStaticTrainers(filters: TrainerFilters) {
   if (filters.modality) {
     trainers = trainers.filter((trainer) => trainer.modalities.includes(filters.modality!));
   }
+  if (filters.maxPrice !== undefined) {
+    trainers = trainers.filter((trainer) => trainer.priceFrom > 0 && trainer.priceFrom <= filters.maxPrice!);
+  }
 
   return sortTrainers(trainers, filters.sort);
 }
@@ -218,6 +222,9 @@ export async function listPublicTrainerProfiles(filters: TrainerFilters = {}): P
   }
   if (filters.modality) {
     query = query.contains("modalities", [filters.modality]);
+  }
+  if (filters.maxPrice !== undefined) {
+    query = query.gt("price_from", 0).lte("price_from", filters.maxPrice);
   }
 
   if (filters.sort === "price-asc") {

@@ -3,11 +3,16 @@ import { EDITORIAL_UPDATED_AT, listBlogPosts } from "@/lib/blog";
 import { getActiveAndaluciaCities } from "@/lib/coverage";
 import { listMarketplaceCities, listPublicTrainerProfiles } from "@/lib/repositories/trainers";
 import { siteConfig } from "@/lib/site";
+import { listWfBloggerPosts } from "@/lib/wf-blogger";
 
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [cities, trainers] = await Promise.all([listMarketplaceCities(), listPublicTrainerProfiles()]);
+  const [cities, trainers, libraryPosts] = await Promise.all([
+    listMarketplaceCities(),
+    listPublicTrainerProfiles(),
+    listWfBloggerPosts(),
+  ]);
   const posts = listBlogPosts();
   const activeCitySlugs = new Set(trainers.map((trainer) => trainer.citySlug));
   const activeCities = cities.filter((city) => activeCitySlugs.has(city.slug));
@@ -21,6 +26,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
+      url: `${siteConfig.url}/biblioteca`,
+      lastModified: EDITORIAL_UPDATED_AT,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
       url: `${siteConfig.url}/blog`,
       lastModified: EDITORIAL_UPDATED_AT,
       changeFrequency: "weekly",
@@ -30,6 +41,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...posts.map((post) => ({
       url: `${siteConfig.url}/blog/${post.slug}`,
       lastModified: post.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.65,
+    })),
+    ...libraryPosts.map((post) => ({
+      url: `${siteConfig.url}/biblioteca/${post.slug}`,
+      ...(post.date ? { lastModified: post.date } : {}),
       changeFrequency: "monthly" as const,
       priority: 0.65,
     })),

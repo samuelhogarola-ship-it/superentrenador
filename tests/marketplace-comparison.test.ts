@@ -1,18 +1,44 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { HeroSearchBar } from "../src/components/hero-search-bar";
 import { TrainerCard } from "../src/components/trainer-card";
 import { TrainerListItem } from "../src/components/trainer-list-item";
 import { publicTrainerProfiles } from "../src/lib/marketplace-data";
 
-test("home search submits modality alongside query and city", () => {
-  const html = renderToStaticMarkup(createElement(HeroSearchBar, { categories: ["Yoga"], cities: [] }));
-  assert.match(html, /name="q"/);
-  assert.match(html, /name="city"/);
-  assert.match(html, /name="modality"/);
-  for (const modality of ["Presencial", "Online", "Híbrido"]) assert.ok(html.includes(`value="${modality}"`));
+const heroSearchSource = readFileSync(new URL("../src/components/hero-search-bar.tsx", import.meta.url), "utf8");
+const filtersSource = readFileSync(new URL("../src/components/filters-bar.tsx", import.meta.url), "utf8");
+const resultsSource = readFileSync(new URL("../src/app/entrenadores/page.tsx", import.meta.url), "utf8");
+const repositorySource = readFileSync(new URL("../src/lib/repositories/trainers.ts", import.meta.url), "utf8");
+
+test("home search progressively submits category, city and modality", () => {
+  assert.match(heroSearchSource, /params\.set\("category", category\)/);
+  assert.match(heroSearchSource, /params\.set\("city", city\.trim\(\)\)/);
+  assert.match(heroSearchSource, /params\.set\("modality", modality\)/);
+  for (const modality of ["Presencial", "Online", "Híbrido"]) assert.ok(heroSearchSource.includes(`"${modality}"`));
+});
+
+test("home search starts with a single progressive entry point", () => {
+  assert.match(heroSearchSource, /useState<SearchStep>\("idle"\)/);
+  assert.match(heroSearchSource, /¿Qué entrenador necesitas\?/);
+  assert.match(heroSearchSource, /const SEARCH_EXAMPLES = \["Tenis", "PT", "Pádel"\]/);
+  assert.match(heroSearchSource, /Prueba con/);
+});
+
+test("results use honest, lightweight marketplace filters", () => {
+  for (const option of ["Cerca de mí", "Presencial", "Online"]) assert.match(filtersSource, new RegExp(`>${option}<`));
+  assert.match(filtersSource, /Filtrar por precio máximo/);
+  assert.match(filtersSource, /Escribe una ciudad para buscar entrenadores presenciales cerca de ti/);
+  assert.match(resultsSource, /Entrenadores disponibles/);
+  for (const noisyClaim of ["Contacto protegido", "Perfiles comparables", "Búsqueda por ciudad", "Tiempo de respuesta"]) {
+    assert.doesNotMatch(resultsSource, new RegExp(noisyClaim));
+  }
+});
+
+test("maximum price filters real repository data", () => {
+  assert.match(repositorySource, /priceFrom > 0 && trainer\.priceFrom <= filters\.maxPrice/);
+  assert.match(repositorySource, /\.gt\("price_from", 0\)\.lte\("price_from", filters\.maxPrice\)/);
 });
 
 for (const Component of [TrainerCard, TrainerListItem]) {

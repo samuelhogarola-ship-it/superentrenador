@@ -48,7 +48,8 @@ test("how it works offers both real entry points and states the service boundari
   const html = renderToStaticMarkup(createElement(HowItWorksPage));
   assert.match(html, /href="\/entrenadores"/);
   assert.match(html, /href="\/registro\?intent=trainer"/);
-  assert.match(html, /Confirma tu correo/);
+  assert.match(html, /confirma tu correo/i);
+  assert.match(html, /Pase Alumno activo de 10 € al mes/);
   assert.match(html, /Las ediciones también requieren revisión/);
-  assert.match(html, /No procesa pagos de sesiones ni confirma reservas/);
+  assert.match(html, /no procesa los pagos de sus sesiones ni confirma reservas/i);
 });
