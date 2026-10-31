@@ -1,14 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Building2, Home, LayoutDashboard, MapPinned, UserRound } from "lucide-react";
+import { Building2, Home, LayoutDashboard, UserRound } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCurrentUser } from "@/lib/auth";
 
 const baseNavItems = [
   { href: "/", label: "Inicio", icon: Home },
   { href: "/entrenadores", label: "Buscar", icon: UserRound },
-  { href: "/andalucia", label: "Zonas", icon: MapPinned },
 ];
 
 const guestNavItem = { href: "/login", label: "Acceso", icon: Building2 };
@@ -24,7 +23,7 @@ export function MobileBottomNav() {
       aria-label="Navegacion principal movil"
       className="mobile-bottom-nav fixed inset-x-4 bottom-4 z-40 md:hidden"
     >
-      <div className="grid grid-cols-4 rounded-[20px] border border-[var(--line-strong)] bg-[color:rgba(255,255,255,0.94)] px-2 py-2 shadow-[var(--shadow-soft)] backdrop-blur-md">
+      <div className="grid grid-cols-3 rounded-[20px] border border-[var(--line-strong)] bg-[color:rgba(255,255,255,0.94)] px-2 py-2 shadow-[var(--shadow-soft)] backdrop-blur-md">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive =

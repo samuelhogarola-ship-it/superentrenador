@@ -5,9 +5,7 @@ export function AuthPageBackdrop() {
       <span className="absolute -left-8 top-20 select-none font-heading text-[8rem] font-black tracking-[-0.12em] text-[#7b8088]/[0.035] sm:text-[12rem] lg:text-[16rem]">
         SUPER
       </span>
-      <span className="absolute right-5 top-5 select-none font-heading text-[7rem] font-black leading-none text-[#f5a623]/70 sm:right-10 sm:top-8 sm:text-[9rem] lg:right-[5%]">
-        S
-      </span>
+      <div className="absolute right-4 top-8 h-28 w-28 bg-[url('/logo.png')] bg-contain bg-center bg-no-repeat opacity-[0.075] sm:right-10 sm:top-10 sm:h-36 sm:w-36 lg:right-[5%] lg:h-44 lg:w-44" />
       <div className="absolute -bottom-24 -left-20 h-64 w-64 rounded-full bg-white/45 blur-3xl" />
     </div>
   );

@@ -55,12 +55,12 @@ function RegistroForm() {
           <h1 className="mt-3 font-heading text-4xl font-extrabold leading-[1.08] tracking-[-0.045em] text-[#17171b] sm:text-5xl">
             {isTrainer ? "Crea tu perfil" : "Crea tu cuenta"}
           </h1>
-          <p className="mt-3 text-base font-semibold text-[#74777d] sm:text-lg">
+          <p className="mt-2 whitespace-nowrap text-[13px] font-semibold text-[#74777d] sm:text-sm">
             Gratis, rápido y sin pasos innecesarios.
           </p>
         </section>
 
-        <section className="relative min-w-0 rounded-[28px] border border-white/80 bg-white/95 p-6 shadow-[0_24px_70px_rgba(30,34,42,0.13)] sm:p-9 lg:row-span-2 lg:mt-4">
+        <section className="relative min-w-0 rounded-[28px] border border-white/80 bg-white/95 p-6 shadow-[0_24px_70px_rgba(30,34,42,0.13)] sm:p-9 lg:row-span-2 lg:-mt-2">
           <h2 className="sr-only">Elige cómo quieres registrarte</h2>
           <div>
             <label htmlFor="registration-email" className="sr-only">Email</label>
