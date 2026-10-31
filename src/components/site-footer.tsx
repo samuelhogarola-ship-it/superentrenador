@@ -1,67 +1,62 @@
 import Link from "next/link";
-import { ShieldCheck } from "lucide-react";
 import { BrandMark } from "@/components/brand-mark";
 import { coachStudioUrl } from "@/lib/coach-studio";
 
 const COLUMNS = [
   {
-    title: "Marketplace",
+    title: "Buscar entrenador",
     links: [
       { href: "/como-funciona", label: "Cómo funciona" },
       { href: "/entrenadores", label: "Todos los entrenadores" },
-      { href: "/entrenadores?specialty=Hipertrofia", label: "Hipertrofia" },
-      { href: "/entrenadores?specialty=Pérdida de grasa", label: "Pérdida de grasa" },
     ],
   },
   {
     title: "Ciudades",
     links: [
-      { href: "/andalucia", label: "Andalucía" },
+      { href: "/ciudades/madrid", label: "Madrid" },
+      { href: "/entrenadores?city=Barcelona", label: "Barcelona" },
       { href: "/ciudades/malaga", label: "Málaga" },
-      { href: "/ciudades/sevilla", label: "Sevilla" },
-      { href: "/ciudades/marbella", label: "Marbella" },
+      { href: "/ciudades/fuengirola", label: "Fuengirola" },
     ],
   },
   {
     title: "Entrenadores",
     links: [
-      { href: "/registro?intent=trainer", label: "Crear perfil público" },
-      { href: "/login", label: "Iniciar sesión" },
       { href: coachStudioUrl, label: "Coach Studio", external: true },
+      { href: "/login", label: "Iniciar sesión" },
+      { href: "/registro?intent=trainer", label: "Crear perfil" },
+      { href: "/premium", label: "Planes y precios" },
     ],
   },
   {
-    title: "Blog",
+    title: "Biblioteca",
     links: [
+      { href: "/biblioteca", label: "Biblioteca" },
       { href: "/blog", label: "Todas las guías" },
       { href: "/blog/como-elegir-entrenador-personal-con-criterio", label: "Elegir entrenador" },
-      { href: "/blog/como-publicar-perfil-entrenador-que-convierte", label: "Publicar perfil" },
+      { href: "/blog/preparar-primer-cliente-entrenador-andalucia", label: "Preparar tu primer cliente" },
+      { href: "/blog/necesito-ser-autonomo-entrenador-personal", label: "Trabajar como entrenador" },
     ],
   },
 ];
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-[var(--line)] px-4 pb-24 pt-12 md:px-6 md:pb-10 lg:px-8">
+    <footer className="site-footer border-t border-[var(--line)] px-4 pb-6 pt-8 md:px-6 md:pb-10 md:pt-12 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-10 lg:grid-cols-[1.1fr_2fr]">
+        <div className="grid gap-7 lg:grid-cols-[1.1fr_2fr] lg:gap-10">
           <div>
             <BrandMark />
-            <p className="app-copy mt-5 max-w-sm text-sm">
-              Encuentra entrenadores de distintas disciplinas con perfiles claros, especialidades visibles y contacto protegido
-              hasta que decidas avanzar.
+            <p className="app-copy mt-5 hidden max-w-sm text-sm sm:block">
+              Encuentra entrenadores y compara perfiles, especialidades y servicios.
             </p>
-            <span className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--accent)]">
-              <ShieldCheck size={13} className="text-[var(--accent)]" />
-              Contacto protegido
-            </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-7 sm:grid-cols-4 sm:gap-8">
             {COLUMNS.map((column) => (
               <div key={column.title}>
                 <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--muted)]">{column.title}</p>
-                <div className="mt-4 flex flex-col gap-2.5 text-sm">
+                <div className="mt-3 flex flex-col gap-2 text-[13px] sm:mt-4 sm:gap-2.5 sm:text-sm">
                   {column.links.map((link) =>
                     "external" in link && link.external ? (
                       <a
@@ -89,13 +84,21 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-[var(--line)] pt-6 text-sm text-[var(--muted)] sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-col gap-3 border-t border-[var(--line)] pt-5 text-xs text-[var(--muted)] sm:mt-10 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:pt-6 sm:text-sm">
           <div className="flex flex-wrap items-center gap-4">
             <p>© {new Date().getFullYear()} Super Entrenador · Todos los derechos reservados.</p>
             <Link href="/politica-privacidad" className="hover:text-[var(--accent)]">Política de privacidad</Link>
             <Link href="/terminos" className="hover:text-[var(--accent)]">Términos</Link>
             <Link href="/cookies" className="hover:text-[var(--accent)]">Cookies</Link>
           </div>
+          <a
+            href="https://webfuengirola.com/"
+            target="_blank"
+            rel="noreferrer"
+            className="w-fit font-semibold transition-colors hover:text-[var(--accent)]"
+          >
+            Desarrollado y mantenido por WF Studio
+          </a>
         </div>
       </div>
     </footer>

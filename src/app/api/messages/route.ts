@@ -135,6 +135,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "email_not_verified" }, { status: 403 });
   }
 
+  const { data: ownTrainerProfiles } = await supabase.rpc("get_own_trainer_message_profile");
+  if (!ownTrainerProfiles?.[0]) {
+    const { data: hasStudentPass, error: passError } = await supabase.rpc("has_active_student_pass");
+    if (passError) {
+      return NextResponse.json({ ok: false }, { status: 500 });
+    }
+    if (!hasStudentPass) {
+      return NextResponse.json({ ok: false, error: "student_pass_required" }, { status: 402 });
+    }
+  }
+
   const { error } = await supabase.from("messages").insert({
     sender_id: user.id,
     sender_name: user.user_metadata?.full_name ?? user.email ?? "Usuario",

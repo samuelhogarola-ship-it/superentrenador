@@ -5,7 +5,6 @@ import "./globals.css";
 import { CookieConsent } from "@/components/cookie-consent";
 import { GoogleAnalytics } from "@/components/google-analytics";
 import { UmamiAnalytics } from "@/components/umami-analytics";
-import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { siteConfig } from "@/lib/site";
@@ -57,7 +56,6 @@ export default function RootLayout({
           <SiteHeader />
           {children}
           <SiteFooter />
-          <MobileBottomNav />
           <CookieConsent />
         </div>
       </body>

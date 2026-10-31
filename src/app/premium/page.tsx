@@ -1,53 +1,101 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BadgeCheck, Check, Star, Zap } from "lucide-react";
+import { Check } from "lucide-react";
+import { PlanAudienceSwitcher, type PlanAudience } from "@/components/plan-audience-switcher";
+import { hasSupabaseEnv } from "@/lib/supabase/client";
+import { getSupabaseSessionServerClient } from "@/lib/supabase/server";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Premium | Super Entrenador",
-  description: "Destaca tu perfil, aparece primero en búsquedas y recibe más contactos con Super Entrenador Premium.",
+  title: "Planes para alumnos y entrenadores",
+  description: "Planes para alumnos, entrenadores y centros que quieren aprender, contactar o destacar sus perfiles.",
   robots: { index: false, follow: false },
 };
 
-const PLANS = [
+const STUDENT_PLANS = [
   {
-    id: "gratuito",
+    id: "alumno-gratis",
     name: "Gratuito",
     price: 0,
     period: "siempre",
-    description: "Para probar el marketplace.",
+    description: "Para alumnos que quieren aprender y explorar la plataforma.",
     highlight: false,
-    cta: "Tu plan actual",
-    ctaHref: "/dashboard",
+    cta: "Crear cuenta gratis",
+    ctaHref: "/registro?intent=client",
     features: [
-      "Perfil público en el marketplace",
-      "Aparición en búsquedas estándar",
-      "Bandeja de mensajes ilimitada",
-      "Estadísticas básicas",
+      "Acceso a la biblioteca",
+      "Newsletter de Superentrenador",
+      "Plataforma de aprendizaje (próximamente)",
+      "Coach Studio básico",
+      "Participación en la comunidad (próximamente)",
     ],
     missing: [
-      "Posición destacada en resultados",
-      "Insignia Premium en tu ficha",
-      "Aparición en portada",
-      "Soporte prioritario",
+      "Contacto con entrenadores",
+    ],
+  },
+  {
+    id: "pase-alumno",
+    name: "Pase alumno",
+    price: 10,
+    period: "mes",
+    description: "Para alumnos que quieren contactar con entrenadores.",
+    highlight: false,
+    cta: "Me interesa el pase alumno",
+    ctaHref: "mailto:samuel.hogarola@gmail.com?subject=Pase alumno",
+    features: [
+      "Todo lo del plan Gratuito",
+      "Contacto con entrenadores",
+      "Mensajes con los perfiles contactados",
+      "1 pregunta a expertos al mes, hasta un máximo de 5 (próximamente)",
+    ],
+    missing: [],
+  },
+];
+
+const TRAINER_PLANS = [
+  {
+    id: "entrenador-gratis",
+    name: "Gratuito",
+    price: 0,
+    period: "siempre",
+    description: "Para entrenadores que quieren publicar su primer perfil.",
+    highlight: false,
+    cta: "Crear perfil gratis",
+    ctaHref: "/registro?intent=trainer",
+    features: [
+      "Perfil público en el marketplace",
+      "Aparición estándar en búsquedas",
+      "Recepción de contactos de alumnos con pase",
+      "Bandeja de mensajes básica",
+      "Estadísticas básicas",
+      "Participación en la comunidad (próximamente)",
+    ],
+    missing: [
+      "Perfil verificado e insignia Pro",
+      "Posición prioritaria",
+      "Coach Studio completo",
     ],
   },
   {
     id: "pro",
     name: "Pro",
-    price: 19,
+    price: 20,
     period: "mes",
     description: "Para entrenadores que quieren destacar.",
     highlight: true,
-    cta: "Solicitar acceso Pro",
+    cta: "Me interesa el plan Pro",
     ctaHref: "mailto:samuel.hogarola@gmail.com?subject=Plan Pro",
-    badge: "Acceso anticipado",
     features: [
-      "Todo lo del plan Gratuito",
-      "Posición destacada en resultados",
-      "Insignia Premium en tu ficha",
-      "Aparición en portada del marketplace",
+      "Todo lo del plan Gratuito profesional",
+      "Perfil verificado",
+      "Insignia Pro en tu ficha",
+      "Perfil destacado en resultados",
       "Estadísticas avanzadas",
-      "Soporte prioritario por email",
+      "Coach Studio completo para hasta 3 clientes",
+      "Rutinas creadas con IA y revisión humana",
+      "Acceso al banco de rutinas",
+      "Hasta 10 consultas a expertos al mes (próximamente)",
     ],
     missing: [],
   },
@@ -71,116 +119,145 @@ const PLANS = [
   },
 ];
 
-export default function PremiumPage() {
+type Plan = (typeof STUDENT_PLANS)[number] | (typeof TRAINER_PLANS)[number];
+
+type ViewerPlan = "anonymous" | "student-free" | "student-pass" | "trainer-free" | "trainer-pro";
+
+async function getViewerPlan(): Promise<ViewerPlan> {
+  if (!hasSupabaseEnv()) return "anonymous";
+
+  try {
+    const supabase = await getSupabaseSessionServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return "anonymous";
+
+    const { data: subscriptionStatus } = await supabase.rpc("get_own_trainer_subscription_status");
+    if (subscriptionStatus === "active") return "trainer-pro";
+    if (subscriptionStatus === "inactive") return "trainer-free";
+
+    const { data: hasStudentPass } = await supabase.rpc("has_active_student_pass");
+    return hasStudentPass ? "student-pass" : "student-free";
+  } catch {
+    return "anonymous";
+  }
+}
+
+function PlanCard({ plan, viewerPlan }: { plan: Plan; viewerPlan: ViewerPlan }) {
+  const currentPlanById: Partial<Record<Plan["id"], ViewerPlan>> = {
+    "alumno-gratis": "student-free",
+    "pase-alumno": "student-pass",
+    "entrenador-gratis": "trainer-free",
+    pro: "trainer-pro",
+  };
+  const isCurrentPlan = currentPlanById[plan.id] === viewerPlan;
+  const ctaLabel = isCurrentPlan ? "Tu plan actual" : plan.cta;
+  const ctaHref = isCurrentPlan ? "/dashboard" : plan.ctaHref;
+
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-14 bg-white px-4 py-12 text-[#111214] md:px-6 lg:px-8 lg:py-20">
-      <header className="text-center">
-        <span className="inline-flex items-center gap-2 border border-[#111214]/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-[var(--accent)]">
-          <Zap size={13} />
-          Super Entrenador Premium
-        </span>
-        <h1 className="mt-5 font-heading text-4xl font-bold leading-[1.05] text-[#111214] sm:text-6xl">
-          Más visibilidad,<br className="hidden sm:block" /> más contactos
-        </h1>
-        <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-[#5b5b63]">
-          Destaca entre los mejores entrenadores, aparece primero en búsquedas y convierte más visitas en clientes reales.
-        </p>
-      </header>
-
-      <div className="grid gap-6 sm:grid-cols-3">
-        {PLANS.map((plan) => (
-          <article
-            key={plan.id}
-            className={`relative flex flex-col border p-6 sm:p-7 ${
-              plan.highlight ? "border-[#111214] bg-[#111214] text-white" : "border-[#111214]/15 bg-white text-[#111214]"
-            }`}
-          >
-            {plan.badge ? (
-              <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[var(--accent)] px-4 py-1 text-xs font-bold text-[#111214]">
-                {plan.badge}
-              </span>
-            ) : null}
-
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--accent)]">{plan.name}</p>
-              <div className="mt-3 flex items-baseline gap-1">
-                <span className="font-heading text-4xl font-bold">{plan.price === 0 ? "Gratis" : `${plan.price}€`}</span>
-                {plan.price > 0 ? (
-                  <span className={`text-sm ${plan.highlight ? "text-white/60" : "text-[#8a8a92]"}`}>/ {plan.period}</span>
-                ) : null}
-              </div>
-              <p className={`mt-2 text-sm ${plan.highlight ? "text-white/70" : "text-[#5b5b63]"}`}>{plan.description}</p>
-            </div>
-
-            <ul className="mt-6 flex flex-col gap-2.5">
-              {plan.features.map((feature) => (
-                <li key={feature} className="flex items-start gap-2.5 text-sm">
-                  <Check size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
-                  <span className={plan.highlight ? "text-white/90" : "text-[#3d3d42]"}>{feature}</span>
-                </li>
-              ))}
-              {plan.missing.map((feature) => (
-                <li key={feature} className="flex items-start gap-2.5 text-sm opacity-40">
-                  <span className="mt-0.5 shrink-0 w-[15px] text-center">–</span>
-                  <span>{feature}</span>
-                </li>
-              ))}
-            </ul>
-
-            <Link
-              href={plan.ctaHref}
-              data-umami-event="premium-cta"
-              data-umami-event-plan={plan.id}
-              className={`mt-8 inline-flex items-center justify-center px-5 py-3 text-sm font-bold transition-colors ${
-                plan.highlight
-                  ? "bg-[var(--accent)] text-[#111214] hover:bg-white"
-                  : plan.id === "gratuito"
-                    ? "border border-[#111214]/15 bg-white text-[#111214] hover:border-[#111214]"
-                    : "bg-[#111214] text-white hover:bg-[var(--accent)] hover:text-[#111214]"
-              }`}
-            >
-              {plan.cta}
-            </Link>
-          </article>
-        ))}
+    <article
+      id={plan.id}
+      className={`relative flex h-full flex-col border p-6 sm:p-7 ${
+        plan.highlight ? "border-[#111214] bg-[#111214] text-white" : "border-[#111214]/15 bg-white text-[#111214]"
+      }`}
+    >
+      <div>
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--accent)]">{plan.name}</p>
+        <div className="mt-3 flex items-baseline gap-1">
+          <span className="font-heading text-4xl font-bold">{plan.price === 0 ? "Gratis" : `${plan.price}€`}</span>
+          {plan.price > 0 ? (
+            <span className={`text-sm ${plan.highlight ? "text-white/60" : "text-[#8a8a92]"}`}>/ {plan.period}</span>
+          ) : null}
+        </div>
+        <p className={`mt-2 text-sm ${plan.highlight ? "text-white/70" : "text-[#5b5b63]"}`}>{plan.description}</p>
       </div>
 
-      <section className="border border-[#111214]/15 bg-white p-7 sm:p-10">
-        <div className="flex flex-wrap items-center gap-4">
-          <Star size={28} className="shrink-0 fill-[var(--accent)] text-[var(--accent)]" />
-          <div>
-            <h2 className="font-heading text-2xl font-bold text-[#111214]">¿Por qué Premium?</h2>
-            <p className="mt-1 text-sm text-[#5b5b63]">Estamos validando qué herramientas generan más visibilidad y contactos de calidad.</p>
-          </div>
-        </div>
-        <div className="mt-8 grid gap-5 sm:grid-cols-3">
-          {[
-            { icon: BadgeCheck, title: "Insignia verificada", desc: "Tu ficha muestra la insignia Premium. Los clientes confían más en perfiles destacados." },
-            { icon: Zap, title: "Primero en resultados", desc: "Apareces antes que los perfiles gratuitos en búsquedas y páginas de ciudad." },
-            { icon: Star, title: "En portada", desc: "Tu perfil aparece en la sección destacada de la página de inicio." },
-          ].map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="border border-[#111214]/12 bg-[#fafafa] p-5">
-              <Icon size={22} className="text-[var(--accent)]" />
-              <h3 className="mt-3 font-semibold text-[#111214]">{title}</h3>
-              <p className="mt-1.5 text-sm leading-6 text-[#5b5b63]">{desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <ul className="mt-6 flex flex-col gap-2.5">
+        {plan.features.map((feature) => (
+          <li key={feature} className="flex items-start gap-2.5 text-sm">
+            <Check size={15} className="mt-0.5 shrink-0 text-[var(--accent)]" />
+            <span className={plan.highlight ? "text-white/90" : "text-[#3d3d42]"}>{feature}</span>
+          </li>
+        ))}
+        {plan.missing.map((feature) => (
+          <li key={feature} className="flex items-start gap-2.5 text-sm opacity-40">
+            <span className="mt-0.5 w-[15px] shrink-0 text-center">–</span>
+            <span>{feature}</span>
+          </li>
+        ))}
+      </ul>
 
-      <section className="border border-[#111214] bg-[#111214] px-7 py-12 text-center text-white sm:px-10">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--accent)]">Acceso anticipado</p>
-        <h2 className="mt-3 font-heading text-3xl font-bold">Escríbenos y lo activamos a mano</h2>
-        <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-white/70">
-          El cobro automático de Premium todavía no está disponible. Cuéntanos tu caso y activamos el plan Pro en tu perfil manualmente.
-        </p>
+      <div className="mt-auto pt-8">
         <Link
-          href="mailto:samuel.hogarola@gmail.com?subject=Plan Pro"
-          className="mt-7 inline-flex items-center gap-2 border-2 border-[var(--accent)] bg-[var(--accent)] px-7 py-3.5 text-sm font-bold text-[#111214] transition-colors hover:bg-transparent hover:text-[var(--accent)]"
+          href={ctaHref}
+          aria-current={isCurrentPlan ? "page" : undefined}
+          data-umami-event="premium-cta"
+          data-umami-event-plan={plan.id}
+          className={`group inline-flex w-full items-center justify-center border-2 px-5 py-3 text-center text-sm font-bold transition-colors ${
+            plan.highlight
+              ? "border-[var(--accent)] bg-[var(--accent)] text-[#111214] hover:bg-transparent hover:text-[var(--accent)]"
+              : plan.price === 0
+                ? "border-[#111214]/15 bg-white text-[#111214] hover:border-[#111214] hover:bg-[#111214] hover:text-white"
+                : "border-[#111214] bg-[#111214] text-white hover:border-[var(--accent)] hover:bg-[var(--accent)] hover:text-[#111214]"
+          }`}
         >
-          Solicitar acceso Pro
+          <span className={plan.highlight
+            ? "text-[#111214] group-hover:text-[var(--accent)]"
+            : plan.price === 0
+              ? "text-[#111214] group-hover:text-white"
+              : "text-white group-hover:text-[#111214]"
+          }>
+            {ctaLabel}
+          </span>
         </Link>
-      </section>
+      </div>
+    </article>
+  );
+}
+
+type PremiumPageProps = {
+  searchParams: Promise<{ audience?: string | string[] }>;
+};
+
+export default async function PremiumPage({ searchParams }: PremiumPageProps) {
+  const query = await searchParams;
+  const viewerPlan = await getViewerPlan();
+  const defaultAudience = viewerPlan === "trainer-free" || viewerPlan === "trainer-pro" ? "trainers" : "students";
+  const requestedAudience = Array.isArray(query.audience) ? query.audience[0] : query.audience;
+  const audience: PlanAudience = requestedAudience === "trainers" || requestedAudience === "students"
+    ? requestedAudience
+    : defaultAudience;
+
+  return (
+    <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8 bg-white px-4 py-8 text-[#111214] md:px-6 lg:px-8 lg:py-12">
+      <header className="text-center">
+        <h1 className="font-heading text-2xl font-bold leading-tight text-[#111214] sm:text-3xl">
+          Elige cómo usar<br className="hidden sm:block" /> Superentrenador
+        </h1>
+      </header>
+
+      <PlanAudienceSwitcher
+        audience={audience}
+        studentPlans={(
+          <section aria-labelledby="student-plans-title">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--accent)]">Para aprender y encontrar ayuda</p>
+            <h2 id="student-plans-title" className="mt-2 font-heading text-3xl font-bold">Planes para alumnos</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#5b5b63]">Empieza gratis para aprender y usar las herramientas básicas. Activa el Pase alumno si quieres contactar con entrenadores.</p>
+            <div className="mt-6 grid gap-5 sm:grid-cols-2">
+              {STUDENT_PLANS.map((plan) => <PlanCard key={plan.id} plan={plan} viewerPlan={viewerPlan} />)}
+            </div>
+          </section>
+        )}
+        trainerPlans={(
+          <section aria-labelledby="professional-plans-title">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--accent)]">Para publicar, captar y gestionar clientes</p>
+            <h2 id="professional-plans-title" className="mt-2 font-heading text-3xl font-bold">Planes para entrenadores</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#5b5b63]">Publica tu perfil gratuitamente o elige un plan profesional para ganar visibilidad y gestionar clientes con Coach Studio.</p>
+            <div className="mt-6 grid gap-5 md:grid-cols-3">
+              {TRAINER_PLANS.map((plan) => <PlanCard key={plan.id} plan={plan} viewerPlan={viewerPlan} />)}
+            </div>
+          </section>
+        )}
+      />
     </main>
   );
 }

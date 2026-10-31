@@ -8,9 +8,9 @@ const loginSource = readFileSync(
   "utf8",
 );
 
-test("presents password, Google, and magic-link login methods", () => {
-  assert.match(loginSource, /type="password"/);
-  assert.match(loginSource, /action="password_login"/);
+test("presents a simplified Google and magic-link login", () => {
+  assert.doesNotMatch(loginSource, /type="password"/);
+  assert.match(loginSource, /action="magic_link_login"/);
   assert.match(loginSource, /AuthAlternativeMethods/);
 });
 

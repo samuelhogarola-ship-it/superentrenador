@@ -93,8 +93,9 @@ SUPABASE_ACCESS_TOKEN=
 - publicar confirmación y Magic Link con TokenHash mediante `npm run supabase:auth:templates:push`
 - verificar grants, RLS y Storage contra Supabase remoto
 - validar dominio, redirects OAuth y DNS finales
-- decidir y construir el flujo comercial de Premium; la página actual es acceso anticipado y está en `noindex`
+- integrar el cobro y la renovación automática del Pase Alumno y de los planes profesionales; por ahora la activación comercial es manual
 - mantener Coach Studio separado del marketplace y enlazado mediante `NEXT_PUBLIC_COACH_STUDIO_URL`
+- montar el volumen compartido de WF-Blogger en `WF_BLOGGER_ROOT` y configurar el secreto de publicación en ambos servicios
 - añadir páginas SEO por especialidad / ciudad / combinación
 
 ## Notas de deploy en Coolify
@@ -106,3 +107,24 @@ Si despliegas esta app como servicio Node:
 - Start command: `npm run start`
 
 No es un static site. Esta base está pensada como marketplace público indexable con crecimiento hacia lógica privada y Supabase.
+
+### WF-Blogger
+
+Superentrenador usa el tenant `superentrenador` del WF-Blogger central. El volumen persistente debe montarse en la misma ruta dentro de WF-Panel y de esta aplicación, recomendada: `/data/blogger/superentrenador`.
+
+En Superentrenador:
+
+```env
+WF_BLOGGER_ROOT=/data/blogger/superentrenador
+WF_BLOGGER_BUILD_SECRET=<shared-random-secret>
+```
+
+En WF-Panel:
+
+```env
+BLOGGER_SITE_ROOTS_JSON={"superentrenador":"/data/blogger/superentrenador"}
+BLOGGER_BUILD_HOOK_SUPERENTRENADOR=https://superentrenador.com/api/wf-blogger/publish
+BLOGGER_BUILD_SECRET_SUPERENTRENADOR=<shared-random-secret>
+```
+
+El secreto debe coincidir en ambos servicios. La web ignora borradores y solo muestra Markdown con `status: published`.

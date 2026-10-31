@@ -20,31 +20,35 @@ const smokeSource = readFileSync(new URL("../scripts/smoke-auth.mjs", import.met
 
 test("renders Google OAuth and login magic-link actions", () => {
   assert.match(componentSource, /Continuar con Google/);
-  assert.match(componentSource, /Entrar con magic link/);
+  assert.match(componentSource, /Acceder vía email/);
+  assert.match(componentSource, /GoogleIcon/);
   assert.match(componentSource, /signInWithGoogle/);
   assert.match(componentSource, /signInWithMagicLink/);
 });
 
 test("renders registration magic-link action and preserves registration intent", () => {
-  assert.match(componentSource, /Crear cuenta con magic link/);
+  assert.match(componentSource, /Inscripción vía email/);
+  assert.match(componentSource, /Inscripción con Google/);
   assert.match(componentSource, /signUpWithMagicLink/);
   assert.match(registrationSource, /AuthAlternativeMethods/);
   assert.match(registrationSource, /intent/);
 });
 
-test("login renders the shared alternative-auth component", () => {
+test("login uses only email-link and Google access methods", () => {
   assert.match(loginSource, /AuthAlternativeMethods/);
-  assert.ok(
-    loginSource.indexOf("<AuthAlternativeMethods") < loginSource.indexOf('type="password"'),
-    "social and magic-link actions should appear before password login",
-  );
+  assert.doesNotMatch(loginSource, /type="password"/);
+  assert.match(loginSource, /intent=client/);
 });
 
-test("registration renders alternative-auth before password fields", () => {
-  assert.ok(
-    registrationSource.indexOf("<AuthAlternativeMethods") < registrationSource.indexOf('autoComplete="new-password"'),
-    "social and magic-link actions should appear before password registration",
-  );
+test("registration keeps trainer and client routes separate without a role toggle", () => {
+  assert.doesNotMatch(registrationSource, /autoComplete="new-password"/);
+  assert.doesNotMatch(registrationSource, /Quiero contactar/);
+  assert.doesNotMatch(registrationSource, /Soy entrenador/);
+  assert.match(registrationSource, /value === "trainer" \? "trainer" : "client"/);
+  assert.match(registrationSource, /Organiza tu agenda/);
+  assert.match(registrationSource, /Ofrece tus servicios presencial o en línea/);
+  assert.match(registrationSource, /Tú pones los precios/);
+  assert.match(registrationSource, />Conéctate</);
 });
 
 test("a submitted magic-link request always consumes its Turnstile token", async () => {

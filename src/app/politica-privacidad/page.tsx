@@ -20,17 +20,17 @@ export default function PoliticaPrivacidadPage() {
       <div className="app-surface rounded-[28px] px-6 py-10 sm:px-10 sm:py-12">
         <p className="app-kicker">Legal</p>
         <h1 className="app-title mt-3 text-4xl text-[var(--text)]">Política de privacidad</h1>
-        <p className="app-copy mt-4 text-sm">Última actualización: agosto 2026</p>
+        <p className="app-copy mt-4 text-sm">Última actualización: octubre 2026</p>
 
         <div className="prose-custom mt-10 flex flex-col gap-8 text-sm leading-7 text-[var(--text)]">
 
           <section>
             <h2 className="app-title text-xl text-[var(--text)]">I — Preámbulo</h2>
             <div className="app-copy mt-4 flex flex-col gap-3">
-              <p>Los datos de contacto de los entrenadores nunca se transmiten a los alumnos excepto cuando el entrenador acepta una solicitud y decide compartirlos para organizar la primera sesión.</p>
+              <p>Los datos de contacto de los entrenadores no se muestran públicamente. Solo se facilitan mediante el flujo protegido a alumnos con cuenta confirmada y un Pase Alumno activo, dentro de los límites que el profesional haya autorizado.</p>
               <p>Todas las páginas de Super Entrenador están protegidas mediante el protocolo HTTPS y la navegación entre páginas está cifrada.</p>
               <p>Super Entrenador no vende ni alquila ninguna información o dato sobre sus miembros a terceros.</p>
-              <p>Tras consultar los perfiles, los alumnos registrados pueden acceder a los datos de contacto de los entrenadores que hayan seleccionado.</p>
+              <p>Tras consultar los perfiles, solo los alumnos registrados, con el correo confirmado y un Pase Alumno activo pueden solicitar acceso a los datos de contacto que el entrenador haya decidido facilitar.</p>
             </div>
           </section>
 
@@ -73,7 +73,7 @@ export default function PoliticaPrivacidadPage() {
               <div>
                 <h3 className="font-semibold text-[var(--text)]">4. Destinatarios de la información</h3>
                 <div className="app-copy mt-2 flex flex-col gap-3">
-                  <p>Parte de tu información es visible en tu perfil público (nombre, ciudad, especialidades, experiencia y precio de entrada). Los datos de contacto directo solo se revelan a usuarios registrados cuando el flujo del marketplace lo permite.</p>
+                  <p>Parte de tu información es visible en tu perfil público (nombre, ciudad, especialidades, experiencia y precio de entrada). Los datos de contacto directo solo se revelan mediante el flujo protegido a usuarios registrados, con el correo confirmado y un Pase Alumno activo.</p>
                   <p>Trabajamos con proveedores técnicos de confianza (alojamiento, autenticación, analítica) que pueden acceder a tus datos exclusivamente para prestar sus servicios. No compartimos tus datos con terceros con fines comerciales propios.</p>
                 </div>
               </div>

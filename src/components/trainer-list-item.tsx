@@ -9,7 +9,7 @@ interface TrainerListItemProps {
 
 export function TrainerListItem({ trainer }: TrainerListItemProps) {
   return (
-    <article className="group flex flex-col gap-5 border border-[#111214] bg-white p-5 text-[#111214] transition-shadow duration-150 hover:shadow-[6px_6px_0_0_#111214] sm:flex-row sm:gap-6 sm:p-6">
+    <article className="group flex flex-col gap-5 border-b border-[#111214]/12 bg-white py-6 text-[#111214] sm:flex-row sm:gap-6">
       <div className="shrink-0 self-start">
         <Avatar name={trainer.displayName} photoUrl={trainer.photoUrl} size="xl" />
       </div>
@@ -18,10 +18,10 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="font-heading text-xl font-bold text-[#111214]">{trainer.displayName}</h3>
           <span
-            className={`inline-flex items-center gap-1 border px-2 py-0.5 text-xs font-semibold ${
+            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ${
               trainer.verified
-                ? "border-[var(--accent)] text-[#8a5c0f]"
-                : "border-[#111214]/15 text-[#5b5b63]"
+                ? "bg-[var(--accent)]/15 text-[#76500e]"
+                : "bg-[#f4f4f1] text-[#5b5b63]"
             }`}
           >
             {trainer.verified ? <BadgeCheck size={13} /> : <ShieldCheck size={13} />}
@@ -47,7 +47,7 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
 
         <div className="mt-4 flex flex-wrap gap-2">
           {trainer.specialties.slice(0, 2).map((specialty) => (
-            <span key={specialty} className="border border-[#111214]/15 px-2.5 py-1 text-xs font-semibold text-[#111214]">
+            <span key={specialty} className="rounded-full bg-[#f4f4f1] px-2.5 py-1 text-xs font-semibold text-[#111214]">
               {specialty}
             </span>
           ))}
@@ -61,7 +61,7 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
 
       </div>
 
-      <div className="flex shrink-0 flex-row items-center justify-between gap-3 border-t border-[#111214]/12 pt-4 sm:flex-col sm:items-end sm:justify-center sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
+      <div className="flex shrink-0 flex-row items-center justify-between gap-3 pt-2 sm:min-w-48 sm:flex-col sm:items-end sm:justify-center sm:pt-0">
         <div className="text-right">
           {trainer.priceFrom > 0 ? <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#8a8a92]">Desde</p> : null}
           <p className="font-heading text-3xl font-bold text-[#111214]">
@@ -70,7 +70,7 @@ export function TrainerListItem({ trainer }: TrainerListItemProps) {
         </div>
         <Link
           href={`/entrenadores/${trainer.slug}`}
-          className="inline-flex items-center justify-center gap-2 bg-[#111214] px-5 py-3 text-sm font-bold text-white transition-colors group-hover:bg-[var(--accent)] group-hover:text-[#111214]"
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-[#111214] px-5 py-3 text-sm font-bold text-white transition-colors group-hover:bg-[var(--accent)] group-hover:text-[#111214]"
         >
           Ver perfil
           <MessageCircle size={15} />

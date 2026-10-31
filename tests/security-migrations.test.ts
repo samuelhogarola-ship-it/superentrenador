@@ -30,6 +30,10 @@ const updatedAtSearchPathMigrationPath = new URL(
   "../supabase/migrations/20260829181500_harden_updated_at_search_path.sql",
   import.meta.url,
 );
+const studentPassMigrationPath = new URL(
+  "../supabase/migrations/20261031120000_student_pass_contact_gate.sql",
+  import.meta.url,
+);
 
 async function readSecurityMigration() {
   return readFile(migrationPath, "utf8").catch(() => "");
@@ -57,6 +61,10 @@ async function readPublicViewPrivilegesMigration() {
 
 async function readUpdatedAtSearchPathMigration() {
   return readFile(updatedAtSearchPathMigrationPath, "utf8").catch(() => "");
+}
+
+async function readStudentPassMigration() {
+  return readFile(studentPassMigrationPath, "utf8").catch(() => "");
 }
 
 test("revokes every anonymous trainer_profiles column privilege", async () => {
@@ -169,4 +177,15 @@ test("pins the updated-at trigger function search path", async () => {
     sql,
     /ALTER FUNCTION public\.set_updated_at\(\) SET search_path = public/i,
   );
+});
+
+test("requires an active monthly student pass for contact and client messages", async () => {
+  const sql = await readStudentPassMigration();
+
+  assert.match(sql, /CREATE TABLE IF NOT EXISTS public\.student_passes/i);
+  assert.match(sql, /current_period_end > now\(\)/i);
+  assert.match(sql, /get_public_trainer_contact_info[\s\S]*has_active_student_pass\(\)/i);
+  assert.match(sql, /Participants can insert thread messages[\s\S]*auth\.uid\(\) = client_id[\s\S]*has_active_student_pass\(\)/i);
+  assert.match(sql, /GRANT ALL ON public\.student_passes TO service_role/i);
+  assert.doesNotMatch(sql, /GRANT .*student_passes TO (anon|authenticated)/i);
 });

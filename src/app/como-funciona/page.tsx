@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 const journeys = [
   { title: "Busco entrenador", steps: [
     ["Descubre y compara", "Explora el directorio por ciudad, especialidad y modalidad. Revisa experiencia, descripción y precio con su unidad; si no hay importe, consulta las condiciones al profesional."],
-    ["Entra en tu cuenta", "Regístrate como cliente o inicia sesión. Confirma tu correo para acceder al contacto protegido y enviar mensajes. Las opciones de contacto dependen de cada perfil."],
+    ["Entra en tu cuenta", "Regístrate como cliente o inicia sesión y confirma tu correo. La cuenta gratuita permite acceder a la biblioteca, al newsletter y a las herramientas básicas; para iniciar contacto con entrenadores necesitas un Pase Alumno activo de 10 € al mes."],
     ["Habla con el profesional", "Explica tu objetivo y disponibilidad. Puedes seguir los mensajes de la plataforma desde tu panel. Acordad directamente precio definitivo, lugar, horarios, cancelaciones y forma de pago."],
   ], href: "/entrenadores", label: "Buscar entrenador" },
   { title: "Soy entrenador", steps: [
@@ -43,10 +43,10 @@ export default function HowItWorksPage() {
       </div>
       <section className="mt-12 max-w-3xl" aria-labelledby="limits">
         <h2 id="limits" className="font-heading text-3xl font-bold">Qué incluye y qué debes comprobar</h2>
-        <p className="mt-5 leading-8 text-[#5b5b63]">El marketplace ofrece búsqueda, perfiles y contacto. No procesa pagos de sesiones ni confirma reservas o una agenda. Enviar un mensaje no equivale a contratar y no implica una respuesta inmediata.</p>
+        <p className="mt-5 leading-8 text-[#5b5b63]">El marketplace ofrece búsqueda y perfiles públicos. El Pase Alumno, por 10 € al mes, permite iniciar contacto protegido con entrenadores, pero no procesa los pagos de sus sesiones ni confirma reservas o una agenda. Enviar un mensaje no equivale a contratar y no implica una respuesta inmediata.</p>
         <p className="mt-4 leading-8 text-[#5b5b63]">La revisión de publicación o una insignia en el perfil no sustituyen comprobar titulación, habilitación, seguro y condiciones del servicio con el profesional. Tampoco garantizan resultados deportivos.</p>
-        <p className="mt-4 leading-8 text-[#5b5b63]">Las opciones de interés premium se consultan por contacto; esta página no implica contratación, pago ni activación automática de Coach Studio.</p>
-        <Link href="/blog" className="mt-6 inline-block font-bold underline underline-offset-4">Consulta las guías para elegir y ejercer</Link>
+        <p className="mt-4 leading-8 text-[#5b5b63]">Los planes profesionales ofrecen visibilidad y herramientas adicionales. Mientras no esté disponible la contratación automática, la solicitud de un plan no implica cobro ni activación inmediata; el equipo confirma el acceso y sus condiciones antes de habilitarlo.</p>
+        <Link href="/biblioteca" className="mt-6 inline-block font-bold underline underline-offset-4">Consulta la biblioteca para elegir, aprender y ejercer</Link>
         <p className="mt-8 text-sm text-[#5b5b63]">Funcionamiento revisado el <time dateTime={EDITORIAL_UPDATED_AT}>6 de octubre de 2026</time>.</p>
       </section>
     </section>

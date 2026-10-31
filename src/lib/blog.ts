@@ -196,7 +196,7 @@ export const blogPosts: BlogPost[] = [
       {
         "heading": "Cuenta y correo confirmado",
         "body": [
-          "Para acceder al contacto protegido o enviar un mensaje necesitas iniciar sesión y tener el correo confirmado. Las opciones dependen de la información disponible en cada perfil; no todos tienen que ofrecer el mismo canal.",
+          "Para acceder al contacto protegido o enviar un mensaje necesitas iniciar sesión, tener el correo confirmado y un Pase Alumno activo. Las opciones dependen de la información disponible en cada perfil; no todos tienen que ofrecer el mismo canal.",
           "Puedes seguir los mensajes de la plataforma desde tu panel. Presenta tu objetivo, ciudad o preferencia online y disponibilidad aproximada, sin incluir datos de salud sensibles en el primer contacto."
         ]
       },
@@ -494,7 +494,7 @@ export const blogPosts: BlogPost[] = [
         "heading": "Usa el perfil para facilitar una conversación útil",
         "body": [
           "En Superentrenador puedes preparar tu ficha y enviarla a revisión tras confirmar tu correo. Mantén ciudad, modalidad, experiencia y precio coherentes con lo que vas a ofrecer. Las ediciones también pasan por revisión.",
-          "El cliente puede descubrir y comparar perfiles y contactar con su cuenta confirmada. Las reservas, pagos y condiciones de la sesión se acuerdan directamente: publicar un perfil no equivale a tener una cita confirmada ni garantiza contactos."
+          "El cliente puede descubrir y comparar perfiles gratis; para contactar necesita una cuenta confirmada y un Pase Alumno activo. Las reservas, pagos y condiciones de la sesión se acuerdan directamente: publicar un perfil no equivale a tener una cita confirmada ni garantiza contactos."
         ]
       }
     ],

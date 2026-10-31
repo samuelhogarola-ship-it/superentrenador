@@ -10,7 +10,6 @@ import { cityCollectionJsonLd } from "@/lib/marketplace-seo";
 import {
   getMarketplaceCity,
   listAllCategories,
-  listAllModalities,
   listAllSpecialties,
   listMarketplaceCities,
   listTrainerProfilesByCity,
@@ -19,7 +18,7 @@ import { createSocialMetadata } from "@/lib/site";
 
 interface CityPageProps {
   params: Promise<{ city: string }>;
-  searchParams: Promise<{ category?: string; specialty?: string; modality?: string; sort?: string }>;
+  searchParams: Promise<{ category?: string; specialty?: string; modality?: string; nearby?: string; maxPrice?: string; sort?: string }>;
 }
 
 export const revalidate = 3600;
@@ -66,16 +65,18 @@ export default async function CityPage({ params, searchParams }: CityPageProps) 
     notFound();
   }
 
-  const [trainers, categories, specialties, modalities, cities] = await Promise.all([
+  const parsedMaxPrice = Number(search.maxPrice);
+  const maxPrice = Number.isFinite(parsedMaxPrice) && parsedMaxPrice > 0 ? parsedMaxPrice : undefined;
+  const [trainers, categories, specialties, cities] = await Promise.all([
     listTrainerProfilesByCity(currentCity.slug, {
       category: search.category,
       specialty: search.specialty,
       modality: search.modality,
+      maxPrice,
       sort: search.sort as "featured" | "rating" | "price-asc" | "price-desc" | undefined,
     }),
     listAllCategories(),
     listAllSpecialties(),
-    listAllModalities(),
     listMarketplaceCities(),
   ]);
 
@@ -96,7 +97,6 @@ export default async function CityPage({ params, searchParams }: CityPageProps) 
         <FiltersBar
           categories={categories}
           specialties={specialties}
-          modalities={modalities}
           cities={cities}
           basePath={`/ciudades/${currentCity.slug}`}
           lockCity
