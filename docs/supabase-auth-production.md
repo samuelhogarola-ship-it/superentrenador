@@ -5,6 +5,13 @@ Proyecto cloud:
 - Ref: `qxugymzyvtbxeyqcvtgk`
 - App URL: `https://superentrenador.com`
 
+Google OAuth:
+
+- Proyecto de Google Cloud: `super-entrenador`
+- Cuenta administradora: `info@webfuengirola.com`
+- Callback de Supabase: `https://qxugymzyvtbxeyqcvtgk.supabase.co/auth/v1/callback`
+- No guardar en el repositorio el secreto del cliente OAuth ni contraseñas de la cuenta.
+
 ## Objetivo
 
 Magic link y registro necesitan SMTP propio en Supabase Auth. El SMTP integrado de Supabase aplica limites muy bajos de email y puede devolver `email rate limit exceeded` durante pruebas normales.
@@ -98,7 +105,9 @@ En `Authentication > Rate Limits`:
 Turnstile es el proveedor recomendado para registro, magic link y recuperacion. Login,
 magic link y registro ya montan desafios independientes cuando existe
 `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, envian su `captchaToken` a Supabase Auth y reinician el
-desafio despues de cada intento. Sin esa variable, el frontend conserva el flujo actual.
+desafio despues de cada intento. En las pantallas de acceso se usa la apariencia
+`interaction-only`: la comprobacion permanece oculta salvo que Cloudflare necesite una
+interaccion. Sin esa variable, el frontend conserva el flujo actual.
 
 `[auth.captcha]` y la clave publica del frontend se desplegaron de forma coordinada. Mantener
 siempre ambas partes sincronizadas: activar solo Supabase o retirar solo la clave publica del

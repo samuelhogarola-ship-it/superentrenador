@@ -11,6 +11,7 @@ interface TurnstileApi {
       action: string;
       theme: "auto";
       size: "compact" | "flexible";
+      appearance?: "always" | "execute" | "interaction-only";
       callback: (token: string) => void;
       "error-callback": () => void;
       "expired-callback": () => void;
@@ -31,6 +32,7 @@ interface TurnstileWidgetProps {
   action: string;
   onToken: (token: string | null) => void;
   resetKey: number;
+  appearance?: "always" | "execute" | "interaction-only";
 }
 
 const TURNSTILE_SCRIPT = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
@@ -46,7 +48,7 @@ export function shouldRerenderTurnstile(
   return currentSize !== getTurnstileSize(containerWidth);
 }
 
-export function TurnstileWidget({ action, onToken, resetKey }: TurnstileWidgetProps) {
+export function TurnstileWidget({ action, onToken, resetKey, appearance = "always" }: TurnstileWidgetProps) {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
@@ -102,6 +104,7 @@ export function TurnstileWidget({ action, onToken, resetKey }: TurnstileWidgetPr
         action,
         theme: "auto",
         size,
+        appearance,
         callback: (token) => onTokenRef.current(token),
         "error-callback": clearToken,
         "expired-callback": clearToken,
@@ -123,7 +126,7 @@ export function TurnstileWidget({ action, onToken, resetKey }: TurnstileWidgetPr
       widgetIdRef.current = null;
       widgetSizeRef.current = null;
     };
-  }, [action, scriptReady, siteKey]);
+  }, [action, appearance, scriptReady, siteKey]);
 
   useEffect(() => {
     if (previousResetKeyRef.current === resetKey) return;
@@ -137,7 +140,7 @@ export function TurnstileWidget({ action, onToken, resetKey }: TurnstileWidgetPr
   if (!siteKey) return null;
 
   return (
-    <div className="min-h-16" aria-label="Verificación anti-bots">
+    <div className={appearance === "always" ? "min-h-16" : "min-h-0"} aria-label="Verificación anti-bots">
       <Script src={TURNSTILE_SCRIPT} strategy="afterInteractive" onReady={() => setScriptReady(true)} />
       <div ref={containerRef} className="flex justify-center" />
     </div>

@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
-import { CheckCircle, LockKeyhole, Sparkles, UserRound, Dumbbell } from "lucide-react";
-import { getPasswordRegistrationErrorMessage, signUp, type AuthIntent } from "@/lib/auth";
-import { getSafeInternalPath } from "@/lib/safe-navigation";
-import { TurnstileWidget } from "@/components/turnstile-widget";
+import { BadgeEuro, CalendarDays, Dumbbell, MapPinned, MessageCircleMore, Search } from "lucide-react";
 import { AuthAlternativeMethods } from "@/components/auth-alternative-methods";
+import { TurnstileWidget } from "@/components/turnstile-widget";
+import { getSafeInternalPath } from "@/lib/safe-navigation";
+import type { AuthIntent } from "@/lib/auth";
 
 export function RegistroPageClient() {
   return (
@@ -19,174 +19,88 @@ export function RegistroPageClient() {
 
 function RegistroFallback() {
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-4 py-12 md:px-6">
-      <div className="grid w-full gap-6 lg:grid-cols-[1.02fr_0.98fr]">
-        <div className="skeleton h-80 rounded-[28px]" />
-        <div className="skeleton h-96 rounded-[28px]" />
+    <main className="flex min-h-[calc(100svh-72px)] flex-1 items-center bg-[#fff8e8] px-4 py-10 md:px-8">
+      <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[1.08fr_0.92fr]">
+        <div className="h-96 animate-pulse rounded-[32px] bg-white/45" />
+        <div className="h-[34rem] animate-pulse rounded-[32px] bg-white/80" />
       </div>
     </main>
   );
 }
 
-function getInitialIntent(value: string | null, redirectTo: string): AuthIntent {
-  if (value === "client" || value === "trainer") return value;
-  return redirectTo.startsWith("/entrenadores/") ? "client" : "trainer";
+function getIntent(value: string | null): AuthIntent {
+  return value === "trainer" ? "trainer" : "client";
 }
 
 function RegistroForm() {
   const searchParams = useSearchParams();
   const redirectTo = getSafeInternalPath(searchParams.get("redirectTo"));
-  const [intent, setIntent] = useState<AuthIntent>(() => getInitialIntent(searchParams.get("intent"), redirectTo));
+  const intent = getIntent(searchParams.get("intent"));
+  const isTrainer = intent === "trainer";
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [captchaResetKey, setCaptchaResetKey] = useState(0);
   const turnstileEnabled = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
-  const isTrainer = intent === "trainer";
-
-  async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    setError(null);
-
-    if (password.length < 8) {
-      setError("La contraseña debe tener al menos 8 caracteres.");
-      return;
-    }
-    if (password !== passwordConfirmation) {
-      setError("Las contraseñas no coinciden.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const { error: authError } = await signUp(email, password, intent, captchaToken ?? undefined);
-
-      if (authError) {
-        console.error("[auth/client/register] signUp failed", authError);
-        setError(getPasswordRegistrationErrorMessage(authError.message));
-        return;
-      }
-
-      setDone(true);
-    } catch {
-      setError(getPasswordRegistrationErrorMessage("network error"));
-    } finally {
-      setCaptchaResetKey((value) => value + 1);
-      setLoading(false);
-    }
-  }
-
-  if (done) {
-    return (
-      <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-12 md:px-0">
-        <div className="rounded-[28px] border border-[var(--line)] bg-[var(--surface)] p-8 text-center shadow-[var(--shadow-soft)]">
-          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[var(--accent-soft)]">
-            <CheckCircle size={24} className="text-[var(--accent)]" />
-          </span>
-          <h1 className="app-title mt-5 text-2xl text-[var(--text)]">Cuenta creada</h1>
-          <p className="app-copy mx-auto mt-3 max-w-xs text-sm">
-            Revisa <strong>{email}</strong> para confirmar tu cuenta. Después inicia sesión con tu
-            contraseña{isTrainer ? " y completa tu perfil de entrenador." : "."}
-          </p>
-          <Link
-            href="/login"
-            className="mt-7 inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-semibold text-[var(--ink)]"
-          >
-            Ir a iniciar sesión
-          </Link>
-        </div>
-      </main>
-    );
-  }
 
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-4 py-12 md:px-6">
-      <div className="grid w-full gap-6 lg:grid-cols-[1.02fr_0.98fr]">
-        <section className="min-w-0 rounded-[28px] bg-[var(--panel-strong)] p-8 sm:p-10">
-          <p className="app-kicker">{isTrainer ? "Para entrenadores" : "Para clientes"}</p>
-          <h1 className="app-title mt-4 break-words text-3xl text-[var(--text)] sm:text-5xl">
-            {isTrainer ? "Publica tu perfil y recibe nuevos clientes." : "Encuentra y contacta con tu entrenador."}
-          </h1>
-          <p className="app-copy mt-4 max-w-md text-base">
-            {isTrainer
-              ? "Crea una cuenta para aparecer en tu ciudad, mostrar tu especialidad y responder desde un flujo de contacto ordenado."
-              : "Crea una cuenta para guardar tu sesión, contactar desde perfiles públicos y seguir tus mensajes desde el panel."}
+    <main className="relative flex min-h-[calc(100svh-72px)] flex-1 items-center overflow-hidden bg-[#fff8e8] px-4 py-10 text-[#17171b] md:px-8 lg:py-16">
+      <div aria-hidden className="absolute -right-32 -top-40 h-[36rem] w-[36rem] rounded-full bg-[#ffc84a] opacity-95" />
+      <div aria-hidden className="absolute -bottom-56 -left-36 h-[30rem] w-[30rem] rounded-full bg-[#e11931]/8" />
+
+      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:gap-20">
+        <section className="max-w-2xl px-2 py-4 sm:px-6 lg:py-12">
+          <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-[#e11931]">
+            {isTrainer ? "Para entrenadores" : "Para alumnos"}
           </p>
-          <div className="mt-8 rounded-[20px] border border-[var(--line)] bg-[var(--surface)] p-5">
-            <div className="flex items-center gap-2 text-sm font-semibold text-[var(--text)]">
-              <Sparkles size={16} className="text-[var(--accent)]" />
-              {isTrainer ? "Qué consigues con tu cuenta" : "Qué desbloquea tu cuenta"}
-            </div>
-            <ul className="mt-4 grid gap-2 text-sm text-[var(--muted)]">
-              {isTrainer ? (
-                <>
-                  <li>Perfil público con especialidad, experiencia y precio.</li>
-                  <li>Mensajería integrada para leads interesados.</li>
-                  <li>Acceso posterior a Coach Studio si activas la parte premium.</li>
-                </>
-              ) : (
-                <>
-                  <li>Contacto protegido con entrenadores publicados.</li>
-                  <li>Panel con tus mensajes enviados.</li>
-                  <li>Acceso independiente con tu email y contraseña.</li>
-                </>
-              )}
+          <h1 className="mt-5 font-heading text-4xl font-extrabold leading-[1.05] tracking-[-0.05em] text-[#17171b] sm:text-5xl lg:text-6xl">
+            {isTrainer ? "Convierte tu experiencia en nuevos clientes." : "Empieza a entrenar a tu manera."}
+          </h1>
+          <p className="mt-6 max-w-xl text-lg font-medium leading-8 text-[#57545b]">
+            {isTrainer
+              ? "Date de alta hoy y empieza a captar clientes con un perfil profesional hecho para entrenadores personales."
+              : "Crea tu cuenta para contactar con profesionales, guardar tus conversaciones y encontrar el entrenamiento que necesitas."}
+          </p>
+
+          {isTrainer ? (
+            <ul className="mt-8 grid gap-4 text-base font-bold text-[#29272d] sm:grid-cols-2">
+              <li className="flex items-center gap-3"><CalendarDays size={21} className="text-[#0094ff]" /> Organiza tu agenda</li>
+              <li className="flex items-center gap-3"><MapPinned size={21} className="text-[#e11931]" /> Presencial o en línea</li>
+              <li className="flex items-center gap-3"><BadgeEuro size={21} className="text-[#f5a623]" /> Pon tus propios precios</li>
+              <li className="flex items-center gap-3"><Dumbbell size={21} className="text-[#0094ff]" /> Ofrece tus servicios</li>
             </ul>
-          </div>
+          ) : (
+            <ul className="mt-8 grid gap-4 text-base font-bold text-[#29272d] sm:grid-cols-2">
+              <li className="flex items-center gap-3"><Search size={21} className="text-[#0094ff]" /> Encuentra entrenadores</li>
+              <li className="flex items-center gap-3"><MessageCircleMore size={21} className="text-[#e11931]" /> Contacta fácilmente</li>
+            </ul>
+          )}
         </section>
 
-        <div className="min-w-0 rounded-[28px] border border-[var(--line)] bg-[var(--surface)] p-8 shadow-[var(--shadow-soft)]">
-          <h2 className="app-title text-2xl text-[var(--text)]">Crear cuenta</h2>
-          <p className="app-copy mt-2 text-sm">
-            ¿Ya tienes cuenta?{" "}
-            <Link href="/login" className="font-semibold text-[var(--text)] hover:text-[var(--accent)]">
-              Inicia sesión
-            </Link>
-          </p>
+        <section className="relative min-w-0 rounded-[32px] bg-white p-6 shadow-[0_28px_80px_rgba(57,45,20,0.18)] sm:p-10">
+          <h2 className="font-heading text-3xl font-extrabold tracking-[-0.04em] text-[#17171b]">
+            {isTrainer ? "Crea tu perfil" : "Crea tu cuenta"}
+          </h2>
+          <p className="mt-2 text-sm font-medium text-[#77737b]">Gratis, rápido y sin pasos innecesarios.</p>
 
-          <div className="mt-6 grid gap-2 rounded-[22px] border border-[var(--line)] bg-[var(--bg-soft)] p-2 sm:grid-cols-2">
-            <button
-              type="button"
-              aria-pressed={intent === "client"}
-              onClick={() => setIntent("client")}
-              className={`inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold transition-colors ${
-                intent === "client" ? "bg-[var(--surface)] text-[var(--text)] shadow-[var(--shadow-soft)]" : "text-[var(--muted)]"
-              }`}
-            >
-              <UserRound size={15} />
-              Quiero contactar
-            </button>
-            <button
-              type="button"
-              aria-pressed={intent === "trainer"}
-              onClick={() => setIntent("trainer")}
-              className={`inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold transition-colors ${
-                intent === "trainer" ? "bg-[var(--surface)] text-[var(--text)] shadow-[var(--shadow-soft)]" : "text-[var(--muted)]"
-              }`}
-            >
-              <Dumbbell size={15} />
-              Soy entrenador
-            </button>
-          </div>
+          <div className="mt-7">
+            <label htmlFor="registration-email" className="sr-only">Email</label>
+            <input
+              id="registration-email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="email"
+              required
+              placeholder="E-mail"
+              className="w-full rounded-[22px] border border-transparent bg-[#f5f5f6] px-5 py-4 text-base font-semibold text-[#17171b] outline-none placeholder:text-[#9b989e] focus-visible:border-[#0094ff]"
+            />
 
-          <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-4">
-            <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--text)]">
-              Email
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
-                required
-                placeholder="tu@email.com"
-                className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
-              />
-            </label>
+            <TurnstileWidget
+              action="registration"
+              onToken={setCaptchaToken}
+              resetKey={captchaResetKey}
+              appearance="interaction-only"
+            />
 
             <AuthAlternativeMethods
               email={email}
@@ -197,73 +111,19 @@ function RegistroForm() {
               captchaRequired={turnstileEnabled}
               onCaptchaConsumed={() => setCaptchaResetKey((value) => value + 1)}
             />
+          </div>
 
-            <div className="my-1 flex items-center gap-3 text-xs text-[var(--muted)]">
-              <span className="h-px flex-1 bg-[var(--line)]" />
-              <span>o regístrate con contraseña</span>
-              <span className="h-px flex-1 bg-[var(--line)]" />
-            </div>
-
-            <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--text)]">
-              Contraseña
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="new-password"
-                required
-                minLength={8}
-                placeholder="Mínimo 8 caracteres"
-                className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
-              />
-            </label>
-
-            <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--text)]">
-              Repite la contraseña
-              <input
-                type="password"
-                value={passwordConfirmation}
-                onChange={(e) => setPasswordConfirmation(e.target.value)}
-                autoComplete="new-password"
-                required
-                minLength={8}
-                placeholder="Repite tu contraseña"
-                className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
-              />
-            </label>
-
-            {error ? <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p> : null}
-
-            <TurnstileWidget
-              action="registration"
-              onToken={setCaptchaToken}
-              resetKey={captchaResetKey}
-            />
-
-            <button
-              type="submit"
-              disabled={loading || (turnstileEnabled && !captchaToken)}
-              className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[var(--ink)] transition-colors hover:opacity-95 disabled:opacity-50"
-            >
-              <LockKeyhole size={15} />
-              {loading ? "Creando cuenta…" : "Crear cuenta"}
-            </button>
-
-            <p className="text-center text-xs text-[var(--muted)]">
-              Al registrarte aceptas los{" "}
-              <Link href="/terminos" className="font-semibold text-[var(--text)] hover:text-[var(--accent)]">
-                términos
-              </Link>
-              {" "}y la{" "}
-              <Link href="/politica-privacidad" className="font-semibold text-[var(--text)] hover:text-[var(--accent)]">
-                política de privacidad
-              </Link>
-              . {isTrainer
-                ? "Tu perfil enviado puede revisarse antes de publicarse."
-                : "Usaremos tu email para mantener tu sesión y tus mensajes."}
-            </p>
-          </form>
-        </div>
+          <p className="mt-7 text-center text-sm font-semibold text-[#8a878d]">
+            ¿Ya tienes una cuenta?{" "}
+            <Link href="/login" className="font-extrabold text-[#17171b] hover:text-[#e11931]">Conexión</Link>
+          </p>
+          <p className="mt-5 text-center text-xs leading-5 text-[#9b989e]">
+            Al registrarte aceptas nuestros{" "}
+            <Link href="/terminos" className="underline hover:text-[#17171b]">términos</Link>{" "}
+            y la{" "}
+            <Link href="/politica-privacidad" className="underline hover:text-[#17171b]">política de privacidad</Link>.
+          </p>
+        </section>
       </div>
     </main>
   );

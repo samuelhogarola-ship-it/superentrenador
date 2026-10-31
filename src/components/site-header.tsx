@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { BrandMark } from "@/components/brand-mark";
 import { signOut, useCurrentUser } from "@/lib/auth";
 
 export function SiteHeader() {
   const { user } = useCurrentUser();
   const router = useRouter();
+  const pathname = usePathname();
+  const isAuthPage = pathname === "/login" || pathname === "/registro";
 
   async function handleSignOut() {
     await signOut();
@@ -16,9 +18,9 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b border-[var(--line)] bg-[color:rgba(8,9,15,0.86)] backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 md:px-6 lg:px-8">
-        <BrandMark />
+    <header className="sticky top-0 z-30 border-b border-[var(--line)] bg-[color:rgba(8,9,15,0.92)] backdrop-blur-md">
+      <div className={`flex flex-wrap items-center justify-between gap-4 px-4 md:px-6 lg:px-8 ${isAuthPage ? "py-3" : "mx-auto max-w-7xl py-4"}`}>
+        <BrandMark compact={isAuthPage} />
 
         <nav aria-label="Acceso principal" className="flex items-center gap-2 sm:gap-3">
           {user ? (
@@ -37,6 +39,22 @@ export function SiteHeader() {
                 Cerrar sesión
               </button>
             </>
+          ) : isAuthPage ? (
+            pathname === "/login" ? (
+              <Link
+                href="/registro?intent=trainer"
+                className="inline-flex min-h-9 items-center justify-center rounded-full border border-white/15 px-4 py-2 text-xs font-bold text-white transition-colors hover:border-[var(--accent)]"
+              >
+                Publica tu anuncio
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="inline-flex min-h-9 items-center justify-center rounded-full border border-white/15 px-4 py-2 text-xs font-bold text-white transition-colors hover:border-[var(--accent)]"
+              >
+                Iniciar sesión
+              </Link>
+            )
           ) : (
             <>
               <Link
@@ -57,11 +75,13 @@ export function SiteHeader() {
           )}
         </nav>
       </div>
-      <nav aria-label="Navegación del marketplace" className="mx-auto flex max-w-7xl flex-wrap gap-x-6 gap-y-2 px-4 pb-3 text-sm font-semibold text-[var(--text)] md:px-6 lg:px-8">
-        <Link href="/entrenadores" className="hover:underline">Buscar entrenador</Link>
-        <Link href="/blog" className="hover:underline">Guías</Link>
-        <Link href="/como-funciona" className="hover:underline">Cómo funciona</Link>
-      </nav>
+      {!isAuthPage ? (
+        <nav aria-label="Navegación del marketplace" className="mx-auto flex max-w-7xl flex-wrap gap-x-6 gap-y-2 px-4 pb-3 text-sm font-semibold text-[var(--text)] md:px-6 lg:px-8">
+          <Link href="/entrenadores" className="hover:underline">Buscar entrenador</Link>
+          <Link href="/blog" className="hover:underline">Guías</Link>
+          <Link href="/como-funciona" className="hover:underline">Cómo funciona</Link>
+        </nav>
+      ) : null}
     </header>
   );
 }

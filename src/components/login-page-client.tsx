@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
-import { ArrowRight, ShieldCheck } from "lucide-react";
-import { getPasswordLoginErrorMessage, signIn } from "@/lib/auth";
-import { getSafeInternalPath } from "@/lib/safe-navigation";
-import { TurnstileWidget } from "@/components/turnstile-widget";
+import { MessageCircleMore, Search, Sparkles } from "lucide-react";
 import { AuthAlternativeMethods } from "@/components/auth-alternative-methods";
+import { TurnstileWidget } from "@/components/turnstile-widget";
+import { getSafeInternalPath } from "@/lib/safe-navigation";
 
 export function LoginPageClient() {
   return (
@@ -19,156 +18,97 @@ export function LoginPageClient() {
 
 function LoginFallback() {
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-4 py-12 md:px-6">
-      <div className="grid w-full gap-6 lg:grid-cols-[0.92fr_1.08fr]">
-        <div className="skeleton h-80 rounded-[28px]" />
-        <div className="skeleton h-[34rem] rounded-[28px]" />
+    <main className="flex min-h-[calc(100svh-72px)] flex-1 items-center bg-[#fff8e8] px-4 py-10 md:px-8">
+      <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="h-72 animate-pulse rounded-[32px] bg-white/45" />
+        <div className="h-[31rem] animate-pulse rounded-[32px] bg-white/80" />
       </div>
     </main>
   );
 }
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = getSafeInternalPath(searchParams.get("redirectTo"));
-  const registerIntent = redirectTo.startsWith("/entrenadores/") ? "client" : "trainer";
-  const registerHref = `/registro?intent=${registerIntent}&redirectTo=${encodeURIComponent(redirectTo)}`;
+  const registerHref = `/registro?intent=client&redirectTo=${encodeURIComponent(redirectTo)}`;
   const callbackError = searchParams.get("error");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [passwordCaptchaToken, setPasswordCaptchaToken] = useState<string | null>(null);
-  const [passwordCaptchaResetKey, setPasswordCaptchaResetKey] = useState(0);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaResetKey, setCaptchaResetKey] = useState(0);
   const turnstileEnabled = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
 
-  async function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    setError(null);
-    setLoading(true);
-
-    try {
-      const { error: authError } = await signIn(
-        email.trim().toLowerCase(),
-        password,
-        passwordCaptchaToken ?? undefined,
-      );
-
-      if (authError) {
-        setError(getPasswordLoginErrorMessage(authError.message));
-        return;
-      }
-
-      router.push(redirectTo);
-      router.refresh();
-    } catch {
-      setError(getPasswordLoginErrorMessage("network error"));
-    } finally {
-      setPasswordCaptchaResetKey((value) => value + 1);
-      setLoading(false);
-    }
-  }
-
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-4 py-12 md:px-6">
-      <div className="grid w-full gap-6 lg:grid-cols-[0.92fr_1.08fr]">
-        <section className="min-w-0 rounded-[28px] bg-[var(--panel-strong)] p-8 sm:p-10">
-          <p className="app-kicker">Acceso seguro</p>
-          <h1 className="app-title mt-4 break-words text-3xl text-[var(--text)] sm:text-5xl">Tus entrenadores y mensajes, en un solo lugar.</h1>
-          <p className="app-copy mt-4 max-w-md text-base">
-            Accede a tus mensajes, desbloquea el contacto cuando corresponda y gestiona tu perfil desde una sola cuenta.
+    <main className="relative flex min-h-[calc(100svh-72px)] flex-1 items-center overflow-hidden bg-[#fff8e8] px-4 py-10 text-[#17171b] md:px-8 lg:py-16">
+      <div aria-hidden className="absolute -right-36 -top-44 h-[34rem] w-[34rem] rounded-full bg-[#ffc84a] opacity-90" />
+      <div aria-hidden className="absolute -bottom-48 -left-40 h-[28rem] w-[28rem] rounded-full bg-[#0094ff]/10" />
+
+      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
+        <section className="max-w-xl px-2 py-4 sm:px-6 lg:py-12">
+          <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-[#e11931]">Tu espacio de entrenamiento</p>
+          <h1 className="mt-5 font-heading text-4xl font-extrabold leading-[1.05] tracking-[-0.05em] text-[#17171b] sm:text-5xl lg:text-6xl">
+            Encuentra, contacta y avanza.
+          </h1>
+          <p className="mt-6 max-w-lg text-lg font-medium leading-8 text-[#57545b]">
+            Accede a tus conversaciones y continúa donde lo dejaste con tus entrenadores.
           </p>
-          <div className="mt-8 grid gap-3">
-            <div className="rounded-[16px] border border-[var(--line)] bg-[var(--surface)] px-4 py-4 text-sm text-[var(--text)]">
-              <div className="flex items-center gap-2 font-semibold">
-                <ShieldCheck size={16} className="text-[var(--accent)]" />
-                Contacto protegido
-              </div>
-              <p className="app-copy mt-1 text-sm">Solo se muestra cuando el flujo del marketplace lo permite.</p>
-            </div>
-            <div className="rounded-[16px] border border-[var(--line)] bg-[var(--surface)] px-4 py-4 text-sm text-[var(--text)]">
-              <div className="font-semibold">Acceso sencillo</div>
-              <p className="app-copy mt-1 text-sm">Entra con el email y la contraseña de tu cuenta.</p>
-            </div>
-          </div>
+          <ul className="mt-8 grid gap-4 text-base font-bold text-[#29272d] sm:grid-cols-3 lg:grid-cols-1">
+            <li className="flex items-center gap-3"><Search size={20} className="text-[#0094ff]" /> Busca profesionales</li>
+            <li className="flex items-center gap-3"><MessageCircleMore size={20} className="text-[#e11931]" /> Recupera tus mensajes</li>
+            <li className="flex items-center gap-3"><Sparkles size={20} className="text-[#f5a623]" /> Organiza tu experiencia</li>
+          </ul>
         </section>
 
-        <div className="min-w-0 rounded-[28px] border border-[var(--line)] bg-[var(--surface)] p-8 shadow-[var(--shadow-soft)]">
-          <h2 className="app-title text-2xl text-[var(--text)]">Iniciar sesión</h2>
-          <p className="app-copy mt-2 text-sm">
-            ¿No tienes cuenta?{" "}
-            <Link href={registerHref} className="font-semibold text-[var(--text)] hover:text-[var(--accent)]">
-              Regístrate gratis
-            </Link>
-          </p>
+        <section className="relative min-w-0 rounded-[32px] bg-white p-6 shadow-[0_28px_80px_rgba(57,45,20,0.18)] sm:p-10">
+          <h2 className="font-heading text-3xl font-extrabold tracking-[-0.04em] text-[#17171b]">Iniciar sesión</h2>
+          <p className="mt-2 text-sm font-medium text-[#77737b]">Introduce tu email o continúa con Google.</p>
 
           {callbackError ? (
-            <p className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+            <p className="mt-5 rounded-2xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
               No se pudo completar el acceso desde el enlace. Inténtalo de nuevo.
             </p>
           ) : null}
 
-          {error ? <p className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">{error}</p> : null}
+          <div className="mt-7">
+            <label htmlFor="login-email" className="sr-only">Email</label>
+            <input
+              id="login-email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="email"
+              required
+              placeholder="E-mail"
+              className="w-full rounded-[22px] border border-transparent bg-[#f5f5f6] px-5 py-4 text-base font-semibold text-[#17171b] outline-none placeholder:text-[#9b989e] focus-visible:border-[#0094ff]"
+            />
 
-          <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
-            <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--text)]">
-              Email
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
-                required
-                placeholder="tu@email.com"
-                className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
-              />
-            </label>
+            <TurnstileWidget
+              action="magic_link_login"
+              onToken={setCaptchaToken}
+              resetKey={captchaResetKey}
+              appearance="interaction-only"
+            />
 
             <AuthAlternativeMethods
               email={email}
               redirectPath={redirectTo}
               mode="login"
-              captchaToken={passwordCaptchaToken}
+              captchaToken={captchaToken}
               captchaRequired={turnstileEnabled}
-              onCaptchaConsumed={() => setPasswordCaptchaResetKey((value) => value + 1)}
+              onCaptchaConsumed={() => setCaptchaResetKey((value) => value + 1)}
             />
+          </div>
 
-            <div className="my-1 flex items-center gap-3 text-xs text-[var(--muted)]">
-              <span className="h-px flex-1 bg-[var(--line)]" />
-              <span>o continúa con contraseña</span>
-              <span className="h-px flex-1 bg-[var(--line)]" />
-            </div>
-
-            <label className="flex flex-col gap-1.5 text-sm font-medium text-[var(--text)]">
-              Contraseña
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
-                required
-                placeholder="••••••••"
-                className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] px-4 py-3 text-sm outline-none focus-visible:border-[var(--accent)]"
-              />
-            </label>
-
-            <TurnstileWidget
-              action="password_login"
-              onToken={setPasswordCaptchaToken}
-              resetKey={passwordCaptchaResetKey}
-            />
-
-            <button
-              type="submit"
-              disabled={loading || (turnstileEnabled && !passwordCaptchaToken)}
-              className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-[var(--ink)] transition-colors hover:opacity-95 disabled:opacity-50"
-            >
-              {loading ? "Entrando…" : "Iniciar sesión"}
-              {!loading && <ArrowRight size={15} />}
-            </button>
-          </form>
-        </div>
+          <p className="mt-7 text-center text-sm font-semibold text-[#8a878d]">
+            ¿Todavía no tienes una cuenta?{" "}
+            <Link href={registerHref} className="font-extrabold text-[#17171b] hover:text-[#e11931]">Regístrate</Link>
+          </p>
+          <p className="mt-5 text-center text-xs leading-5 text-[#9b989e]">
+            Al continuar aceptas nuestros{" "}
+            <Link href="/terminos" className="underline hover:text-[#17171b]">términos</Link>{" "}
+            y la{" "}
+            <Link href="/politica-privacidad" className="underline hover:text-[#17171b]">política de privacidad</Link>.
+          </p>
+        </section>
       </div>
     </main>
   );
