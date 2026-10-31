@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Sora } from "next/font/google";
-import { Suspense } from "react";
 import "./globals.css";
-import { CookieConsent } from "@/components/cookie-consent";
-import { GoogleAnalytics } from "@/components/google-analytics";
 import { UmamiAnalytics } from "@/components/umami-analytics";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { SiteFooter } from "@/components/site-footer";
@@ -49,16 +46,12 @@ export default function RootLayout({
       className={`${plusJakartaSans.variable} ${sora.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-[var(--bg)] text-[var(--text)]">
-        <Suspense fallback={null}>
-          <GoogleAnalytics />
-        </Suspense>
         <UmamiAnalytics />
         <div className="app-shell flex min-h-screen flex-col">
           <SiteHeader />
           {children}
           <SiteFooter />
           <MobileBottomNav />
-          <CookieConsent />
         </div>
       </body>
     </html>
