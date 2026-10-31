@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
-import { BadgeEuro, CalendarDays, Dumbbell, MapPinned, MessageCircleMore, Search } from "lucide-react";
+import { BadgeEuro, CalendarDays, MapPinned, MessageCircleMore, Search } from "lucide-react";
 import { AuthAlternativeMethods } from "@/components/auth-alternative-methods";
+import { AuthPageBackdrop } from "@/components/auth-page-backdrop";
 import { TurnstileWidget } from "@/components/turnstile-widget";
 import { getSafeInternalPath } from "@/lib/safe-navigation";
 import type { AuthIntent } from "@/lib/auth";
@@ -19,7 +20,7 @@ export function RegistroPageClient() {
 
 function RegistroFallback() {
   return (
-    <main className="flex min-h-[calc(100svh-72px)] flex-1 items-center bg-[#fff8e8] px-4 py-10 md:px-8">
+    <main className="flex min-h-[calc(100svh-72px)] flex-1 items-center bg-[#f1f2f4] px-4 py-10 md:px-8">
       <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[1.08fr_0.92fr]">
         <div className="h-96 animate-pulse rounded-[32px] bg-white/45" />
         <div className="h-[34rem] animate-pulse rounded-[32px] bg-white/80" />
@@ -43,46 +44,25 @@ function RegistroForm() {
   const turnstileEnabled = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
 
   return (
-    <main className="relative flex min-h-[calc(100svh-72px)] flex-1 items-center overflow-hidden bg-[#fff8e8] px-4 py-10 text-[#17171b] md:px-8 lg:py-16">
-      <div aria-hidden className="absolute -right-32 -top-40 h-[36rem] w-[36rem] rounded-full bg-[#ffc84a] opacity-95" />
-      <div aria-hidden className="absolute -bottom-56 -left-36 h-[30rem] w-[30rem] rounded-full bg-[#e11931]/8" />
+    <main className="relative flex min-h-[calc(100svh-72px)] flex-1 items-center overflow-hidden bg-[#f1f2f4] px-4 py-9 text-[#17171b] md:px-8 lg:py-14">
+      <AuthPageBackdrop />
 
-      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-[1.08fr_0.92fr] lg:gap-20">
-        <section className="max-w-2xl px-2 py-4 sm:px-6 lg:py-12">
+      <div className="relative mx-auto grid w-full max-w-6xl items-start gap-7 lg:grid-cols-[1.05fr_0.95fr] lg:gap-x-20 lg:gap-y-8">
+        <section className="max-w-2xl px-1 pt-2 sm:px-6 lg:pt-12">
           <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-[#e11931]">
             {isTrainer ? "Para entrenadores" : "Para alumnos"}
           </p>
-          <h1 className="mt-5 font-heading text-4xl font-extrabold leading-[1.05] tracking-[-0.05em] text-[#17171b] sm:text-5xl lg:text-6xl">
-            {isTrainer ? "Convierte tu experiencia en nuevos clientes." : "Empieza a entrenar a tu manera."}
+          <h1 className="mt-3 font-heading text-4xl font-extrabold leading-[1.08] tracking-[-0.045em] text-[#17171b] sm:text-5xl">
+            {isTrainer ? "Crea tu perfil" : "Crea tu cuenta"}
           </h1>
-          <p className="mt-6 max-w-xl text-lg font-medium leading-8 text-[#57545b]">
-            {isTrainer
-              ? "Date de alta hoy y empieza a captar clientes con un perfil profesional hecho para entrenadores personales."
-              : "Crea tu cuenta para contactar con profesionales, guardar tus conversaciones y encontrar el entrenamiento que necesitas."}
+          <p className="mt-3 text-base font-semibold text-[#74777d] sm:text-lg">
+            Gratis, rápido y sin pasos innecesarios.
           </p>
-
-          {isTrainer ? (
-            <ul className="mt-8 grid gap-4 text-base font-bold text-[#29272d] sm:grid-cols-2">
-              <li className="flex items-center gap-3"><CalendarDays size={21} className="text-[#0094ff]" /> Organiza tu agenda</li>
-              <li className="flex items-center gap-3"><MapPinned size={21} className="text-[#e11931]" /> Presencial o en línea</li>
-              <li className="flex items-center gap-3"><BadgeEuro size={21} className="text-[#f5a623]" /> Pon tus propios precios</li>
-              <li className="flex items-center gap-3"><Dumbbell size={21} className="text-[#0094ff]" /> Ofrece tus servicios</li>
-            </ul>
-          ) : (
-            <ul className="mt-8 grid gap-4 text-base font-bold text-[#29272d] sm:grid-cols-2">
-              <li className="flex items-center gap-3"><Search size={21} className="text-[#0094ff]" /> Encuentra entrenadores</li>
-              <li className="flex items-center gap-3"><MessageCircleMore size={21} className="text-[#e11931]" /> Contacta fácilmente</li>
-            </ul>
-          )}
         </section>
 
-        <section className="relative min-w-0 rounded-[32px] bg-white p-6 shadow-[0_28px_80px_rgba(57,45,20,0.18)] sm:p-10">
-          <h2 className="font-heading text-3xl font-extrabold tracking-[-0.04em] text-[#17171b]">
-            {isTrainer ? "Crea tu perfil" : "Crea tu cuenta"}
-          </h2>
-          <p className="mt-2 text-sm font-medium text-[#77737b]">Gratis, rápido y sin pasos innecesarios.</p>
-
-          <div className="mt-7">
+        <section className="relative min-w-0 rounded-[28px] border border-white/80 bg-white/95 p-6 shadow-[0_24px_70px_rgba(30,34,42,0.13)] sm:p-9 lg:row-span-2 lg:mt-4">
+          <h2 className="sr-only">Elige cómo quieres registrarte</h2>
+          <div>
             <label htmlFor="registration-email" className="sr-only">Email</label>
             <input
               id="registration-email"
@@ -115,7 +95,7 @@ function RegistroForm() {
 
           <p className="mt-7 text-center text-sm font-semibold text-[#8a878d]">
             ¿Ya tienes una cuenta?{" "}
-            <Link href="/login" className="font-extrabold text-[#17171b] hover:text-[#e11931]">Conexión</Link>
+            <Link href="/login" className="font-extrabold text-[#17171b] hover:text-[#e11931]">Conéctate</Link>
           </p>
           <p className="mt-5 text-center text-xs leading-5 text-[#9b989e]">
             Al registrarte aceptas nuestros{" "}
@@ -123,6 +103,26 @@ function RegistroForm() {
             y la{" "}
             <Link href="/politica-privacidad" className="underline hover:text-[#17171b]">política de privacidad</Link>.
           </p>
+        </section>
+
+        <section className="max-w-2xl px-1 pb-3 sm:px-6 lg:pb-10">
+          <p className="max-w-xl text-base font-semibold leading-7 text-[#555960]">
+            {isTrainer
+              ? "Date de alta hoy y empieza a captar clientes con un perfil profesional de Super Entrenador."
+              : "Encuentra al profesional adecuado y mantén tus conversaciones en un único lugar."}
+          </p>
+          {isTrainer ? (
+            <ul className="mt-6 grid gap-4 text-base font-bold text-[#292d33]">
+              <li className="flex items-center gap-3"><CalendarDays size={21} className="text-[#0094ff]" /> Organiza tu agenda</li>
+              <li className="flex items-center gap-3"><MapPinned size={21} className="text-[#e11931]" /> Ofrece tus servicios presencial o en línea</li>
+              <li className="flex items-center gap-3"><BadgeEuro size={21} className="text-[#f5a623]" /> Tú pones los precios</li>
+            </ul>
+          ) : (
+            <ul className="mt-6 grid gap-4 text-base font-bold text-[#292d33]">
+              <li className="flex items-center gap-3"><Search size={21} className="text-[#0094ff]" /> Encuentra entrenadores</li>
+              <li className="flex items-center gap-3"><MessageCircleMore size={21} className="text-[#e11931]" /> Contacta fácilmente</li>
+            </ul>
+          )}
         </section>
       </div>
     </main>

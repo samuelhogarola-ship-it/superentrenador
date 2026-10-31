@@ -46,7 +46,9 @@ test("registration keeps trainer and client routes separate without a role toggl
   assert.doesNotMatch(registrationSource, /Soy entrenador/);
   assert.match(registrationSource, /value === "trainer" \? "trainer" : "client"/);
   assert.match(registrationSource, /Organiza tu agenda/);
-  assert.match(registrationSource, /Pon tus propios precios/);
+  assert.match(registrationSource, /Ofrece tus servicios presencial o en línea/);
+  assert.match(registrationSource, /Tú pones los precios/);
+  assert.match(registrationSource, />Conéctate</);
 });
 
 test("a submitted magic-link request always consumes its Turnstile token", async () => {

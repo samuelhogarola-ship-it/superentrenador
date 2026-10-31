@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { MessageCircleMore, Search, Sparkles } from "lucide-react";
 import { AuthAlternativeMethods } from "@/components/auth-alternative-methods";
+import { AuthPageBackdrop } from "@/components/auth-page-backdrop";
 import { TurnstileWidget } from "@/components/turnstile-widget";
 import { getSafeInternalPath } from "@/lib/safe-navigation";
 
@@ -18,7 +19,7 @@ export function LoginPageClient() {
 
 function LoginFallback() {
   return (
-    <main className="flex min-h-[calc(100svh-72px)] flex-1 items-center bg-[#fff8e8] px-4 py-10 md:px-8">
+    <main className="flex min-h-[calc(100svh-72px)] flex-1 items-center bg-[#f1f2f4] px-4 py-10 md:px-8">
       <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="h-72 animate-pulse rounded-[32px] bg-white/45" />
         <div className="h-[31rem] animate-pulse rounded-[32px] bg-white/80" />
@@ -38,12 +39,11 @@ function LoginForm() {
   const turnstileEnabled = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
 
   return (
-    <main className="relative flex min-h-[calc(100svh-72px)] flex-1 items-center overflow-hidden bg-[#fff8e8] px-4 py-10 text-[#17171b] md:px-8 lg:py-16">
-      <div aria-hidden className="absolute -right-36 -top-44 h-[34rem] w-[34rem] rounded-full bg-[#ffc84a] opacity-90" />
-      <div aria-hidden className="absolute -bottom-48 -left-40 h-[28rem] w-[28rem] rounded-full bg-[#0094ff]/10" />
+    <main className="relative flex min-h-[calc(100svh-72px)] flex-1 items-center overflow-hidden bg-[#f1f2f4] px-4 py-9 text-[#17171b] md:px-8 lg:py-14">
+      <AuthPageBackdrop />
 
       <div className="relative mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
-        <section className="max-w-xl px-2 py-4 sm:px-6 lg:py-12">
+        <section className="order-2 max-w-xl px-2 py-4 sm:px-6 lg:order-1 lg:py-12">
           <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-[#e11931]">Tu espacio de entrenamiento</p>
           <h1 className="mt-5 font-heading text-4xl font-extrabold leading-[1.05] tracking-[-0.05em] text-[#17171b] sm:text-5xl lg:text-6xl">
             Encuentra, contacta y avanza.
@@ -58,7 +58,7 @@ function LoginForm() {
           </ul>
         </section>
 
-        <section className="relative min-w-0 rounded-[32px] bg-white p-6 shadow-[0_28px_80px_rgba(57,45,20,0.18)] sm:p-10">
+        <section className="relative order-1 min-w-0 rounded-[28px] border border-white/80 bg-white/95 p-6 shadow-[0_24px_70px_rgba(30,34,42,0.13)] sm:p-10 lg:order-2">
           <h2 className="font-heading text-3xl font-extrabold tracking-[-0.04em] text-[#17171b]">Iniciar sesión</h2>
           <p className="mt-2 text-sm font-medium text-[#77737b]">Introduce tu email o continúa con Google.</p>
 

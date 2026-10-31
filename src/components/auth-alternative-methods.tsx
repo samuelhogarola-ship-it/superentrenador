@@ -92,7 +92,7 @@ export function AuthAlternativeMethods({
         type="button"
         onClick={handleMagicLink}
         disabled={loading !== null || (captchaRequired && !captchaToken)}
-        className="inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-[#ff6268] px-5 py-3.5 text-sm font-extrabold text-white transition-transform hover:-translate-y-0.5 hover:bg-[#ef565c] disabled:cursor-not-allowed disabled:opacity-50"
+        className="inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-[#f5a623] px-5 py-3.5 text-sm font-extrabold text-[#17171b] transition-transform hover:-translate-y-0.5 hover:bg-[#e99a16] disabled:cursor-not-allowed disabled:opacity-50"
       >
         <Mail size={18} />
         {loading === "magic"
