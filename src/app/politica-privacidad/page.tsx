@@ -20,7 +20,7 @@ export default function PoliticaPrivacidadPage() {
       <div className="app-surface rounded-[28px] px-6 py-10 sm:px-10 sm:py-12">
         <p className="app-kicker">Legal</p>
         <h1 className="app-title mt-3 text-4xl text-[var(--text)]">Política de privacidad</h1>
-        <p className="app-copy mt-4 text-sm">Última actualización: agosto 2026</p>
+        <p className="app-copy mt-4 text-sm">Última actualización: octubre 2026</p>
 
         <div className="prose-custom mt-10 flex flex-col gap-8 text-sm leading-7 text-[var(--text)]">
 
@@ -123,13 +123,13 @@ export default function PoliticaPrivacidadPage() {
                 <h3 className="font-semibold text-[var(--text)]">10. Cookies y analítica</h3>
                 <div className="app-copy mt-2 flex flex-col gap-3">
                   <p>
-                    Utilizamos cookies técnicas necesarias para el funcionamiento de la plataforma (sesión de usuario y preferencias básicas). Si das tu consentimiento, también activamos Google Analytics para medir el uso de la web.
+                    Utilizamos cookies técnicas necesarias para el funcionamiento de la plataforma, como la sesión de usuario y las preferencias básicas. Google Analytics no se carga y la aplicación no usa cookies publicitarias.
                   </p>
                   <p>
                     Además usamos <strong className="text-[var(--text)]">Umami</strong>, una herramienta de analítica que alojamos en nuestra propia infraestructura. Umami <strong className="text-[var(--text)]">no instala cookies ni almacena ningún identificador en tu dispositivo</strong>, y no permite reconocerte de una visita a otra ni seguirte por otros sitios web. Por ese motivo funciona sin necesidad de consentimiento previo.
                   </p>
                   <p>
-                    Umami solo registra datos agregados de navegación: páginas visitadas, página de origen, tipo de navegador, sistema operativo, tipo de dispositivo y país aproximado, junto con acciones anónimas como pulsar un botón de contacto. Al estar autoalojada, esta información no se comparte con ningún proveedor externo de analítica.
+                    Umami solo registra datos agregados de navegación: páginas visitadas, página de origen, tipo de navegador, sistema operativo, tipo de dispositivo y país aproximado, junto con acciones anónimas como pulsar un botón de contacto. Al estar autoalojada, esta información no se comparte con proveedores externos de analítica.
                   </p>
                   <p>
                     Puedes consultar más detalle en la{" "}

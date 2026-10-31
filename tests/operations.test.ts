@@ -130,14 +130,19 @@ test("image CSP allows only app and Supabase image origins", async () => {
   assert.doesNotMatch(config, /"img-src 'self' data: blob: https:"/);
 });
 
-test("CSP permits the consent-gated Google Analytics transport", async () => {
-  const config = await readSource("../next.config.ts");
+test("Umami is the only analytics provider loaded by the application", async () => {
+  const [config, layout, cookies, privacy] = await Promise.all([
+    readSource("../next.config.ts"),
+    readSource("../src/app/layout.tsx"),
+    readSource("../src/app/cookies/page.tsx"),
+    readSource("../src/app/politica-privacidad/page.tsx"),
+  ]);
 
-  assert.match(config, /scriptSources\.push\("https:\/\/www\.googletagmanager\.com"\)/);
-  assert.match(
-    config,
-    /connect-src[^\n]*https:\/\/www\.google-analytics\.com[^\n]*https:\/\/\*\.google-analytics\.com/,
-  );
+  assert.match(layout, /<UmamiAnalytics \/>/);
+  assert.doesNotMatch(layout, /GoogleAnalytics|CookieConsent/);
+  assert.doesNotMatch(config, /googletagmanager|google-analytics/);
+  assert.doesNotMatch(cookies, /(?:cargamos|activamos) Google Analytics|aceptas las cookies analíticas/i);
+  assert.doesNotMatch(privacy, /(?:cargamos|activamos) Google Analytics|consentimiento.*analítica/i);
 });
 
 test("connect CSP is scoped to the configured Supabase project", async () => {

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Sora } from "next/font/google";
 import "./globals.css";
-import { CookieConsent } from "@/components/cookie-consent";
 import { UmamiAnalytics } from "@/components/umami-analytics";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { SiteFooter } from "@/components/site-footer";
@@ -53,7 +52,6 @@ export default function RootLayout({
           {children}
           <SiteFooter />
           <MobileBottomNav />
-          <CookieConsent />
         </div>
       </body>
     </html>

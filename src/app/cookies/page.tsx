@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { createSocialMetadata } from "@/lib/site";
 
 const COOKIES_DESCRIPTION =
-  "Información sobre las cookies técnicas, preferencias y analítica de Super Entrenador.";
+  "Información sobre las cookies técnicas y la analítica sin cookies de Super Entrenador.";
 
 export const metadata: Metadata = {
   title: "Política de cookies",
@@ -19,7 +19,7 @@ export default function CookiesPage() {
       <div className="app-surface rounded-[28px] px-6 py-10 sm:px-10 sm:py-12">
         <p className="app-kicker">Legal</p>
         <h1 className="app-title mt-3 text-4xl text-[var(--text)]">Política de cookies</h1>
-        <p className="app-copy mt-4 text-sm">Última actualización: agosto 2026</p>
+        <p className="app-copy mt-4 text-sm">Última actualización: octubre 2026</p>
 
         <div className="mt-10 flex flex-col gap-7 text-sm leading-7 text-[var(--text)]">
           <section>
@@ -32,17 +32,14 @@ export default function CookiesPage() {
           <section>
             <h2 className="app-title text-xl text-[var(--text)]">Analítica y marketing</h2>
             <p className="app-copy mt-3">
-              Si aceptas las cookies analíticas, cargamos Google Analytics con el identificador G-XP5C05LFL5 para medir visitas, páginas consultadas y uso general de la web. No usamos cookies publicitarias desde la propia aplicación.
-            </p>
-            <p className="app-copy mt-3">
-              También utilizamos Umami, una herramienta de analítica alojada en nuestra propia infraestructura que <strong className="text-[var(--text)]">no instala cookies ni guarda ningún identificador en tu dispositivo</strong>. Por eso funciona aunque rechaces las cookies analíticas: no hay nada que almacenar en tu navegador ni forma de reconocerte entre visitas. Solo registra datos agregados de navegación (páginas, origen, navegador, dispositivo y país aproximado) que no se comparten con ningún proveedor externo.
+              Utilizamos Umami, una herramienta de analítica alojada en nuestra propia infraestructura que <strong className="text-[var(--text)]">no instala cookies ni guarda ningún identificador en tu dispositivo</strong>. Solo registra datos agregados de navegación —páginas, origen, navegador, dispositivo y país aproximado— que no se comparten con proveedores externos de analítica. Google Analytics no se carga y la aplicación no usa cookies publicitarias.
             </p>
           </section>
 
           <section>
             <h2 className="app-title text-xl text-[var(--text)]">Gestión de preferencias</h2>
             <p className="app-copy mt-3">
-              Puedes aceptar solo las cookies necesarias o permitir también las analíticas desde el banner de la web. También puedes borrar o bloquear cookies desde la configuración de tu navegador, aunque algunas funciones de sesión podrían dejar de funcionar.
+              Las cookies técnicas son necesarias para iniciar sesión y conservar preferencias básicas. Puedes borrarlas o bloquearlas desde la configuración de tu navegador, aunque algunas funciones de la cuenta podrían dejar de funcionar. Umami no requiere una preferencia de cookies porque no guarda identificadores en tu dispositivo.
             </p>
           </section>
 
